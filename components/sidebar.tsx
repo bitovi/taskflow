@@ -28,11 +28,6 @@ const sidebarNavItems = [
     href: "/team",
     icon: Users,
   },
-  {
-    title: "Analytics",
-    href: "/analytics",
-    icon: BarChart3,
-  },
 ]
 
 export function Sidebar() {

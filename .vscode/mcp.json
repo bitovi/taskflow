@@ -1,0 +1,13 @@
+{
+    "servers": {
+        "bitovi-jira-mcp": {
+            "url": "https://jira-mcp-auth-bridge.bitovi.com/mcp"
+        },
+        "figma": {
+            "url": "http://127.0.0.1:3845/mcp"
+        },
+        "atlassian": {
+            "url": "https://mcp.atlassian.com/v1/sse"
+        }
+    }
+}

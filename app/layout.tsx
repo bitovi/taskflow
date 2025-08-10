@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-background text-foreground`}
+        className={`${inter.className} bg-background text-foreground text-xl`}
       >
         {children}
       </body>
