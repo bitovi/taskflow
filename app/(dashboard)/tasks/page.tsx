@@ -1,23 +1,13 @@
+"use client"
+
 import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Search } from "lucide-react"
+import { Plus } from "lucide-react"
 import Link from "next/link"
-import { TaskList } from "@/components/task-list"
+import { TaskListWithFilter } from "@/components/task-list-with-filter"
 import { poppins } from "@/lib/fonts"
 
-import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
-
-export const revalidate = 0
-
-
-export default async function TasksPage() {
-    const { tasks, error } = await getAllTasks();
-    if (error) {
-        console.error("Error fetching data:", error)
-        return <p className="p-8">Could not load data. Please try again later.</p>
-    }
-
+export default function TasksPage() {
     return (
         <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
             <div className="flex items-center justify-between">
@@ -31,7 +21,7 @@ export default async function TasksPage() {
             </div>
 
             <Suspense fallback={<div>Loading tasks...</div>}>
-                <TaskList initialTasks={tasks || []} />
+                <TaskListWithFilter />
             </Suspense>
         </div>
     )
