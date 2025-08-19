@@ -48,15 +48,6 @@ export async function logout() {
 }
 
 export async function getCurrentUser() {
-    // For development - return mock user to bypass authentication
-    return {
-        id: 1,
-        email: "demo@example.com",
-        name: "Demo User",
-        password: "$2b$10$SSaEQ4XMTI5SY7XC8EpoeuULk7WSTsc5EVpYKSdyTqJQY4aVzx6B6"
-    };
-    
-    /*
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get("session")?.value;
     if (!sessionToken) return null;
@@ -65,7 +56,6 @@ export async function getCurrentUser() {
         include: { user: true },
     });
     return session?.user || null;
-    */
 }
 
 export async function getAllUsers() {
