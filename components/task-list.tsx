@@ -1,18 +1,19 @@
 "use client"
 
-import { useOptimistic, useTransition, useState, useEffect, useMemo } from "react"
+import { useOptimistic, useTransition, useState, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { MoreHorizontal, Clock, Edit, Trash2, Search, X, Filter } from "lucide-react"
+import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
 import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
+import { TaskSearchFilter } from "./task-search-filter"
+import { TaskEmptyState } from "./task-empty-state"
 import { poppins } from "@/lib/fonts"
 
 import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
@@ -37,20 +38,7 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
   const [isPending, startTransition] = useTransition()
   const [openDialogs, setOpenDialogs] = useState<Record<number, boolean>>({})
   const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({})
-  
-  // Search and filter state
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilters, setStatusFilters] = useState({
-    todo: true,
-    in_progress: true,
-    review: true,
-    done: true
-  })
-  const [priorityFilters, setPriorityFilters] = useState({
-    high: true,
-    medium: true,
-    low: true
-  })
+  const [filteredTasks, setFilteredTasks] = useState<TaskWithProfile[]>(initialTasks)
 
   const handleDelete = async (taskId: number) => {
     startTransition(async () => {
@@ -84,142 +72,22 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .toUpperCase()
   }
 
-  // Filter and search tasks
-  const filteredTasks = useMemo(() => {
-    return optimisticTasks.filter(task => {
-      // Apply status filter
-      if (!statusFilters[task.status as keyof typeof statusFilters]) {
-        return false
-      }
-      
-      // Apply priority filter  
-      if (!priorityFilters[task.priority as keyof typeof priorityFilters]) {
-        return false
-      }
-      
-      // Apply search filter
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase()
-        return task.name.toLowerCase().includes(query) || 
-               task.description.toLowerCase().includes(query)
-      }
-      
-      return true
-    })
-  }, [optimisticTasks, statusFilters, priorityFilters, searchQuery])
-
-  // Handlers for search and filter
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
-
-  const handleClearSearch = () => {
-    setSearchQuery("")
-  }
-
-  const handleStatusFilterChange = (status: string, checked: boolean) => {
-    setStatusFilters(prev => ({ ...prev, [status]: checked }))
-  }
-
-  const handlePriorityFilterChange = (priority: string, checked: boolean) => {
-    setPriorityFilters(prev => ({ ...prev, [priority]: checked }))
-  }
+  // Handle filtered tasks from search filter component
+  const handleFilteredTasksChange = useCallback((newFilteredTasks: TaskWithProfile[]) => {
+    setFilteredTasks(newFilteredTasks)
+  }, [])
 
   return (
     <div className="space-y-4">
       {/* Search and Filter Controls */}
-      <div className="flex items-center gap-2">
-        {/* Search Bar */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search tasks..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="pl-10 pr-10"
-          />
-          {searchQuery && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClearSearch}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-        
-        {/* Filter Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Filter className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>Status</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem
-              checked={statusFilters.todo}
-              onCheckedChange={(checked) => handleStatusFilterChange('todo', !!checked)}
-            >
-              Todo
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={statusFilters.in_progress}
-              onCheckedChange={(checked) => handleStatusFilterChange('in_progress', !!checked)}
-            >
-              In Progress
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={statusFilters.review}
-              onCheckedChange={(checked) => handleStatusFilterChange('review', !!checked)}
-            >
-              Review
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={statusFilters.done}
-              onCheckedChange={(checked) => handleStatusFilterChange('done', !!checked)}
-            >
-              Done
-            </DropdownMenuCheckboxItem>
-            
-            <DropdownMenuSeparator />
-            
-            <DropdownMenuLabel>Priority</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem
-              checked={priorityFilters.high}
-              onCheckedChange={(checked) => handlePriorityFilterChange('high', !!checked)}
-            >
-              High
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={priorityFilters.medium}
-              onCheckedChange={(checked) => handlePriorityFilterChange('medium', !!checked)}
-            >
-              Medium
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={priorityFilters.low}
-              onCheckedChange={(checked) => handlePriorityFilterChange('low', !!checked)}
-            >
-              Low
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <TaskSearchFilter 
+        tasks={optimisticTasks} 
+        onFilteredTasksChange={handleFilteredTasksChange}
+      />
       
       {/* Task List or No Results Message */}
       {filteredTasks.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="flex justify-center mb-4">
-            <Search className="h-12 w-12 text-muted-foreground" />
-          </div>
-          <h3 className="text-lg font-medium mb-2">No tasks found</h3>
-          <p className="text-muted-foreground">
-            No tasks match your current search and filter criteria. Try adjusting your search terms or filter settings.
-          </p>
-        </div>
+        <TaskEmptyState />
       ) : (
         filteredTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
