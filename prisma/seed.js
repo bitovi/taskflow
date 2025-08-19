@@ -44,6 +44,7 @@ const taskTemplates = [
     { name: 'Implement advanced project templates', description: 'Create customizable project templates for different use cases', priority: 'low' },
     { name: 'Add video conferencing integration', description: 'Integrate with video conferencing platforms for team meetings', priority: 'medium' },
     { name: 'Create automated workflow system', description: 'Build automation rules for task assignments and updates', priority: 'high' },
+    { name: 'Plan team celebration cake', description: 'Organize and order a celebration cake for the team milestone party', priority: 'medium' },
 ];
 
 const statuses = ['todo', 'in_progress', 'done', 'review'];
