@@ -1,231 +1,184 @@
-# TaskFlow - AI Task Management App
+# TaskFlow - AI Copilot Instructions
 
-Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
+## Overview
 
-## Working Effectively
+This file enables AI coding assistants to generate features aligned with TaskFlow's architecture and conventions. These instructions are based on actual, observed patterns from the codebase analysis following the Bitovi instruction generation methodology.
 
-### Bootstrap and Setup
-- Install dependencies: `npm install` -- takes ~49 seconds. Works reliably.
-- **NETWORK LIMITATIONS**: The following commands fail due to firewall restrictions:
-  - `npm run db:setup` -- fails due to Prisma binary download restrictions (binaries.prisma.sh blocked)
-  - `npm run build` -- fails due to Google Fonts access restrictions (fonts.googleapis.com blocked)
-  - `npx prisma generate` -- fails due to Prisma binary download restrictions
+TaskFlow is a task management application built with Next.js 15, React 19, TypeScript, Prisma ORM, and Tailwind CSS. It features authentication, CRUD operations, kanban boards, and data visualization.
 
-### Core Commands That Work
-- `npm run lint` -- takes ~5 seconds. ALWAYS run before committing. Shows TypeScript warnings/errors.
-- Basic file operations, TypeScript compilation checks work normally
-- Git operations work normally
+## File Category Reference
 
-### Database & Prisma Limitations
-- **CRITICAL**: Database commands require network access to download Prisma binaries
-- Database setup commands in package.json:
-  - `npm run db:setup` -- Create, migrate and populate database (FAILS due to network restrictions)
-  - `npm run db:clear` -- Clear all data from database
-  - `npm run db:seed` -- Populate database with sample data
-  - `npm run db:reset` -- Clear and re-seed database
-- **WORKAROUND**: In environments with network restrictions, document that these commands cannot be executed
-- Prisma client generates to `app/generated/prisma` directory
-- Uses SQLite database (`prisma/app.db` file)
+### next-js-pages
+**Purpose**: App Router pages that define routes and handle initial data loading
+**Examples**: `app/(dashboard)/page.tsx`, `app/login/page.tsx`
+**Key Conventions**:
+- Use consistent padding structure: `className="flex-1 space-y-4 p-4 md:p-8 pt-6"`
+- Headers with Poppins font: `className={`text-3xl font-bold tracking-tight ${poppins.className}`}`
+- Server pages use async functions for data fetching
+- Client pages start with "use client" directive
 
-### Build System Limitations
-- **CRITICAL**: Build fails due to Google Fonts network access
-- `npm run build` fails because:
-  - `app/layout.tsx` imports `Inter` from `next/font/google`
-  - `lib/fonts.ts` imports `Poppins` from `next/font/google`
-  - `components/ui/card.tsx` imports `Poppins` from `next/font/google`
-- **TypeScript Compilation Issues**: `npx tsc --noEmit` reveals:
-  - 12 errors in 11 files
-  - All Prisma client imports fail: `Cannot find module '@/app/generated/prisma'`
-  - Missing generated types in: tasks/actions.ts, login/actions.ts, signup/actions.ts, components
-- **WORKAROUND**: In restricted environments, font imports must be replaced with local alternatives
+### server-actions
+**Purpose**: Server-side functions for data mutations and authentication
+**Examples**: `app/(dashboard)/tasks/actions.ts`, `app/login/actions.ts`
+**Key Conventions**:
+- Start with "use server" directive
+- Authentication check: `const user = await getCurrentUser(); if (!user) return { error: "Not authenticated." }`
+- Return format: `{ success: boolean, error?: string, message?: string }`
+- Always include `revalidatePath()` after mutations
+- Use `parseDateString()` for date handling
 
-### Development Server
-- `npm run dev --turbopack` -- starts development server on port 3000
-- **TIMING**: Development server startup typically takes 10-15 seconds
-- **LIMITATION**: Will fail due to missing Prisma client and font dependencies in restricted environments
-- Uses Next.js 15.4.6 with App Router and Turbopack for fast refresh
-
-## Validation Scenarios
-
-When the application is fully functional, ALWAYS test these complete user workflows:
-
-### Authentication Flow
-1. Visit http://localhost:3000 
-2. Navigate to /login
-3. Use default credentials: `alice@example.com` / `password123`
-4. Verify successful login redirects to dashboard
-
-### Task Management Flow
-1. Navigate to /tasks page
-2. Click "New Task" to create a task
-3. Fill out task form with title, description, priority, status, due date, assignee
-4. Verify task appears in task list
-5. Test task status updates via checkbox
-6. Test task editing via dropdown menu
-7. Test task deletion
-
-### Dashboard Verification
-1. Navigate to dashboard (/)
-2. Verify statistics cards show correct data
-3. Verify charts render properly with task data
-4. Check recent tasks display
-
-## Codebase Structure
-
-### Key Directories
-```
-app/
-├── (dashboard)/           # Main application pages
-│   ├── page.tsx          # Dashboard with stats and charts
-│   ├── tasks/            # Task management
-│   │   ├── page.tsx      # Task list page
-│   │   ├── actions.ts    # Server actions for CRUD
-│   │   └── new/          # Create task page
-│   ├── board/            # Kanban board view
-│   └── team/             # Team management
-├── login/                # Authentication pages
-├── signup/
-└── generated/prisma/     # Generated Prisma client (network dependent)
-
-components/
-├── ui/                   # shadcn/ui components
-├── task-list.tsx         # Main task listing component
-├── kanban-board.tsx      # Drag-drop kanban board
-├── dashboard-charts.tsx  # Charts for dashboard
-└── sidebar.tsx           # Navigation sidebar
-
-prisma/
-├── schema.prisma         # Database schema
-├── seed.js              # Sample data generation
-├── clear.js             # Database cleanup
-└── migrations/          # Database migrations
-```
-
-### Server Actions Pattern
-- Actions located in `app/(dashboard)/tasks/actions.ts`
-- Uses Prisma ORM with TypeScript
-- Key actions: `createTask`, `getAllTasks`, `deleteTask`, `updateTaskStatus`, `updateTask`
-- Always use `revalidatePath("/tasks")` after mutations
-
-### UI Component Pattern
-- Uses shadcn/ui + Radix UI components
-- Tailwind CSS for styling
-- Custom fonts: Inter (main), Poppins (headings)
-- Icons from Lucide React
-
-### State Management
-- Uses React Server Components for server-side data fetching
+### react-components
+**Purpose**: Interactive UI components with state management
+**Examples**: `components/task-list.tsx`, `components/kanban-board.tsx`
+**Key Conventions**:
+- Use "use client" directive for interactivity
 - Optimistic updates with `useOptimistic` hook
-- Form handling with Server Actions and `useActionState`
+- Type extensions: `type TaskWithProfile = PrismaTask & { assignee?: Pick<User, "name"> | null }`
+- Event handlers combine optimistic updates with server actions
 
-## Important Implementation Details
+### ui-components
+**Purpose**: Reusable design system components built on Radix UI
+**Examples**: `components/ui/button.tsx`, `components/ui/card.tsx`
+**Key Conventions**:
+- Use `React.forwardRef` pattern
+- Class variance authority for variants
+- Radix UI primitives as foundation
+- Export all related components together
 
-### Authentication
-- Session-based auth using cookies
-- Sessions stored in database
-- Password hashing with bcrypt
-- Default test user: alice@example.com / password123
+### utility-functions
+**Purpose**: Helper functions for common operations
+**Examples**: `lib/utils.ts`, `lib/date-utils.ts`
+**Key Conventions**:
+- Simple, focused functions
+- Timezone-safe date operations
+- JSDoc comments for complex logic
+- Flexible input types (Date | string)
 
-### Database Schema
-- Users: id, email, password, name
-- Tasks: id, name, description, priority, status, dueDate, assigneeId, creatorId
-- Sessions: id, token, userId, createdAt
+### type-definitions
+**Purpose**: TypeScript type definitions extending Prisma types
+**Examples**: `lib/types.ts`
+**Key Conventions**:
+- Extend Prisma types with relationships
+- Use literal union types for status values
+- Nullable relationship patterns with Pick utility
+- Centralized in lib/types.ts
 
-### Task Statuses
-- `todo`, `in_progress`, `done`, `review`
+## Feature Scaffold Guide
 
-### Task Priorities  
-- `low`, `medium`, `high`
+### Creating a New Feature
+1. **Determine file structure** based on feature scope:
+   - Add page in `app/(dashboard)/feature-name/page.tsx`
+   - Create server actions in `app/(dashboard)/feature-name/actions.ts`
+   - Build components in `components/feature-name.tsx`
+   - Add types to `lib/types.ts` if needed
 
-## Common Patterns
+2. **Follow naming conventions**:
+   - Pages: `page.tsx` in feature folders
+   - Components: kebab-case filenames, PascalCase exports
+   - Actions: descriptive function names (createTask, updateTask)
+   - Types: descriptive names with relationships (TaskWithProfile)
 
-### Adding New Features
-1. Create server action in appropriate `actions.ts` file
-2. Build UI component following shadcn/ui patterns
-3. Use TypeScript with Prisma-generated types
-4. Always run `npm run lint` before committing
-5. Test complete user workflow after changes
+3. **Implement authentication protection**:
+   - Server actions: Check `getCurrentUser()` first
+   - Protected pages: Use dashboard route group
+   - Forms: Handle error states from authentication
 
-### TypeScript Usage
-- Use Prisma-generated types: `import type { Task, User } from "@/app/generated/prisma"`
-- Extend types with relations: `TaskWithProfile` pattern
-- Use proper typing for Server Actions and form data
+### Example: Adding a Comments Feature
 
-### Styling Conventions
-- Use Tailwind CSS utility classes
-- Follow shadcn/ui component patterns
-- Use Poppins font for headings, Inter for body text
-- Consistent color scheme with CSS variables
+**Files to create**:
+- `app/(dashboard)/comments/page.tsx` - Comments list page
+- `app/(dashboard)/comments/actions.ts` - CRUD operations
+- `components/comment-list.tsx` - Comment display component
+- `components/create-comment-form.tsx` - Comment creation
+- Add Comment model to `prisma/schema.prisma`
+- Add CommentWithUser type to `lib/types.ts`
 
-## Linting and Code Quality
+## Integration Rules
 
-### Before Committing
-- ALWAYS run `npm run lint` -- takes ~5 seconds
-- Fix TypeScript warnings and errors
-- Current TypeScript issues requiring Prisma client generation:
-  - 12 compilation errors in 11 files when Prisma client is missing
-  - All imports from `@/app/generated/prisma` and `@/app/generated/prisma/client` fail
-  - Key affected files: actions.ts files, components with Task types
-- Current known lint issues (as of last check):
-  - `@typescript-eslint/no-unused-vars` warnings in several files
-  - `@typescript-eslint/no-explicit-any` errors in login/signup pages
-  - `@typescript-eslint/no-empty-object-type` error in textarea component
-  - Implicit 'any' type errors in board/page.tsx and team/page.tsx
+### Data Layer Constraints
+- All database access must use Prisma client from `@/app/generated/prisma`
+- Server Actions must include authentication checks via `getCurrentUser()`
+- Mutations must call `revalidatePath()` for cache invalidation
+- Date inputs must use `parseDateString()` utility
 
-### Code Style
-- Use TypeScript strict mode
-- Prefer Server Components over Client Components when possible
-- Use Server Actions for data mutations
-- Follow Next.js App Router patterns
+### UI Constraints
+- All interactive elements must use Radix UI components (Button, Dialog, etc.)
+- Styling must use Tailwind CSS classes and `cn()` utility
+- Icons must be imported from lucide-react package
+- Fonts must use Poppins for headings, defined in `lib/fonts.ts`
 
-## Troubleshooting
+### State Management Constraints
+- Use Server Components for data fetching, not global state libraries
+- Client components receive data as props from server components
+- Optimistic updates must be paired with Server Actions
+- Forms must submit to Server Actions, not client-side libraries
 
-### Network-Restricted Environments
-- Database setup will fail - document this limitation
-- Font loading will fail - replace with local fonts or system fonts
-- Build process will fail - address font dependencies first
-- **COMPLETE WORKAROUND FOR RESTRICTED ENVIRONMENTS**:
-  1. Replace all `next/font/google` imports with local font alternatives
-  2. Create mock Prisma client types in `app/generated/prisma/` directory  
-  3. Use alternative database solutions or mock data for development
-  4. Document these changes as environment-specific modifications
+### Authentication Constraints
+- Session-based authentication using httpOnly cookies
+- All auth operations must be Server Actions
+- Protected routes must check authentication at layout level
+- Passwords must be hashed with bcryptjs
 
-### Development Issues
-- If Prisma client missing: Check network access for binary downloads
-- If fonts not loading: Check network access to fonts.googleapis.com
-- If build fails: Usually network-related font or dependency issues
-- If TypeScript errors: Usually missing Prisma client generation
+### Drag and Drop Constraints
+- Must use Hello-Pangea DnD library components
+- Kanban boards must follow DragDropContext/Droppable/Draggable structure
+- Drag operations must update local state immediately and sync to server
 
-### Common File Locations to Check After Changes
-- Always check `app/(dashboard)/tasks/actions.ts` after modifying task-related features
-- Always check component files in `components/` after UI changes
-- Always check `prisma/schema.prisma` after database changes
-- Always check font imports in `app/layout.tsx`, `lib/fonts.ts`, `components/ui/card.tsx` after styling changes
+### Data Visualization Constraints
+- All charts must use Recharts library with ResponsiveContainer
+- Chart components must be separate and receive processed data as props
+- Use consistent theme colors defined in chart components
 
-## CRITICAL Timing Information
+## Example Prompt Usage
 
-- **npm install**: ~49 seconds - NEVER CANCEL, set timeout to 120+ seconds
-- **npm run lint**: ~5 seconds - safe to use default timeout
-- **npm run build**: Network dependent - NEVER CANCEL if network available, set timeout to 300+ seconds
-- **npm run dev**: ~10-15 seconds startup - NEVER CANCEL, set timeout to 60+ seconds
-- **Database setup**: Network dependent - NEVER CANCEL if network available, set timeout to 180+ seconds
+**User Request**: "Create a searchable dropdown that lets users filter tasks by status"
 
-## Environment Requirements
+**Expected AI Response**: Create these files following TaskFlow conventions:
 
-- Node.js (version requirement: "^20" per package.json)
-- npm (package-lock.json indicates npm usage)
-- Next.js 15.4.6 with App Router and Turbopack
-- Prisma 6.13.0 for database ORM
-- Network access for:
-  - Prisma binary downloads (binaries.prisma.sh) - REQUIRED for database functionality
-  - Google Fonts (fonts.googleapis.com) - REQUIRED for build process
-  - Build-time dependencies
+1. `components/status-filter-dropdown.tsx`:
+```typescript
+"use client"
 
-### Dependency Versions (Validated)
-- next@15.4.6
-- @prisma/client@6.13.0
-- prisma@6.13.0
-- react@19.1.0
-- TypeScript@5.x
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-**ALWAYS validate these instructions work in your specific environment and document any additional limitations discovered.**
+interface StatusFilterProps {
+  onStatusChange: (status: string | null) => void
+  currentStatus?: string | null
+}
+
+export function StatusFilterDropdown({ onStatusChange, currentStatus }: StatusFilterProps) {
+  return (
+    <Select value={currentStatus || "all"} onValueChange={(value) => onStatusChange(value === "all" ? null : value)}>
+      <SelectTrigger className="w-48">
+        <SelectValue placeholder="Filter by status" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">All Statuses</SelectItem>
+        <SelectItem value="todo">To Do</SelectItem>
+        <SelectItem value="in_progress">In Progress</SelectItem>
+        <SelectItem value="review">Review</SelectItem>
+        <SelectItem value="done">Done</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+```
+
+2. Update `components/task-list.tsx` to integrate the filter:
+```typescript
+const [statusFilter, setStatusFilter] = useState<string | null>(null)
+
+const filteredTasks = optimisticTasks.filter(task => 
+  !statusFilter || task.status === statusFilter
+)
+
+// Add in render:
+<StatusFilterDropdown onStatusChange={setStatusFilter} currentStatus={statusFilter} />
+```
+
+This example demonstrates:
+- Using existing UI components (Select)
+- Following TypeScript patterns with proper interfaces
+- Integrating with existing state management patterns
+- Using consistent naming conventions
+- Respecting the established status literal types

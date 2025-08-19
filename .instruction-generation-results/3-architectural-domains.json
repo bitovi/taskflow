@@ -1,0 +1,98 @@
+{
+  "ui": {
+    "required_patterns": {
+      "component-structure": "All UI components use TypeScript with proper type definitions and export default functions",
+      "styling-approach": "Tailwind CSS classes for all styling, no CSS modules or styled-components",
+      "design-system": "Radix UI primitives as foundation with custom styling via class-variance-authority",
+      "icons": "Lucide React for all icons with consistent import pattern",
+      "font-usage": "Poppins font from Google Fonts imported via lib/fonts.ts and applied via className"
+    },
+    "architectural_constraints": {
+      "component-structure": "Components must be either 'use client' for interactivity or server components for data fetching",
+      "styling-approach": "All styling must use Tailwind classes, utility function cn() for conditional classes",
+      "design-system": "All interactive elements must use Radix UI components (Button, Dialog, DropdownMenu, etc.)",
+      "icons": "Icons must be imported from lucide-react package and used as React components",
+      "font-usage": "Custom fonts must be defined in lib/fonts.ts and applied consistently across components"
+    }
+  },
+  "routing": {
+    "required_patterns": {
+      "app-router": "Next.js 15 App Router with folder-based routing structure",
+      "route-groups": "Dashboard routes grouped under (dashboard) folder with shared layout",
+      "auth-protection": "Server-side authentication check in layout.tsx using getCurrentUser()",
+      "navigation": "Client-side navigation using Next.js Link component and usePathname hook"
+    },
+    "architectural_constraints": {
+      "app-router": "All routes must follow Next.js App Router conventions with page.tsx files",
+      "route-groups": "Protected routes must be under (dashboard) group, auth routes at app root level",
+      "auth-protection": "Authentication checks must happen at layout level, redirect to /login if unauthorized",
+      "navigation": "Navigation must use Next.js Link for client-side routing, avoid browser redirects"
+    }
+  },
+  "data-layer": {
+    "required_patterns": {
+      "orm": "Prisma ORM with generated client in app/generated/prisma",
+      "database": "SQLite database with schema defined in prisma/schema.prisma",
+      "server-actions": "Next.js Server Actions for all data mutations with 'use server' directive",
+      "data-fetching": "Server Components for data fetching, useOptimistic for optimistic updates"
+    },
+    "architectural_constraints": {
+      "orm": "All database access must go through Prisma client instance, no direct SQL queries",
+      "database": "Database operations must follow Prisma schema relationships and constraints",
+      "server-actions": "Mutations must be Server Actions in actions.ts files, include revalidatePath calls",
+      "data-fetching": "Data fetching must happen in Server Components, client components receive data as props"
+    }
+  },
+  "state-management": {
+    "required_patterns": {
+      "server-state": "Server Components for initial data loading with props passing to client components",
+      "optimistic-updates": "useOptimistic hook for immediate UI feedback during mutations",
+      "form-state": "Server Actions for form handling with validation and error messages",
+      "local-state": "React hooks (useState, useEffect) for client-side local state only"
+    },
+    "architectural_constraints": {
+      "server-state": "No global state management libraries, rely on Server Components for data fetching",
+      "optimistic-updates": "Optimistic updates must be paired with Server Actions for persistence",
+      "form-state": "Forms must submit to Server Actions, no client-side form libraries",
+      "local-state": "Local state should be minimal, prefer server state and optimistic updates"
+    }
+  },
+  "auth": {
+    "required_patterns": {
+      "session-based": "Cookie-based sessions with tokens stored in database Session model",
+      "password-hashing": "bcryptjs for password hashing and verification",
+      "middleware": "Authentication checks in layout components using getCurrentUser()",
+      "auth-actions": "Server Actions for login, logout, and signup operations"
+    },
+    "architectural_constraints": {
+      "session-based": "All auth must use session tokens in httpOnly cookies, no JWT or localStorage",
+      "password-hashing": "Passwords must be hashed with bcryptjs before storage",
+      "middleware": "Auth checks must happen at layout level, redirect unauthorized users to /login",
+      "auth-actions": "Auth operations must be Server Actions with proper error handling and redirects"
+    }
+  },
+  "data-visualization": {
+    "required_patterns": {
+      "charts-library": "Recharts for all data visualization with ResponsiveContainer wrapper",
+      "chart-components": "Dedicated chart components that receive processed data as props",
+      "theming": "Custom colors and styling applied via Recharts component props"
+    },
+    "architectural_constraints": {
+      "charts-library": "All charts must use Recharts library components (BarChart, etc.)",
+      "chart-components": "Chart logic must be separated into dedicated components in components/ folder",
+      "theming": "Chart colors must use consistent theme colors defined in chart components"
+    }
+  },
+  "drag-and-drop": {
+    "required_patterns": {
+      "dnd-library": "Hello-Pangea DnD for drag and drop functionality",
+      "kanban-implementation": "DragDropContext, Droppable, and Draggable components for kanban board",
+      "state-synchronization": "Optimistic updates combined with server actions for drag operations"
+    },
+    "architectural_constraints": {
+      "dnd-library": "All drag and drop must use Hello-Pangea DnD components and patterns",
+      "kanban-implementation": "Kanban boards must follow the established context/droppable/draggable structure",
+      "state-synchronization": "Drag operations must update local state immediately and sync to server"
+    }
+  }
+}
