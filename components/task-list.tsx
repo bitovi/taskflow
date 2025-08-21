@@ -1,6 +1,6 @@
 "use client"
 
-import { useOptimistic, useTransition, useState, useEffect } from "react"
+import { useOptimistic, useTransition, useState, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,8 @@ import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
 import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
+import { TaskSearchFilter } from "./task-search-filter"
+import { TaskEmptyState } from "./task-empty-state"
 import { poppins } from "@/lib/fonts"
 
 import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
@@ -36,6 +38,7 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
   const [isPending, startTransition] = useTransition()
   const [openDialogs, setOpenDialogs] = useState<Record<number, boolean>>({})
   const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({})
+  const [filteredTasks, setFilteredTasks] = useState<TaskWithProfile[]>(initialTasks)
 
   const handleDelete = async (taskId: number) => {
     startTransition(async () => {
@@ -69,9 +72,24 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .toUpperCase()
   }
 
+  // Handle filtered tasks from search filter component
+  const handleFilteredTasksChange = useCallback((newFilteredTasks: TaskWithProfile[]) => {
+    setFilteredTasks(newFilteredTasks)
+  }, [])
+
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {/* Search and Filter Controls */}
+      <TaskSearchFilter 
+        tasks={optimisticTasks} 
+        onFilteredTasksChange={handleFilteredTasksChange}
+      />
+      
+      {/* Task List or No Results Message */}
+      {filteredTasks.length === 0 ? (
+        <TaskEmptyState />
+      ) : (
+        filteredTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
@@ -158,7 +176,8 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
             <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
           </DialogContent>
         </Dialog>
-      ))}
+      ))
+      )}
     </div>
   )
 }
