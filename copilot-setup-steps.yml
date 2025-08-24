@@ -1,0 +1,103 @@
+# GitHub Copilot Setup Steps for TaskFlow
+# This file configures the environment for GitHub Copilot coding agent
+# Following recommendations from: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
+
+name: TaskFlow Development Environment Setup
+
+# Firewall bypass configuration for blocked domains
+# Following: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-firewall
+firewall_bypass:
+  # IMPORTANT: The following URLs are blocked by the current firewall configuration
+  # and need to be allowlisted for the project to function properly:
+  allowed_domains:
+    - "binaries.prisma.sh"     # Required for Prisma binary downloads (schema-engine, query-engine)
+    - "fonts.googleapis.com"   # Required for Google Fonts API (Inter, Poppins fonts)
+    - "fonts.gstatic.com"      # Required for Google Fonts static assets
+    - "registry.npmjs.org"     # Required for npm package downloads (if not already allowed)
+    - "nextjs.org"             # Required for Next.js telemetry and documentation links
+
+  # Additional URLs that may be needed during development:
+  potentially_needed:
+    - "api.github.com"         # For GitHub API access if using GitHub integrations
+    - "raw.githubusercontent.com"  # For downloading GitHub-hosted files
+    - "unpkg.com"              # CDN for npm packages
+    - "cdn.jsdelivr.net"       # CDN for open source projects
+
+# Issues encountered during testing:
+# 1. Prisma binary download fails: "getaddrinfo ENOTFOUND binaries.prisma.sh"
+# 2. Google Fonts download fails: "getaddrinfo ENOTFOUND fonts.googleapis.com"
+# 3. Build process fails due to missing Google Fonts (Inter, Poppins)
+
+steps:
+  - name: Install Node.js dependencies
+    run: npm install
+    
+  - name: Configure Prisma database (may fail if binaries.prisma.sh is blocked)
+    run: |
+      # Setup database schema and generate Prisma client
+      npx prisma generate
+      npx prisma db push
+    continue_on_error: true
+    
+  - name: Seed database with sample data
+    run: npm run db:reset
+    continue_on_error: true
+    
+  - name: Install global development tools
+    run: |
+      # Install commonly used development tools
+      npm install -g prisma
+    continue_on_error: true
+    
+  - name: Verify setup
+    run: |
+      # Check that everything is properly configured
+      npm run lint
+      # Note: Build will fail if Google Fonts are blocked
+      # npm run build
+    continue_on_error: true
+
+# Workarounds for blocked URLs:
+workarounds:
+  prisma_blocked:
+    description: "If binaries.prisma.sh is blocked, pre-install Prisma binaries or use a local mirror"
+    solution: "Copy Prisma binaries from a machine with internet access"
+    
+  google_fonts_blocked:
+    description: "If fonts.googleapis.com is blocked, use local fonts or font fallbacks"
+    solution: "Update font imports to use system fonts as fallbacks"
+
+# Project context for Copilot
+context:
+  description: "TaskFlow is a modern task management app built with Next.js 14, React, TypeScript, and Prisma"
+  
+  tech_stack:
+    - Next.js 14 with App Router
+    - React 19
+    - TypeScript
+    - Prisma ORM with SQLite
+    - Tailwind CSS
+    - shadcn/ui components
+    - Radix UI primitives
+    
+  key_directories:
+    - "app/": Next.js app directory with routes and server actions
+    - "components/": Reusable React components
+    - "lib/": Utility functions and configurations
+    - "prisma/": Database schema and seed files
+    - "public/": Static assets
+    
+  development_commands:
+    start_dev: "npm run dev"
+    build: "npm run build"
+    lint: "npm run lint"
+    db_reset: "npm run db:reset"
+    db_seed: "npm run db:seed"
+    
+  coding_conventions:
+    - Use TypeScript for all new files
+    - Follow Next.js 14 App Router patterns
+    - Use server actions for data mutations
+    - Implement proper error handling
+    - Use Tailwind CSS for styling
+    - Follow existing component patterns with shadcn/ui
