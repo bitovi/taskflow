@@ -53,12 +53,13 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
+            aria-label="Search tasks"
           />
         </div>
 
         {/* Priority Filter */}
         <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-          <SelectTrigger className="w-full md:w-[180px]">
+          <SelectTrigger className="w-full md:w-[180px]" aria-label="Filter by priority">
             <SelectValue placeholder="Filter by priority" />
           </SelectTrigger>
           <SelectContent>
@@ -71,7 +72,7 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
 
         {/* Status Filter */}
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full md:w-[180px]">
+          <SelectTrigger className="w-full md:w-[180px]" aria-label="Filter by status">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
