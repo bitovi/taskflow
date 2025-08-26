@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../app/generated/prisma"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:app.db"
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  password      String
+  name          String
+  sessions      Session[]
+  createdTasks  Task[]    @relation("CreatedTasks")
+  assignedTasks Task[]    @relation("AssignedTasks")
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  priority    String
+  status      String
+  dueDate     DateTime?
+  assigneeId  Int?
+  assignee    User?     @relation("AssignedTasks", fields: [assigneeId], references: [id])
+  creatorId   Int
+  creator     User      @relation("CreatedTasks", fields: [creatorId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
