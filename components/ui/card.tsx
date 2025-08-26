@@ -1,11 +1,8 @@
 import * as React from "react"
-import { Poppins } from "next/font/google"
 import { cn } from "@/lib/utils"
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"]
-})
+// Temporary workaround for network issues
+const poppins = { className: "font-sans" };
 
 const Card = React.forwardRef<
   HTMLDivElement,
