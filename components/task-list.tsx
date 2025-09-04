@@ -69,6 +69,17 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .toUpperCase()
   }
 
+  if (optimisticTasks.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-muted-foreground text-lg mb-2">No tasks found</div>
+        <div className="text-sm text-muted-foreground">
+          Try adjusting your search or filter criteria to find more tasks.
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       {optimisticTasks.map((task) => (
