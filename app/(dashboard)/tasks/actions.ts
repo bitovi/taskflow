@@ -57,6 +57,49 @@ export async function getAllTasks() {
     }
 }
 
+// Get filtered tasks based on search text and filter options
+export async function getFilteredTasks(
+    searchText?: string,
+    statusFilters?: string[],
+    priorityFilters?: string[]
+) {
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const whereConditions: any = {};
+
+        // Add search condition for task name and description (SQLite uses LIKE for contains)
+        if (searchText && searchText.trim()) {
+            whereConditions.OR = [
+                { name: { contains: searchText.trim() } },
+                { description: { contains: searchText.trim() } },
+            ];
+        }
+
+        // Add status filter condition
+        if (statusFilters && statusFilters.length > 0) {
+            whereConditions.status = { in: statusFilters };
+        }
+
+        // Add priority filter condition
+        if (priorityFilters && priorityFilters.length > 0) {
+            whereConditions.priority = { in: priorityFilters };
+        }
+
+        const tasks = await prisma.task.findMany({
+            where: whereConditions,
+            include: {
+                assignee: { select: { id: true, name: true, email: true, password: true } },
+                creator: { select: { id: true, name: true, email: true, password: true } },
+            },
+            orderBy: { createdAt: "desc" },
+        });
+
+        return { tasks, error: null };
+    } catch (e) {
+        return { tasks: [], error: "Failed to fetch filtered tasks." };
+    }
+}
+
 // Delete a task by ID
 export async function deleteTask(taskId: number) {
     try {
