@@ -1,0 +1,3 @@
+FROM node:24-alpine
+RUN apk add --no-cache bash git curl python3 make g++ pkgconf sqlite sqlite-dev
+WORKDIR /workspaces/${localWorkspaceFolderBasename}

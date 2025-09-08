@@ -1,18 +1,20 @@
 {
     "name": "Taskflow",
     "build": {
-        "dockerfile": "../Dockerfile",
-        "context": ".."
+        "dockerfile": "Dockerfile"
     },
     "postCreateCommand": "npm ci",
-    "postStartCommand": "npm run db:setup || true",
-    "postAttachCommand": "npm run start",
+    "postStartCommand": "npm run db:setup",
+    "postAttachCommand": "npm run dev",
     "forwardPorts": [3000],
     "portsAttributes": {
         "3000": {
             "label": "App",
             "onAutoForward": "openPreview"
         }
+    },
+    "containerEnv": {
+        "NODE_ENV": "development"
     },
     "customizations": {
         "vscode": {
