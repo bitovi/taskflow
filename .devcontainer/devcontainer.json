@@ -1,0 +1,25 @@
+{
+    "name": "Taskflow",
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "context": ".."
+    },
+    "postCreateCommand": "npm ci",
+    "postStartCommand": "npm run db:setup || true",
+    "postAttachCommand": "npm run start",
+    "forwardPorts": [3000],
+    "portsAttributes": {
+        "3000": {
+            "label": "App",
+            "onAutoForward": "openPreview"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    }
+}
