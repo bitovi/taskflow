@@ -11,9 +11,7 @@ permissions:
 jobs:
   mark_in_review:
     # Adjust the author/label checks to your setup if needed
-    if: >
-      github.event.pull_request.user.login == 'github-copilot' &&
-      github.event.pull_request.commits >= 2
+    if: github.event.pull_request.commits >= 2
     runs-on: ubuntu-latest
     steps:
       - name: Get Jira key from PR title
