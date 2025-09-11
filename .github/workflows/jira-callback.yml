@@ -1,61 +1,37 @@
-name: Jira → In Review when Copilot pushes a real commit
+name: Jira → In Review when Review Requested
 
 on:
-  push:
+  pull_request:
+    types: [review_requested]
 
 permissions:
   contents: read
-  # give write if you want to add labels/comments later
-  pull-requests: write
+  pull-requests: read
 
 jobs:
   mark_in_review:
     runs-on: ubuntu-latest
     steps:
-      - name: Find Copilot commit with content + Jira key
-        id: find
+      - name: Get Jira key from PR title
+        id: key
+        shell: bash
         run: |
           set -euo pipefail
+          title="${{ github.event.pull_request.title }}"
 
-          found_key=""
-          for row in $(jq -c '.commits[]' <<< '${{ toJson(github.event.commits) }}'); do
-            committer=$(jq -r '.committer.name' <<< "$row")
-            message=$(jq -r '.message' <<< "$row")
-            added=$(jq -r '.added | length' <<< "$row")
-            modified=$(jq -r '.modified | length' <<< "$row")
-            removed=$(jq -r '.removed | length' <<< "$row")
-
-            # condition 1: committer must be Copilot (adjust string after testing in your repo)
-            if [[ "$committer" != "github-copilot[bot]" ]]; then
-              continue
-            fi
-
-            # condition 2: commit must have content
-            total_changes=$((added + modified + removed))
-            if [[ "$total_changes" -eq 0 ]]; then
-              continue
-            fi
-
-            # condition 3: commit message must contain a Jira key like ABC-123
-            if [[ "$message" =~ ([A-Z][A-Z0-9]+-[0-9]+) ]]; then
-              found_key="${BASH_REMATCH[1]}"
-              break
-            fi
-          done
-
-          if [[ -z "$found_key" ]]; then
-            echo "No matching Copilot contentful commit with Jira key found."
-            exit 0
+          # Match ABC-123 style key in title
+          if [[ "$title" =~ ([A-Z][A-Z0-9]+-[0-9]+) ]]; then
+            echo "key=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+          else
+            echo "No Jira issue key found in PR title" >&2
+            exit 1
           fi
 
-          echo "jira_key=$found_key" >> "$GITHUB_OUTPUT"
-
       - name: Call Jira Automation webhook
-        if: steps.find.outputs.jira_key != ''
         env:
           WEBHOOK_URL: ${{ secrets.JIRA_WEBHOOK_URL }}
           WEBHOOK_TOKEN: ${{ secrets.JIRA_WEBHOOK_TOKEN }}
-          ISSUE_KEY: ${{ steps.find.outputs.jira_key }}
+          ISSUE_KEY: ${{ steps.key.outputs.key }}
         run: |
           set -euo pipefail
           echo "Marking $ISSUE_KEY In Review…"
