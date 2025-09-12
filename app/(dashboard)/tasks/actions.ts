@@ -42,9 +42,44 @@ export async function createTask(formData: FormData) {
 }
 
 // Get all tasks with assignee and creator info
-export async function getAllTasks() {
+export async function getAllTasks(searchParams?: {
+    search?: string;
+    status?: string;
+    priority?: string;
+    assigneeId?: string;
+}) {
     try {
+        const where: Record<string, any> = {};
+
+        // Add search filter for name and description
+        if (searchParams?.search) {
+            where.OR = [
+                { name: { contains: searchParams.search } },
+                { description: { contains: searchParams.search } },
+            ];
+        }
+
+        // Add status filter
+        if (searchParams?.status && searchParams.status !== "all") {
+            where.status = searchParams.status;
+        }
+
+        // Add priority filter
+        if (searchParams?.priority && searchParams.priority !== "all") {
+            where.priority = searchParams.priority;
+        }
+
+        // Add assignee filter
+        if (searchParams?.assigneeId && searchParams.assigneeId !== "all") {
+            if (searchParams.assigneeId === "unassigned") {
+                where.assigneeId = null;
+            } else {
+                where.assigneeId = parseInt(searchParams.assigneeId, 10);
+            }
+        }
+
         const tasks = await prisma.task.findMany({
+            where,
             include: {
                 assignee: { select: { id: true, name: true, email: true, password: true } },
                 creator: { select: { id: true, name: true, email: true, password: true } },
@@ -110,6 +145,19 @@ export async function updateTask(taskId: number, formData: FormData) {
         return { error: null, success: true, message: "Task updated successfully!" };
     } catch (e) {
         return { error: "Failed to update task.", success: false };
+    }
+}
+
+// Get all users for assignee filter
+export async function getAllUsers() {
+    try {
+        const users = await prisma.user.findMany({
+            select: { id: true, name: true, email: true },
+            orderBy: { name: "asc" },
+        });
+        return { users, error: null };
+    } catch (e) {
+        return { users: [], error: "Failed to fetch users." };
     }
 }
 

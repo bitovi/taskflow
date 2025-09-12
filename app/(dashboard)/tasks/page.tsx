@@ -1,21 +1,37 @@
 import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Search } from "lucide-react"
+import { Plus } from "lucide-react"
 import Link from "next/link"
 import { TaskList } from "@/components/task-list"
+import { TasksSearchFilter } from "@/components/tasks-search-filter"
 import { poppins } from "@/lib/fonts"
 
-import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
+import { getAllTasks, getAllUsers } from "@/app/(dashboard)/tasks/actions"
 
 export const revalidate = 0
 
+interface TasksPageProps {
+    searchParams: {
+        search?: string;
+        status?: string;
+        priority?: string;
+        assigneeId?: string;
+    };
+}
 
-export default async function TasksPage() {
-    const { tasks, error } = await getAllTasks();
+export default async function TasksPage({ searchParams }: TasksPageProps) {
+    const resolvedSearchParams = await searchParams;
+    const { tasks, error } = await getAllTasks(resolvedSearchParams);
+    const { users, error: usersError } = await getAllUsers();
+    
     if (error) {
         console.error("Error fetching data:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
+    }
+
+    if (usersError) {
+        console.error("Error fetching users:", usersError)
+        return <p className="p-8">Could not load user data. Please try again later.</p>
     }
 
     return (
@@ -29,6 +45,8 @@ export default async function TasksPage() {
                     </Button>
                 </Link>
             </div>
+
+            <TasksSearchFilter users={users || []} />
 
             <Suspense fallback={<div>Loading tasks...</div>}>
                 <TaskList initialTasks={tasks || []} />
