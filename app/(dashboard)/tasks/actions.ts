@@ -184,3 +184,26 @@ export async function getTeamStats() {
         };
     }
 }
+
+// Get unique assignees for filter dropdown
+export async function getUniqueAssignees() {
+    try {
+        const assignees = await prisma.user.findMany({
+            where: {
+                assignedTasks: {
+                    some: {},
+                },
+            },
+            select: {
+                id: true,
+                name: true,
+            },
+            orderBy: {
+                name: "asc",
+            },
+        });
+        return { assignees, error: null };
+    } catch (e) {
+        return { assignees: [], error: "Failed to fetch assignees." };
+    }
+}

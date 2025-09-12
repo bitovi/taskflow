@@ -1,6 +1,6 @@
 "use client"
 
-import { useOptimistic, useTransition, useState, useEffect } from "react"
+import { useOptimistic, useTransition, useState, useEffect, useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
 import { poppins } from "@/lib/fonts"
+import type { TaskFilters } from "./task-search-filter"
 
 import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
 
@@ -20,9 +21,52 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+interface TaskListProps {
+  initialTasks: TaskWithProfile[];
+  filters?: TaskFilters;
+}
+
+export function TaskList({ initialTasks, filters }: TaskListProps) {
+  // Filter tasks based on search and filter criteria
+  const filteredTasks = useMemo(() => {
+    if (!filters) return initialTasks;
+
+    return initialTasks.filter((task) => {
+      // Search filter - check task name and description
+      if (filters.search) {
+        const searchLower = filters.search.toLowerCase();
+        const matchesSearch = 
+          task.name.toLowerCase().includes(searchLower) ||
+          task.description.toLowerCase().includes(searchLower);
+        if (!matchesSearch) return false;
+      }
+
+      // Status filter
+      if (filters.status && filters.status !== "all") {
+        if (task.status !== filters.status) return false;
+      }
+
+      // Priority filter
+      if (filters.priority && filters.priority !== "all") {
+        if (task.priority !== filters.priority) return false;
+      }
+
+      // Assignee filter
+      if (filters.assignee && filters.assignee !== "all") {
+        if (filters.assignee === "unassigned") {
+          if (task.assigneeId !== null) return false;
+        } else {
+          const assigneeId = parseInt(filters.assignee, 10);
+          if (task.assigneeId !== assigneeId) return false;
+        }
+      }
+
+      return true;
+    });
+  }, [initialTasks, filters]);
+
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
-    initialTasks,
+    filteredTasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
       if (action === "delete") {
         return state.filter((t) => t.id !== task.id)
@@ -71,7 +115,18 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {optimisticTasks.length === 0 ? (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground">
+              {filters && (filters.search || filters.status !== "all" || filters.priority !== "all" || filters.assignee !== "all")
+                ? "No tasks match your current filters."
+                : "No tasks found."}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        optimisticTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
@@ -158,7 +213,8 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
             <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
           </DialogContent>
         </Dialog>
-      ))}
+        ))
+      )}
     </div>
   )
 }
