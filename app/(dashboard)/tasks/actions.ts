@@ -57,6 +57,44 @@ export async function getAllTasks() {
     }
 }
 
+// Search and filter tasks
+export async function searchTasks(searchQuery?: string, statusFilter?: string, priorityFilter?: string) {
+    try {
+        const whereClause: Record<string, any> = {};
+        
+        // Add search filter for name and description (SQLite doesn't support case-insensitive contains, so we'll handle it differently)
+        if (searchQuery && searchQuery.trim()) {
+            whereClause.OR = [
+                { name: { contains: searchQuery } },
+                { description: { contains: searchQuery } }
+            ];
+        }
+        
+        // Add status filter
+        if (statusFilter && statusFilter !== 'all') {
+            whereClause.status = statusFilter;
+        }
+        
+        // Add priority filter
+        if (priorityFilter && priorityFilter !== 'all') {
+            whereClause.priority = priorityFilter;
+        }
+        
+        const tasks = await prisma.task.findMany({
+            where: whereClause,
+            include: {
+                assignee: { select: { id: true, name: true, email: true, password: true } },
+                creator: { select: { id: true, name: true, email: true, password: true } },
+            },
+            orderBy: { createdAt: "desc" },
+        });
+        
+        return { tasks, error: null };
+    } catch (e) {
+        return { tasks: [], error: "Failed to search tasks." };
+    }
+}
+
 // Delete a task by ID
 export async function deleteTask(taskId: number) {
     try {
