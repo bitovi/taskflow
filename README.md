@@ -139,3 +139,5 @@ Local development database:
 ## License
 
 This project is licensed under the MIT License.
+
+Goodbye Friend
