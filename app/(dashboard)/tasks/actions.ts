@@ -60,7 +60,7 @@ export async function getAllTasks() {
 // Search and filter tasks
 export async function searchAndFilterTasks(searchQuery?: string, priorityFilter?: string, statusFilter?: string) {
     try {
-        const whereClause: any = {};
+        const whereClause: Record<string, any> = {};
         
         // Add search functionality for name and description
         if (searchQuery && searchQuery.trim()) {
