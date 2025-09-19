@@ -20,9 +20,14 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+export function TaskList({ initialTasks, filteredTasks }: { 
+  initialTasks: TaskWithProfile[];
+  filteredTasks?: TaskWithProfile[];
+}) {
+  const tasksToDisplay = filteredTasks || initialTasks;
+  
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
-    initialTasks,
+    tasksToDisplay,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
       if (action === "delete") {
         return state.filter((t) => t.id !== task.id)
@@ -71,7 +76,13 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {optimisticTasks.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="text-muted-foreground text-lg">No tasks match the current search and filter criteria</div>
+          <div className="text-muted-foreground text-sm mt-2">Try adjusting your search terms or filter settings</div>
+        </div>
+      ) : (
+        optimisticTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
@@ -158,7 +169,8 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
             <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
           </DialogContent>
         </Dialog>
-      ))}
+      ))
+      )}
     </div>
   )
 }
