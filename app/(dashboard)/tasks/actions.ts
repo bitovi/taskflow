@@ -66,11 +66,11 @@ export async function searchTasks(
     try {
         const whereClause: any = {};
 
-        // Add search term filter for name and description
+        // Add search term filter for name and description (SQLite compatible)
         if (searchTerm && searchTerm.trim()) {
             whereClause.OR = [
-                { name: { contains: searchTerm.trim(), mode: 'insensitive' } },
-                { description: { contains: searchTerm.trim(), mode: 'insensitive' } }
+                { name: { contains: searchTerm.trim() } },
+                { description: { contains: searchTerm.trim() } }
             ];
         }
 
