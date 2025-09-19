@@ -20,7 +20,11 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+export function TaskList({ initialTasks, searchTerm = "", hasFilters = false }: { 
+  initialTasks: TaskWithProfile[];
+  searchTerm?: string;
+  hasFilters?: boolean;
+}) {
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     initialTasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
@@ -67,6 +71,37 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .map((n) => n[0])
       .join("")
       .toUpperCase()
+  }
+
+  // Show empty state if no tasks match the current search/filter criteria
+  if (optimisticTasks.length === 0 && (searchTerm || hasFilters)) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-muted-foreground">
+          <div className="text-lg mb-2">No tasks found</div>
+          <div className="text-sm">
+            {searchTerm && hasFilters
+              ? `No tasks match "${searchTerm}" with the current filters.`
+              : searchTerm
+              ? `No tasks match "${searchTerm}".`
+              : "No tasks match the current filter criteria."
+            }
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show empty state if no tasks exist at all
+  if (optimisticTasks.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-muted-foreground">
+          <div className="text-lg mb-2">No tasks yet</div>
+          <div className="text-sm">Create your first task to get started.</div>
+        </div>
+      </div>
+    )
   }
 
   return (
