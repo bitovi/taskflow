@@ -71,94 +71,100 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
-        <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
-          setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
-        }>
-          <Card className={task.status === "done" ? "bg-muted/50" : ""}>
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-4">
-                  <Checkbox
-                    checked={task.status === "done"}
-                    onCheckedChange={() => handleToggle(task)}
-                    className="mt-1 cursor-pointer"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <h3
-                        className={`font-semibold ${poppins.className} ${task.status === "done" ? "line-through text-muted-foreground" : ""}`}
-                      >
-                        {task.name}
-                      </h3>
-                      <Badge variant="outline" className="text-xs text-foreground-muted">
-                        TASK-{task.id}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
-                    <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm">
-                      <div className="flex items-center space-x-2">
-                        <Avatar className="h-7 w-7 border-2 border-border">
-                          <AvatarFallback className="text-xs font-medium">{getInitials(task.assignee?.name || null)}</AvatarFallback>
-                        </Avatar>
-                        <span className="text-muted-foreground">{task.assignee?.name || "Unassigned"}</span>
+      {optimisticTasks.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No tasks match the current search and filter criteria.</p>
+        </div>
+      ) : (
+        optimisticTasks.map((task) => (
+          <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
+            setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
+          }>
+            <Card className={task.status === "done" ? "bg-muted/50" : ""}>
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-4">
+                    <Checkbox
+                      checked={task.status === "done"}
+                      onCheckedChange={() => handleToggle(task)}
+                      className="mt-1 cursor-pointer"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3
+                          className={`font-semibold ${poppins.className} ${task.status === "done" ? "line-through text-muted-foreground" : ""}`}
+                        >
+                          {task.name}
+                        </h3>
+                        <Badge variant="outline" className="text-xs text-foreground-muted">
+                          TASK-{task.id}
+                        </Badge>
                       </div>
-                      <Badge
-
-                        className="capitalize"
-                      >
-                        {task.status.replace("_", " ")}
-                      </Badge>
-                      <Badge
-                        className="capitalize"
-                      >
-                        {task.priority}
-                      </Badge>
-
-                      {task.dueDate && (
-                        <div className="flex items-center space-x-1 text-muted-foreground">
-                          <Clock className="h-4 w-4" />
-                          <span>{formatDateForDisplay(task.dueDate)}</span>
+                      <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
+                      <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm">
+                        <div className="flex items-center space-x-2">
+                          <Avatar className="h-7 w-7 border-2 border-border">
+                            <AvatarFallback className="text-xs font-medium">{getInitials(task.assignee?.name || null)}</AvatarFallback>
+                          </Avatar>
+                          <span className="text-muted-foreground">{task.assignee?.name || "Unassigned"}</span>
                         </div>
-                      )}
+                        <Badge
+
+                          className="capitalize"
+                        >
+                          {task.status.replace("_", " ")}
+                        </Badge>
+                        <Badge
+                          className="capitalize"
+                        >
+                          {task.priority}
+                        </Badge>
+
+                        {task.dueDate && (
+                          <div className="flex items-center space-x-1 text-muted-foreground">
+                            <Clock className="h-4 w-4" />
+                            <span>{formatDateForDisplay(task.dueDate)}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <DropdownMenu open={openDropdowns[task.id]} onOpenChange={(open) =>
-                  setOpenDropdowns(prev => ({ ...prev, [task.id]: open }))
-                }>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DialogTrigger asChild>
-                      <DropdownMenuItem onSelect={(e) => {
-                        e.preventDefault()
-                        handleEditClick(task.id)
-                      }} className="cursor-pointer hover:bg-background-light">
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit
+                  <DropdownMenu open={openDropdowns[task.id]} onOpenChange={(open) =>
+                    setOpenDropdowns(prev => ({ ...prev, [task.id]: open }))
+                  }>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DialogTrigger asChild>
+                        <DropdownMenuItem onSelect={(e) => {
+                          e.preventDefault()
+                          handleEditClick(task.id)
+                        }} className="cursor-pointer hover:bg-background-light">
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                      </DialogTrigger>
+                      <DropdownMenuItem className="text-primary cursor-pointer hover:bg-background-light" onClick={() => handleDelete(task.id)}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
                       </DropdownMenuItem>
-                    </DialogTrigger>
-                    <DropdownMenuItem className="text-primary cursor-pointer hover:bg-background-light" onClick={() => handleDelete(task.id)}>
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </CardContent>
-          </Card>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Task</DialogTitle>
-            </DialogHeader>
-            <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
-          </DialogContent>
-        </Dialog>
-      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardContent>
+            </Card>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Task</DialogTitle>
+              </DialogHeader>
+              <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
+            </DialogContent>
+          </Dialog>
+        ))
+      )}
     </div>
   )
 }

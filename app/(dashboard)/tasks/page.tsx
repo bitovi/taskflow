@@ -4,15 +4,31 @@ import { Input } from "@/components/ui/input"
 import { Plus, Search } from "lucide-react"
 import Link from "next/link"
 import { TaskList } from "@/components/task-list"
+import { TaskSearch } from "@/components/task-search"
 import { poppins } from "@/lib/fonts"
 
-import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
+import { getFilteredTasks } from "@/app/(dashboard)/tasks/actions"
 
 export const revalidate = 0
 
+type SearchProps = {
+    search?: string
+    statuses?: string
+    priorities?: string
+}
 
-export default async function TasksPage() {
-    const { tasks, error } = await getAllTasks();
+export default async function TasksPage({ 
+    searchParams 
+}: { 
+    searchParams: Promise<SearchProps>
+}) {
+    const params = await searchParams
+    const search = params?.search || undefined
+    const statuses = params?.statuses?.split(',') || undefined
+    const priorities = params?.priorities?.split(',') || undefined
+    
+    const { tasks, error } = await getFilteredTasks(search, statuses, priorities);
+    
     if (error) {
         console.error("Error fetching data:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
@@ -29,6 +45,8 @@ export default async function TasksPage() {
                     </Button>
                 </Link>
             </div>
+
+            <TaskSearch />
 
             <Suspense fallback={<div>Loading tasks...</div>}>
                 <TaskList initialTasks={tasks || []} />
