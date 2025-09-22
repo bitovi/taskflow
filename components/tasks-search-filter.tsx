@@ -73,12 +73,12 @@ export function TasksSearchFilter({ initialTasks }: TasksSearchFilterProps) {
             placeholder="Search tasks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10"
+            className="pl-10 pr-10 h-10"
           />
           {searchQuery && (
             <button
               onClick={clearSearch}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -88,31 +88,33 @@ export function TasksSearchFilter({ initialTasks }: TasksSearchFilterProps) {
         {/* Filter Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="h-10 w-10">
               <Filter className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <div className="p-3">
+            <div className="p-4">
               {/* Status Section */}
-              <div className="mb-4">
-                <h4 className="font-medium mb-2">Status</h4>
-                <div className="space-y-2">
+              <div className="mb-6">
+                <h4 className="font-medium mb-3 text-sm text-foreground">Status</h4>
+                <div className="space-y-3">
                   {[
-                    { key: 'todo' as const, label: 'Todo' },
-                    { key: 'in_progress' as const, label: 'In Progress' },
-                    { key: 'review' as const, label: 'Review' },
-                    { key: 'done' as const, label: 'Done' },
-                  ].map(({ key, label }) => (
-                    <div key={key} className="flex items-center space-x-2">
+                    { key: 'todo' as const, label: 'Todo', color: 'bg-orange-500' },
+                    { key: 'in_progress' as const, label: 'In Progress', color: 'bg-orange-500' },
+                    { key: 'review' as const, label: 'Review', color: 'bg-orange-500' },
+                    { key: 'done' as const, label: 'Done', color: 'bg-orange-500' },
+                  ].map(({ key, label, color }) => (
+                    <div key={key} className="flex items-center space-x-3">
                       <Checkbox
                         id={`status-${key}`}
                         checked={statusFilters[key]}
                         onCheckedChange={(checked) => handleStatusChange(key, checked as boolean)}
+                        className="border-border"
                       />
+                      <div className={`w-4 h-4 rounded border ${color}`} />
                       <label
                         htmlFor={`status-${key}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                       >
                         {label}
                       </label>
@@ -123,22 +125,24 @@ export function TasksSearchFilter({ initialTasks }: TasksSearchFilterProps) {
 
               {/* Priority Section */}
               <div>
-                <h4 className="font-medium mb-2">Priority</h4>
-                <div className="space-y-2">
+                <h4 className="font-medium mb-3 text-sm text-foreground">Priority</h4>
+                <div className="space-y-3">
                   {[
-                    { key: 'high' as const, label: 'High' },
-                    { key: 'medium' as const, label: 'Medium' },
-                    { key: 'low' as const, label: 'Low' },
-                  ].map(({ key, label }) => (
-                    <div key={key} className="flex items-center space-x-2">
+                    { key: 'high' as const, label: 'High', color: 'bg-orange-500' },
+                    { key: 'medium' as const, label: 'Medium', color: 'bg-orange-500' },
+                    { key: 'low' as const, label: 'Low', color: 'bg-orange-500' },
+                  ].map(({ key, label, color }) => (
+                    <div key={key} className="flex items-center space-x-3">
                       <Checkbox
                         id={`priority-${key}`}
                         checked={priorityFilters[key]}
                         onCheckedChange={(checked) => handlePriorityChange(key, checked as boolean)}
+                        className="border-border"
                       />
+                      <div className={`w-4 h-4 rounded border ${color}`} />
                       <label
                         htmlFor={`priority-${key}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                       >
                         {label}
                       </label>
