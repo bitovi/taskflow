@@ -69,6 +69,23 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .toUpperCase()
   }
 
+  // Show no results message if no tasks
+  if (optimisticTasks.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+        <div className="rounded-full bg-muted/50 p-6 mb-4">
+          <Clock className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <h3 className={`text-lg font-semibold ${poppins.className} mb-2`}>
+          No tasks found
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-sm">
+          No tasks match your current search and filter criteria. Try adjusting your filters or search terms.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       {optimisticTasks.map((task) => (
