@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -37,14 +37,6 @@ export function TaskSearchFilter({ onFilterChange, taskCount }: TaskSearchFilter
   const [statusFilters, setStatusFilters] = useState<string[]>(STATUS_OPTIONS.map(opt => opt.value))
   const [priorityFilters, setPriorityFilters] = useState<string[]>(PRIORITY_OPTIONS.map(opt => opt.value))
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-
-  const handleFilterChange = useCallback(() => {
-    onFilterChange({
-      search: searchText,
-      status: statusFilters,
-      priority: priorityFilters,
-    })
-  }, [searchText, statusFilters, priorityFilters, onFilterChange])
 
   const handleSearchChange = (value: string) => {
     setSearchText(value)
