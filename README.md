@@ -22,6 +22,7 @@ A modern, full-featured task management application built with Next.js 14, React
 - [Development](#-development)
 - [Database Management](#-database-management)
 - [API Reference](#-api-reference)
+- [FAQ](#-faq)
 - [Contributing](#-contributing)
 - [License](#-license)
 
@@ -48,6 +49,18 @@ A modern, full-featured task management application built with Next.js 14, React
 - **Global Search**: Find tasks by title, description, or keywords
 - **Advanced Filters**: Filter by priority, status, assignee, and due date
 - **Real-time Results**: Instant filtering as you type
+
+## 📸 Application Screenshots
+
+### Tasks Page
+The main task management interface with comprehensive task details, assignee information, and priority indicators:
+
+![TaskFlow Tasks Page](https://github.com/user-attachments/assets/4e5689a6-91c7-4078-b672-8adf5f44efc4)
+
+### Kanban Board
+Drag-and-drop task management with visual workflow columns:
+
+![TaskFlow Kanban Board](https://github.com/user-attachments/assets/508eb820-cb5b-4afb-a25f-73630bb8c7d9)
 
 ## 🛠 Tech Stack
 
@@ -616,6 +629,193 @@ interface User {
   assignedTasks: Task[]
 }
 ```
+
+## ❓ FAQ
+
+### General Questions
+
+#### **Q: What is the main purpose of TaskFlow?**
+A: TaskFlow serves as a demonstration of AI-powered development workflows. While it's a fully functional task management application, its primary purpose is to showcase how AI agents can understand codebases and implement features from Jira tickets.
+
+#### **Q: Can I use TaskFlow for actual project management?**
+A: Yes! TaskFlow is a complete, production-ready task management application. However, it's designed as a demo, so you may want to enhance security, scalability, and add additional features for production use.
+
+#### **Q: What makes this different from other task management apps?**
+A: TaskFlow's unique value is in demonstrating AI development workflows. It includes carefully structured code patterns, comprehensive documentation, and examples that help AI agents understand and replicate development practices.
+
+### Technical Questions
+
+#### **Q: Why SQLite instead of PostgreSQL/MySQL?**
+A: SQLite simplifies the demo setup - no external database server required. For production, you can easily switch to PostgreSQL or MySQL by updating the Prisma schema and connection string.
+
+#### **Q: Can I deploy this to production?**
+A: Yes, but consider these production enhancements:
+- Switch to a production database (PostgreSQL/MySQL)
+- Add proper environment variable management
+- Implement robust authentication (consider NextAuth.js)
+- Add rate limiting and security headers
+- Set up monitoring and logging
+
+#### **Q: How do I add new features?**
+A: Follow the established patterns:
+1. Use Server Actions for data operations (`app/(dashboard)/[feature]/actions.ts`)
+2. Follow the component structure in `components/`
+3. Use shadcn/ui components for UI consistency
+4. Add proper TypeScript types in `lib/types.ts`
+5. Update the database schema if needed
+
+### Installation & Setup Issues
+
+#### **Q: `npm install` fails - what should I do?**
+A: Try these solutions:
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Use Node.js 18 or higher
+nvm use 18  # if using nvm
+```
+
+#### **Q: Database setup fails - how to fix?**
+A: Common solutions:
+```bash
+# Ensure write permissions
+chmod 755 .
+chmod 664 prisma/app.db  # if file exists
+
+# Regenerate Prisma client
+npx prisma generate
+
+# Complete reset
+rm -f prisma/app.db
+npm run db:setup
+```
+
+#### **Q: Port 3000 is already in use**
+A: Run on a different port:
+```bash
+npm run dev -- -p 3001
+# Then visit http://localhost:3001
+```
+
+### AI Workflow Questions
+
+#### **Q: Which AI tools work best with TaskFlow?**
+A: TaskFlow works well with various AI coding assistants:
+- **GitHub Copilot**: Excellent for code completion and suggestions
+- **Claude**: Great for understanding architecture and implementing features
+- **ChatGPT**: Good for explaining code and generating components
+- **Cursor**: Excellent for codebase-wide understanding
+
+#### **Q: How accurate is the AI implementation compared to human development?**
+A: The USER-13 search/filter feature shows high-quality AI implementation:
+- ✅ Follows established patterns correctly
+- ✅ Maintains type safety throughout
+- ✅ Implements proper error handling
+- ✅ Uses consistent UI components
+- ✅ Maintains accessibility standards
+
+#### **Q: Can I use this to train my own AI workflows?**
+A: Absolutely! That's the primary purpose. The repository includes:
+- Clear code patterns for AI to learn from
+- Comprehensive instructions and documentation
+- Example Jira ticket and implementation
+- Branch comparison for learning
+
+#### **Q: What if my AI implementation differs from the reference?**
+A: That's expected and valuable! Use `git diff` to compare:
+```bash
+git diff your-branch...user-13-search-and-filter
+```
+Different approaches can be equally valid. Focus on:
+- Code quality and maintainability
+- Feature completeness
+- Following project patterns
+- User experience
+
+### Troubleshooting
+
+#### **Q: Build fails with TypeScript errors**
+A: Common fixes:
+```bash
+# Regenerate Prisma types
+npx prisma generate
+
+# Check TypeScript configuration
+npx tsc --noEmit
+
+# Clear Next.js cache
+rm -rf .next
+```
+
+#### **Q: Login doesn't work**
+A: Ensure:
+- Database is seeded (`npm run db:seed`)
+- Use exact credentials: `alice@example.com` / `password123`
+- Check browser console for errors
+- Try clearing browser cookies
+
+#### **Q: Tasks page is empty**
+A: Solutions:
+```bash
+# Re-seed database
+npm run db:reset
+
+# Check if database file exists
+ls -la prisma/app.db
+
+# Verify database has data
+npx prisma studio  # Opens visual database browser
+```
+
+#### **Q: Styling looks broken**
+A: Ensure Tailwind CSS is working:
+```bash
+# Check if CSS is building
+npm run build
+
+# Restart development server
+npm run dev
+
+# Clear browser cache
+```
+
+### Development Questions
+
+#### **Q: How do I add a new page?**
+A: Follow Next.js App Router patterns:
+1. Create folder in `app/(dashboard)/`
+2. Add `page.tsx` for the page component
+3. Add `actions.ts` for server actions if needed
+4. Update navigation in `components/sidebar.tsx`
+
+#### **Q: How do I modify the database schema?**
+A: Update schema and regenerate:
+```bash
+# 1. Edit prisma/schema.prisma
+# 2. Push changes to database
+npx prisma db push
+
+# 3. Regenerate client
+npx prisma generate
+
+# 4. Update seed data if needed
+# Edit prisma/seed.js
+npm run db:reset
+```
+
+#### **Q: How do I add authentication features?**
+A: The current auth system is basic. For production:
+- Consider NextAuth.js for OAuth/social login
+- Add password reset functionality
+- Implement proper session management
+- Add role-based permissions
+
+Need more help? [Open an issue](https://github.com/bitovi/taskflow/issues/new) or [start a discussion](https://github.com/bitovi/taskflow/discussions)!
 
 ## 🤝 Contributing
 
