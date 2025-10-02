@@ -1,10 +1,10 @@
 "use client"
 
-import { useOptimistic, useTransition, useState, useEffect } from "react"
+import { useOptimistic, useTransition, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -20,7 +20,7 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+export function TaskList({ initialTasks, searchQuery = "" }: { initialTasks: TaskWithProfile[]; searchQuery?: string; }) {
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     initialTasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
@@ -33,7 +33,7 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       return state
     },
   )
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
   const [openDialogs, setOpenDialogs] = useState<Record<number, boolean>>({})
   const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({})
 
@@ -69,9 +69,20 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .toUpperCase()
   }
 
+  // Filter tasks based on search query
+  const filteredTasks = optimisticTasks.filter((task) => {
+    if (!searchQuery.trim()) return true;
+    return task.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {filteredTasks.length === 0 && searchQuery.trim() ? (
+        <div className="text-center py-8 text-muted-foreground">
+          No tasks found matching &ldquo;{searchQuery}&rdquo;
+        </div>
+      ) : null}
+      {filteredTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
