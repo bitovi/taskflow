@@ -1,20 +1,87 @@
-import { Suspense } from "react"
+"use client"
+
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Search } from "lucide-react"
+import { Plus } from "lucide-react"
 import Link from "next/link"
 import { TaskList } from "@/components/task-list"
+import { TaskSearchFilter } from "@/components/task-search-filter"
 import { poppins } from "@/lib/fonts"
 
-import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
+import { getAllTasks, getFilteredTasks } from "@/app/(dashboard)/tasks/actions"
+import type { Task as PrismaTask, User } from "@/app/generated/prisma/client"
 
-export const revalidate = 0
+type TaskWithProfile = PrismaTask & {
+  assignee?: Pick<User, "name"> | null;
+  creator?: Pick<User, "name"> | null;
+};
+
+export default function TasksPage() {
+    const [tasks, setTasks] = useState<TaskWithProfile[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [statusFilters, setStatusFilters] = useState<string[]>(["todo", "in_progress", "review", "done"])
+    const [priorityFilters, setPriorityFilters] = useState<string[]>(["high", "medium", "low"])
+
+    // Load initial tasks
+    useEffect(() => {
+        loadTasks()
+    }, [])
+
+    // Load tasks based on search and filter criteria
+    useEffect(() => {
+        const loadFilteredTasksAsync = async () => {
+            try {
+                setLoading(true)
+                const { tasks: filteredTasks, error: fetchError } = await getFilteredTasks(
+                    searchQuery,
+                    statusFilters,
+                    priorityFilters
+                )
+                if (fetchError) {
+                    setError(fetchError)
+                } else {
+                    setTasks(filteredTasks || [])
+                }
+            } catch {
+                setError("Failed to filter tasks")
+            } finally {
+                setLoading(false)
+            }
+        }
+        
+        loadFilteredTasksAsync()
+    }, [searchQuery, statusFilters, priorityFilters])
+
+    const loadTasks = async () => {
+        try {
+            setLoading(true)
+            const { tasks: fetchedTasks, error: fetchError } = await getAllTasks()
+            if (fetchError) {
+                setError(fetchError)
+            } else {
+                setTasks(fetchedTasks || [])
+            }
+        } catch {
+            setError("Failed to load tasks")
+        } finally {
+            setLoading(false)
+        }
+    }
 
 
-export default async function TasksPage() {
-    const { tasks, error } = await getAllTasks();
+
+    const handleSearchChange = (query: string) => {
+        setSearchQuery(query)
+    }
+
+    const handleFiltersChange = (newStatusFilters: string[], newPriorityFilters: string[]) => {
+        setStatusFilters(newStatusFilters)
+        setPriorityFilters(newPriorityFilters)
+    }
+
     if (error) {
-        console.error("Error fetching data:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
     }
 
@@ -30,9 +97,24 @@ export default async function TasksPage() {
                 </Link>
             </div>
 
-            <Suspense fallback={<div>Loading tasks...</div>}>
-                <TaskList initialTasks={tasks || []} />
-            </Suspense>
+            <TaskSearchFilter
+                onSearchChange={handleSearchChange}
+                onFiltersChange={handleFiltersChange}
+                initialSearch={searchQuery}
+                initialStatusFilters={statusFilters}
+                initialPriorityFilters={priorityFilters}
+            />
+
+            {loading ? (
+                <div>Loading tasks...</div>
+            ) : tasks.length === 0 ? (
+                <div className="text-center py-12">
+                    <p className="text-muted-foreground text-lg">No tasks match your current search and filter criteria</p>
+                    <p className="text-muted-foreground text-sm mt-2">Try adjusting your search terms or filters</p>
+                </div>
+            ) : (
+                <TaskList initialTasks={tasks} />
+            )}
         </div>
     )
 }
