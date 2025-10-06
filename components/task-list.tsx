@@ -9,9 +9,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
-import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
+import { deleteTask, updateTaskStatus, searchAndFilterTasks } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
+import { TaskSearchFilter } from "./task-search-filter"
 import { poppins } from "@/lib/fonts"
 
 import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
@@ -21,8 +22,15 @@ type TaskWithProfile = PrismaTask & {
 };
 
 export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+  // Search and filter state
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilters, setStatusFilters] = useState(["todo", "in_progress", "review", "done"])
+  const [priorityFilters, setPriorityFilters] = useState(["high", "medium", "low"])
+  const [filteredTasks, setFilteredTasks] = useState<TaskWithProfile[]>(initialTasks)
+  const [isLoading, setIsLoading] = useState(false)
+
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
-    initialTasks,
+    filteredTasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
       if (action === "delete") {
         return state.filter((t) => t.id !== task.id)
@@ -60,6 +68,37 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
     setOpenDialogs(prev => ({ ...prev, [taskId]: true }))
   }
 
+  // Search and filter effect
+  useEffect(() => {
+    const performSearch = async () => {
+      setIsLoading(true)
+      try {
+        const { tasks } = await searchAndFilterTasks(
+          searchQuery || undefined,
+          statusFilters.length > 0 ? statusFilters : undefined,
+          priorityFilters.length > 0 ? priorityFilters : undefined
+        )
+        setFilteredTasks(tasks || [])
+      } catch (error) {
+        console.error("Error filtering tasks:", error)
+        setFilteredTasks([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    performSearch()
+  }, [searchQuery, statusFilters, priorityFilters])
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query)
+  }
+
+  const handleFiltersChange = (newStatusFilters: string[], newPriorityFilters: string[]) => {
+    setStatusFilters(newStatusFilters)
+    setPriorityFilters(newPriorityFilters)
+  }
+
   const getInitials = (name: string | null) => {
     if (!name) return "??"
     return name
@@ -71,7 +110,26 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      <TaskSearchFilter
+        onSearchChange={handleSearchChange}
+        onFiltersChange={handleFiltersChange}
+        searchQuery={searchQuery}
+        statusFilters={statusFilters}
+        priorityFilters={priorityFilters}
+      />
+      
+      {isLoading ? (
+        <div className="text-center py-8">
+          <div className="text-muted-foreground">Searching tasks...</div>
+        </div>
+      ) : optimisticTasks.length === 0 ? (
+        <div className="text-center py-8">
+          <div className="text-muted-foreground">
+            No tasks match the current search and filter criteria.
+          </div>
+        </div>
+      ) : (
+        optimisticTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
@@ -158,7 +216,8 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
             <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
           </DialogContent>
         </Dialog>
-      ))}
+        ))
+      )}
     </div>
   )
 }
