@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
+import { MoreHorizontal, Clock, Edit, Trash2, Search } from "lucide-react"
 import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
@@ -20,9 +20,14 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+export function TaskList({ initialTasks, filteredTasks, searchTerm, hasActiveFilters }: { 
+  initialTasks: TaskWithProfile[]
+  filteredTasks: TaskWithProfile[]
+  searchTerm: string
+  hasActiveFilters: boolean
+}) {
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
-    initialTasks,
+    filteredTasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
       if (action === "delete") {
         return state.filter((t) => t.id !== task.id)
@@ -67,6 +72,26 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .map((n) => n[0])
       .join("")
       .toUpperCase()
+  }
+
+  // Show no results message if we have filters/search but no tasks
+  if (optimisticTasks.length === 0 && (searchTerm || hasActiveFilters)) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="text-muted-foreground mb-2">
+          <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <h3 className="text-lg font-medium text-foreground mb-1">No tasks found</h3>
+          <p className="text-sm">
+            {searchTerm && hasActiveFilters 
+              ? `No tasks match "${searchTerm}" with current filters`
+              : searchTerm 
+                ? `No tasks match "${searchTerm}"`
+                : "No tasks match the current filter criteria"
+            }
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
