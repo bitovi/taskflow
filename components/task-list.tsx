@@ -1,6 +1,6 @@
 "use client"
 
-import { useOptimistic, useTransition, useState, useEffect } from "react"
+import { useOptimistic, useTransition, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -67,6 +67,15 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .map((n) => n[0])
       .join("")
       .toUpperCase()
+  }
+
+  if (optimisticTasks.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground text-lg mb-2">No tasks found</p>
+        <p className="text-muted-foreground text-sm">No tasks match your current search and filter criteria.</p>
+      </div>
+    )
   }
 
   return (
