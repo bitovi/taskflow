@@ -1,20 +1,73 @@
-import { Suspense } from "react"
+"use client"
+
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Search } from "lucide-react"
+import { Plus } from "lucide-react"
 import Link from "next/link"
 import { TaskList } from "@/components/task-list"
+import { TaskSearchFilter } from "@/components/task-search-filter"
 import { poppins } from "@/lib/fonts"
 
-import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
+import { getAllTasks, getFilteredTasks } from "@/app/(dashboard)/tasks/actions"
+import type { Task as PrismaTask, User } from "@/app/generated/prisma/client"
 
-export const revalidate = 0
+// Type for task with profile info
+type TaskWithProfile = PrismaTask & {
+  assignee?: Pick<User, "name"> | null;
+}
 
+export default function TasksPage() {
+    const [allTasks, setAllTasks] = useState<TaskWithProfile[]>([])
+    const [filteredTasks, setFilteredTasks] = useState<TaskWithProfile[]>([])
+    const [searchQuery, setSearchQuery] = useState("")
+    const [statusFilters, setStatusFilters] = useState<string[]>(["todo", "in_progress", "review", "done"])
+    const [priorityFilters, setPriorityFilters] = useState<string[]>(["low", "medium", "high"])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
-export default async function TasksPage() {
-    const { tasks, error } = await getAllTasks();
+    // Load initial tasks
+    useEffect(() => {
+        const loadTasks = async () => {
+            setLoading(true)
+            const { tasks, error } = await getAllTasks()
+            if (error) {
+                setError(error)
+            } else {
+                setAllTasks(tasks || [])
+                setFilteredTasks(tasks || [])
+            }
+            setLoading(false)
+        }
+        loadTasks()
+    }, [])
+
+    // Apply filters whenever search or filter criteria change
+    useEffect(() => {
+        const applyFilters = async () => {
+            const { tasks, error } = await getFilteredTasks(
+                searchQuery,
+                statusFilters.length > 0 ? statusFilters : undefined,
+                priorityFilters.length > 0 ? priorityFilters : undefined
+            )
+            if (error) {
+                setError(error)
+            } else {
+                setFilteredTasks(tasks || [])
+            }
+        }
+        applyFilters()
+    }, [searchQuery, statusFilters, priorityFilters])
+
+    const handleSearchChange = (search: string) => {
+        setSearchQuery(search)
+    }
+
+    const handleFiltersChange = (newStatusFilters: string[], newPriorityFilters: string[]) => {
+        setStatusFilters(newStatusFilters)
+        setPriorityFilters(newPriorityFilters)
+    }
+
     if (error) {
-        console.error("Error fetching data:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
     }
 
@@ -30,9 +83,19 @@ export default async function TasksPage() {
                 </Link>
             </div>
 
-            <Suspense fallback={<div>Loading tasks...</div>}>
-                <TaskList initialTasks={tasks || []} />
-            </Suspense>
+            <TaskSearchFilter
+                searchQuery={searchQuery}
+                statusFilters={statusFilters}
+                priorityFilters={priorityFilters}
+                onSearchChange={handleSearchChange}
+                onFiltersChange={handleFiltersChange}
+            />
+
+            {loading ? (
+                <div>Loading tasks...</div>
+            ) : (
+                <TaskList filteredTasks={filteredTasks} />
+            )}
         </div>
     )
 }

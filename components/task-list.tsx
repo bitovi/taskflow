@@ -1,6 +1,6 @@
 "use client"
 
-import { useOptimistic, useTransition, useState, useEffect } from "react"
+import { useOptimistic, useTransition, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -20,9 +20,13 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+interface TaskListProps {
+  filteredTasks: TaskWithProfile[]
+}
+
+export function TaskList({ filteredTasks }: TaskListProps) {
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
-    initialTasks,
+    filteredTasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
       if (action === "delete") {
         return state.filter((t) => t.id !== task.id)
@@ -71,7 +75,13 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {optimisticTasks.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          <p className="text-lg font-medium mb-2">No tasks found</p>
+          <p>No tasks match your current search and filter criteria.</p>
+        </div>
+      ) : (
+        optimisticTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
@@ -158,7 +168,8 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
             <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
           </DialogContent>
         </Dialog>
-      ))}
+        ))
+      )}
     </div>
   )
 }

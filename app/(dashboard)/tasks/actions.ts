@@ -57,6 +57,48 @@ export async function getAllTasks() {
     }
 }
 
+// Get filtered tasks based on search and filter criteria
+export async function getFilteredTasks(searchQuery?: string, statusFilters?: string[], priorityFilters?: string[]) {
+    try {
+        const whereClause: {
+            OR?: Array<{ name: { contains: string } } | { description: { contains: string } }>;
+            status?: { in: string[] };
+            priority?: { in: string[] };
+        } = {};
+
+        // Add search functionality - search in name and description
+        // Note: SQLite doesn't support case insensitive search by default, so we'll do basic contains
+        if (searchQuery && searchQuery.trim()) {
+            whereClause.OR = [
+                { name: { contains: searchQuery.trim() } },
+                { description: { contains: searchQuery.trim() } },
+            ];
+        }
+
+        // Add status filters
+        if (statusFilters && statusFilters.length > 0) {
+            whereClause.status = { in: statusFilters };
+        }
+
+        // Add priority filters
+        if (priorityFilters && priorityFilters.length > 0) {
+            whereClause.priority = { in: priorityFilters };
+        }
+
+        const tasks = await prisma.task.findMany({
+            where: whereClause,
+            include: {
+                assignee: { select: { id: true, name: true, email: true, password: true } },
+                creator: { select: { id: true, name: true, email: true, password: true } },
+            },
+            orderBy: { createdAt: "desc" },
+        });
+        return { tasks, error: null };
+    } catch (e) {
+        return { tasks: [], error: "Failed to fetch filtered tasks." };
+    }
+}
+
 // Delete a task by ID
 export async function deleteTask(taskId: number) {
     try {
