@@ -32,12 +32,12 @@ export function FilteredTaskList({ initialTasks }: FilteredTaskListProps) {
     }
 
     // Apply status filter
-    if (statusFilters.length > 0 && statusFilters.length < 4) {
+    if (statusFilters.length > 0) {
       filtered = filtered.filter(task => statusFilters.includes(task.status))
     }
 
     // Apply priority filter  
-    if (priorityFilters.length > 0 && priorityFilters.length < 3) {
+    if (priorityFilters.length > 0) {
       filtered = filtered.filter(task => priorityFilters.includes(task.priority))
     }
 
