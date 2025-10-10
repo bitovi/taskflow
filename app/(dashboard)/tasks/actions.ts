@@ -57,6 +57,44 @@ export async function getAllTasks() {
     }
 }
 
+// Get filtered and searched tasks
+export async function getFilteredTasks(searchTerm?: string, statusFilters?: string[], priorityFilters?: string[]) {
+    try {
+        let whereClause: any = {};
+
+        // Apply search filter
+        if (searchTerm && searchTerm.trim() !== "") {
+            whereClause.OR = [
+                { name: { contains: searchTerm, mode: "insensitive" } },
+                { description: { contains: searchTerm, mode: "insensitive" } },
+            ];
+        }
+
+        // Apply status filters
+        if (statusFilters && statusFilters.length > 0) {
+            whereClause.status = { in: statusFilters };
+        }
+
+        // Apply priority filters
+        if (priorityFilters && priorityFilters.length > 0) {
+            whereClause.priority = { in: priorityFilters };
+        }
+
+        const tasks = await prisma.task.findMany({
+            where: whereClause,
+            include: {
+                assignee: { select: { id: true, name: true, email: true, password: true } },
+                creator: { select: { id: true, name: true, email: true, password: true } },
+            },
+            orderBy: { createdAt: "desc" },
+        });
+
+        return { tasks, error: null };
+    } catch (e) {
+        return { tasks: [], error: "Failed to fetch filtered tasks." };
+    }
+}
+
 // Delete a task by ID
 export async function deleteTask(taskId: number) {
     try {
