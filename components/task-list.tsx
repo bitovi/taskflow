@@ -13,12 +13,7 @@ import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
 import { poppins } from "@/lib/fonts"
-
-import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
-
-type TaskWithProfile = PrismaTask & {
-  assignee?: Pick<User, "name"> | null;
-};
+import type { TaskWithProfile } from "@/types/task"
 
 export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(

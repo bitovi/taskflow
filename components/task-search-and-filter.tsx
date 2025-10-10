@@ -7,12 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Search, X, Filter } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu"
 import { TaskList } from "@/components/task-list"
-
-import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
-
-type TaskWithProfile = PrismaTask & {
-  assignee?: Pick<User, "name"> | null;
-};
+import type { TaskWithProfile } from "@/types/task"
 
 type FilterState = {
   status: string[]
