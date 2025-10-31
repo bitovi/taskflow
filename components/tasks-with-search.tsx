@@ -63,7 +63,7 @@ export function TasksWithSearch({ initialTasks }: TasksWithSearchProps) {
       // Apply search filter
       const matchesSearch = searchQuery.trim() === "" ||
         task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (task.description || "").toLowerCase().includes(searchQuery.toLowerCase())
 
       // Apply status filter
       const matchesStatus = selectedStatuses.includes(task.status)
@@ -92,6 +92,7 @@ export function TasksWithSearch({ initialTasks }: TasksWithSearchProps) {
               size="icon"
               className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
               onClick={handleClearSearch}
+              aria-label="Clear search"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -99,7 +100,7 @@ export function TasksWithSearch({ initialTasks }: TasksWithSearchProps) {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" aria-label="Filter tasks">
               <Filter className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
