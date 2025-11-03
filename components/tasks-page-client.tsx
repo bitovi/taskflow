@@ -62,7 +62,7 @@ export function TasksPageClient({ initialTasks }: { initialTasks: TaskWithProfil
       if (searchText) {
         const searchLower = searchText.toLowerCase()
         const nameMatch = task.name.toLowerCase().includes(searchLower)
-        const descriptionMatch = task.description.toLowerCase().includes(searchLower)
+        const descriptionMatch = task.description?.toLowerCase().includes(searchLower) || false
         return nameMatch || descriptionMatch
       }
 
