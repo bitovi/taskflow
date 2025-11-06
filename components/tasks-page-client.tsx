@@ -26,7 +26,7 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
       const matchesSearch =
         searchQuery.trim() === "" ||
         task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
 
       // Apply status filter
       const matchesStatus = filters.statuses.includes(task.status)
