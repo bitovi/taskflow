@@ -2,6 +2,10 @@
 
 A modern task management app built with Next.js 14, React, TypeScript, and Prisma. TaskFlow provides a comprehensive solution for managing tasks, and projects with an intuitive drag-and-drop Kanban board interface.
 
+👉 Bitovi can help you integrate this into your own SDLC workflow: [AI for Software Teams](https://www.bitovi.com/ai-for-software-teams)
+
+---
+
 This repository is intentionally structured as a demo and sandbox for Bitovi's AI workflows:
 - Understanding a codebase and generating copilot instructions
 - Automatically implementing features from a Jira ticket
