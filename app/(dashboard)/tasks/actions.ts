@@ -42,15 +42,24 @@ export async function createTask(formData: FormData) {
 }
 
 // Get all tasks with assignee and creator info
-export async function getAllTasks() {
+export async function getAllTasks(searchQuery?: string) {
     try {
-        const tasks = await prisma.task.findMany({
+        let tasks = await prisma.task.findMany({
             include: {
                 assignee: { select: { id: true, name: true, email: true, password: true } },
                 creator: { select: { id: true, name: true, email: true, password: true } },
             },
             orderBy: { createdAt: "desc" },
         });
+
+        // Filter tasks by search query (case-insensitive)
+        if (searchQuery) {
+            const lowerQuery = searchQuery.toLowerCase();
+            tasks = tasks.filter(task => 
+                task.name.toLowerCase().includes(lowerQuery)
+            );
+        }
+
         return { tasks, error: null };
     } catch (e) {
         return { tasks: [], error: "Failed to fetch tasks." };
