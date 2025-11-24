@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "ci": "node ci.js",
     "setup": "nvm install && npm i && npm run db:setup",
     "db:setup": "npx prisma db push && npm run db:reset",
     "db:clear": "node prisma/clear.js",
