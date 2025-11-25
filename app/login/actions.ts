@@ -23,7 +23,7 @@ export async function login(formData: FormData) {
     }
     // Simple session: set a cookie with a random token
     const sessionToken = randomBytes(32).toString("hex");
-    await prisma.session.create({
+    prisma.session.create({
         data: {
             token: sessionToken,
             userId: user.id,

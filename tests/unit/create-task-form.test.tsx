@@ -23,8 +23,13 @@ describe('CreateTaskForm', () => {
         const title = screen.getByLabelText(/title/i)
         await userEvent.type(title, 'New Task')
 
-        const submit = screen.getByRole('button', { name: /create task/i })
-        await userEvent.click(submit)
+        // Use queryByRole so failure is a concise null assertion instead of a full DOM dump
+        const submit = screen.queryByRole('button', { name: /create task/i })
+        expect(submit).not.toBeNull()
+
+        if (submit) {
+            await userEvent.click(submit)
+        }
 
         await waitFor(() => expect(createTask).toHaveBeenCalled())
     })

@@ -15,7 +15,7 @@ export async function createTask(formData: FormData) {
     const assigneeIdRaw = formData.get("assigneeId") as string;
     const assigneeId = assigneeIdRaw ? parseInt(assigneeIdRaw, 10) : null;
 
-    const user = await getCurrentUser();
+    const user = getCurrentUser();
     if (!user) return { error: "Not authenticated.", success: false, message: "Not authenticated." };
 
     const creatorId = user.id;
