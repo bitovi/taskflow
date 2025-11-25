@@ -75,7 +75,7 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
-          <Card className={task.status === "done" ? "bg-muted/50" : ""}>
+          <Card data-testid={`task-card-${task.id}`} className={task.status === "done" ? "bg-muted/50" : ""}>
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4">
@@ -128,13 +128,13 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
                   setOpenDropdowns(prev => ({ ...prev, [task.id]: open }))
                 }>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button data-testid={`task-menu-${task.id}`} variant="ghost" size="icon" className="h-8 w-8">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DialogTrigger asChild>
-                      <DropdownMenuItem onSelect={(e) => {
+                      <DropdownMenuItem data-testid={`task-edit-${task.id}`} onSelect={(e) => {
                         e.preventDefault()
                         handleEditClick(task.id)
                       }} className="cursor-pointer hover:bg-background-light">
@@ -142,7 +142,7 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
                         Edit
                       </DropdownMenuItem>
                     </DialogTrigger>
-                    <DropdownMenuItem className="text-primary cursor-pointer hover:bg-background-light" onClick={() => handleDelete(task.id)}>
+                    <DropdownMenuItem data-testid={`task-delete-${task.id}`} className="text-primary cursor-pointer hover:bg-background-light" onClick={() => handleDelete(task.id)}>
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete
                     </DropdownMenuItem>

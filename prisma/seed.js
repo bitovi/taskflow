@@ -2,6 +2,7 @@ const { PrismaClient } = require('../app/generated/prisma');
 const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
+const silent = process.argv.includes('--silent');
 
 const users = [
     { name: 'Alice Johnson', email: 'alice@example.com' },
@@ -59,7 +60,7 @@ function getRandomDate(start, end) {
 
 async function seedDatabase() {
     try {
-        console.log('🌱 Seeding database...');
+        if (!silent) console.log('🌱 Seeding database...');
 
         // Create users with hashed passwords
         const createdUsers = [];
@@ -73,7 +74,7 @@ async function seedDatabase() {
             });
             createdUsers.push(user);
         }
-        console.log(`✅ Created ${createdUsers.length} users`);
+        if (!silent) console.log(`✅ Created ${createdUsers.length} users`);
 
         // Create tasks with random assignments
         const createdTasks = [];
@@ -101,7 +102,7 @@ async function seedDatabase() {
             });
             createdTasks.push(task);
         }
-        console.log(`✅ Created ${createdTasks.length} tasks`);
+        if (!silent) console.log(`✅ Created ${createdTasks.length} tasks`);
 
         // Create some sessions for users (simulate some being logged in)
         const activeSessions = [];
@@ -115,33 +116,43 @@ async function seedDatabase() {
             });
             activeSessions.push(session);
         }
-        console.log(`✅ Created ${activeSessions.length} active sessions`);
+        if (!silent) console.log(`✅ Created ${activeSessions.length} active sessions`);
 
         // Display summary
-        console.log('\n📊 Database seeded with:');
-        console.log(`   👥 ${createdUsers.length} users`);
-        console.log(`   📋 ${createdTasks.length} tasks`);
-        console.log(`   🔑 ${activeSessions.length} active sessions`);
+        if (!silent) {
+            console.log('\n📊 Database seeded with:');
+            console.log(`   👥 ${createdUsers.length} users`);
+            console.log(`   📋 ${createdTasks.length} tasks`);
+            console.log(`   🔑 ${activeSessions.length} active sessions`);
 
-        // Show task distribution by status
-        const tasksByStatus = {};
-        createdTasks.forEach(task => {
-            tasksByStatus[task.status] = (tasksByStatus[task.status] || 0) + 1;
-        });
-        console.log('\n📈 Task distribution:');
-        Object.entries(tasksByStatus).forEach(([status, count]) => {
-            console.log(`   ${status}: ${count} tasks`);
-        });
+            // Show task distribution by status
+            const tasksByStatus = {};
+            createdTasks.forEach(task => {
+                tasksByStatus[task.status] = (tasksByStatus[task.status] || 0) + 1;
+            });
+            console.log('\n📈 Task distribution:');
+            Object.entries(tasksByStatus).forEach(([status, count]) => {
+                console.log(`   ${status}: ${count} tasks`);
+            });
 
-        console.log('\n🎉 Database seeded successfully!');
-        console.log('💡 Default password for all users: password123');
+            console.log('\n🎉 Database seeded successfully!');
+            console.log('💡 Default password for all users: password123');
+        }
 
     } catch (error) {
-        console.error('❌ Error seeding database:', error);
+        if (!silent) console.error('❌ Error seeding database:', error);
         process.exit(1);
     } finally {
         await prisma.$disconnect();
     }
 }
 
-seedDatabase();
+module.exports = {
+    getRandomElement,
+    getRandomDate,
+    seedDatabase,
+}
+
+if (require.main === module) {
+    seedDatabase();
+}

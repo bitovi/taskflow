@@ -36,7 +36,7 @@ export function AuthDropdown() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar className="h-8 w-8 cursor-pointer">
+                <Avatar data-testid="auth-avatar" className="h-8 w-8 cursor-pointer">
                     <AvatarName name={user.name} />
                 </Avatar>
             </DropdownMenuTrigger>

@@ -71,10 +71,22 @@ export async function deleteTask(taskId: number) {
 // Update a task's status by ID
 export async function updateTaskStatus(taskId: number, status: string) {
     try {
+        // Temporary instrumentation for e2e timing investigation
+        // eslint-disable-next-line no-console
+        console.log(`[e2e-instrument] updateTaskStatus start taskId=${taskId} status=${status} at=${Date.now()}`);
+        const start = Date.now();
         await prisma.task.update({ where: { id: taskId }, data: { status } });
+        const afterUpdate = Date.now();
+        // eslint-disable-next-line no-console
+        console.log(`[e2e-instrument] updateTaskStatus afterUpdate taskId=${taskId} updateDuration=${afterUpdate - start}ms`);
         revalidatePath("/tasks");
+        const afterRevalidate = Date.now();
+        // eslint-disable-next-line no-console
+        console.log(`[e2e-instrument] updateTaskStatus afterRevalidate taskId=${taskId} revalidateDuration=${afterRevalidate - afterUpdate}ms total=${afterRevalidate - start}ms`);
         return { error: null };
     } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(`[e2e-instrument] updateTaskStatus error taskId=${taskId}`, e);
         return { error: "Failed to update task status." };
     }
 }
