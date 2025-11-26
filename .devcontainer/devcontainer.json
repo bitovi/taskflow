@@ -1,26 +1,36 @@
 {
     "name": "Taskflow",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "postCreateCommand": "npm ci",
     "postStartCommand": "npm run db:setup",
     "postAttachCommand": "npm run dev",
-    "forwardPorts": [3000],
+    "forwardPorts": [
+        3000,
+        5432
+    ],
     "portsAttributes": {
         "3000": {
-            "label": "App",
+            "label": "Next.js App",
             "onAutoForward": "openPreview"
+        },
+        "5432": {
+            "label": "PostgreSQL",
+            "onAutoForward": "silent"
         }
     },
     "containerEnv": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "DATABASE_URL": "postgresql://taskflow:taskflow@db:5432/taskflow"
     },
     "customizations": {
         "vscode": {
             "extensions": [
                 "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode"
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss",
+                "Prisma.prisma"
             ]
         }
     }

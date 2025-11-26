@@ -13,7 +13,8 @@
     "test:e2e:debug": "node scripts/test-e2e-with-server.js",
     "lint": "next lint",
     "setup": "npm i && npm run db:setup",
-    "db:setup": "npx prisma db push && npm run db:reset",
+    "db:setup": "npx prisma migrate dev --name init && npm run db:reset",
+    "db:migrate": "npx prisma migrate dev",
     "db:clear": "node prisma/clear.js",
     "db:seed": "node prisma/seed.js",
     "db:reset": "npm run db:clear && npm run db:seed"
