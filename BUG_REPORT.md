@@ -42,3 +42,7 @@ Only approximately 7 tasks appear on the Kanban board, while 23 tasks are missin
 2. The issue seems to be with how tasks are being filtered or queried for the board
 3. No errors are shown in the console or logs
 4. The issue is consistent across all users
+
+## IMPORTANT Considerations
+
+- Any modifications to data in the database must use the PostgreSQL MCP server. 

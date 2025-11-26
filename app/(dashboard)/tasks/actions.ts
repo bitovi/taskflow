@@ -43,6 +43,7 @@ export async function createTask(formData: FormData) {
 
 // Get all tasks with assignee and creator info
 export async function getAllTasks() {
+    console.log("[actions.ts - getAllTasks] Starting to fetch tasks from database");
     try {
         const tasks = await prisma.task.findMany({
             include: {
@@ -51,8 +52,11 @@ export async function getAllTasks() {
             },
             orderBy: { createdAt: "desc" },
         });
+        console.log(`[actions.ts - getAllTasks] Fetched ${tasks.length} tasks from database`);
+        console.log(`[actions.ts - getAllTasks] Task statuses:`, tasks.map(t => ({ id: t.id, name: t.name, status: t.status })));
         return { tasks, error: null };
     } catch (e) {
+        console.error("[actions.ts - getAllTasks] Error fetching tasks:", e);
         return { tasks: [], error: "Failed to fetch tasks." };
     }
 }
