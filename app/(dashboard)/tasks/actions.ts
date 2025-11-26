@@ -71,7 +71,11 @@ export async function deleteTask(taskId: number) {
 // Update a task's status by ID
 export async function updateTaskStatus(taskId: number, status: string) {
     try {
-        await prisma.task.update({ where: { id: taskId }, data: { status } });
+        const updateData: { status: string; priority?: string } = { status };
+        if (status === "done")
+            updateData.priority = "low";
+
+        await prisma.task.update({ where: { id: taskId }, data: updateData });
         revalidatePath("/tasks");
         return { error: null };
     } catch (e) {
