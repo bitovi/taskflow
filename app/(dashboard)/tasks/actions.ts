@@ -85,11 +85,16 @@ export async function updateTaskStatus(taskId: number, status: string) {
 export async function updateTask(taskId: number, formData: FormData) {
     const name = formData.get("title") as string; // form uses 'title' but model uses 'name'
     const description = formData.get("description") as string;
-    const priority = formData.get("priority") as string;
+    let priority = formData.get("priority") as string;
     const status = formData.get("status") as string;
     const dueDate = formData.get("dueDate") as string;
     const assigneeIdRaw = formData.get("assigneeId") as string;
     const assigneeId = assigneeIdRaw ? parseInt(assigneeIdRaw, 10) : null;
+
+    // BUG: Accidentally resetting priority when task is marked as done
+    if (status === "done") {
+        priority = "low";
+    }
 
     const user = await getCurrentUser();
     if (!user) return { error: "Not authenticated.", success: false };
