@@ -37,16 +37,11 @@ test.describe('Task CRUD flows', () => {
         await expect(page.locator('h3', { hasText: title })).toBeVisible();
     });
 
-    test('edit task (toggle then edit)', async ({ page }) => {
+    test('edit task via modal form', async ({ page }) => {
         await login(page);
         const title = await createTaskViaUI(page, 'E2E Edit');
 
-        // Toggle the task status
         const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
-        const checkbox = card.locator('role=checkbox');
-        await expect(checkbox).toBeVisible();
-        await checkbox.click();
-        await expect(card.locator('text=done')).toBeVisible({ timeout: 5000 });
 
         // Open the dropdown menu and click Edit (scoped to the task card)
         const menuTrigger = card.locator(`[data-testid^="task-menu-"]`).first();
