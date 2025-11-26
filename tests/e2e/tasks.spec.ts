@@ -63,6 +63,10 @@ test.describe('Task CRUD flows', () => {
 
         // Verify the updated title is visible
         await expect(page.locator('h3', { hasText: newTitle })).toBeVisible({ timeout: 5000 });
+
+        // Verify priority is still medium (not changed to low)
+        const updatedCard = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: newTitle }) }).first();
+        await expect(updatedCard.locator('text=medium')).toBeVisible({ timeout: 5000 });
     });
 
     test('delete task', async ({ page }) => {

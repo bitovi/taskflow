@@ -10,6 +10,7 @@
     "test:watch": "jest --watch",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "node scripts/test-e2e-with-server.js",
     "lint": "next lint",
     "setup": "npm i && npm run db:setup",
     "db:setup": "npx prisma db push && npm run db:reset",

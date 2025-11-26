@@ -1,0 +1,640 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - img [ref=e8]
+          - heading "TaskFlow" [level=2] [ref=e11]
+        - generic [ref=e13] [cursor=pointer]: AJ
+      - navigation [ref=e15]:
+        - link "Dashboard" [ref=e16] [cursor=pointer]:
+          - /url: /
+          - img [ref=e17]
+          - text: Dashboard
+        - link "Tasks" [ref=e22] [cursor=pointer]:
+          - /url: /tasks
+          - img [ref=e23]
+          - text: Tasks
+        - link "Board" [ref=e26] [cursor=pointer]:
+          - /url: /board
+          - img [ref=e27]
+          - text: Board
+        - link "Team" [ref=e28] [cursor=pointer]:
+          - /url: /team
+          - img [ref=e29]
+          - text: Team
+    - main [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - heading "Tasks" [level=2] [ref=e37]
+          - link "New Task" [ref=e38] [cursor=pointer]:
+            - /url: /tasks/new
+            - button "New Task" [ref=e39]:
+              - img
+              - text: New Task
+        - generic [ref=e40]:
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - checkbox [checked] [ref=e45] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e46]:
+                - generic [ref=e47]:
+                  - heading "E2E Edit 1764186811672 (edited)" [level=3] [ref=e48]
+                  - generic [ref=e49]: TASK-2079
+                - paragraph [ref=e50]: Created by e2e test
+                - generic [ref=e51]:
+                  - generic [ref=e52]:
+                    - generic [ref=e54]: "??"
+                    - generic [ref=e55]: Unassigned
+                  - generic [ref=e56]: done
+                  - generic [ref=e57]: low
+            - button [ref=e58] [cursor=pointer]:
+              - img
+          - generic [ref=e61]:
+            - generic [ref=e62]:
+              - checkbox [ref=e63] [cursor=pointer]
+              - generic [ref=e64]:
+                - generic [ref=e65]:
+                  - heading "E2E Create 1764186810571" [level=3] [ref=e66]
+                  - generic [ref=e67]: TASK-2078
+                - paragraph [ref=e68]: Created by e2e test
+                - generic [ref=e69]:
+                  - generic [ref=e70]:
+                    - generic [ref=e72]: "??"
+                    - generic [ref=e73]: Unassigned
+                  - generic [ref=e74]: todo
+                  - generic [ref=e75]: medium
+            - button [ref=e76] [cursor=pointer]:
+              - img
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - checkbox [ref=e81] [cursor=pointer]
+              - generic [ref=e82]:
+                - generic [ref=e83]:
+                  - heading "Add video conferencing integration" [level=3] [ref=e84]
+                  - generic [ref=e85]: TASK-2076
+                - paragraph [ref=e86]: Integrate with video conferencing platforms for team meetings
+                - generic [ref=e87]:
+                  - generic [ref=e88]:
+                    - generic [ref=e90]: BS
+                    - generic [ref=e91]: Bob Smith
+                  - generic [ref=e92]: in progress
+                  - generic [ref=e93]: medium
+                  - generic [ref=e94]:
+                    - img [ref=e95]
+                    - generic [ref=e98]: Dec 18
+            - button [ref=e99] [cursor=pointer]:
+              - img
+          - generic [ref=e102]:
+            - generic [ref=e103]:
+              - checkbox [ref=e104] [cursor=pointer]
+              - generic [ref=e105]:
+                - generic [ref=e106]:
+                  - heading "Create automated workflow system" [level=3] [ref=e107]
+                  - generic [ref=e108]: TASK-2077
+                - paragraph [ref=e109]: Build automation rules for task assignments and updates
+                - generic [ref=e110]:
+                  - generic [ref=e111]:
+                    - generic [ref=e113]: "??"
+                    - generic [ref=e114]: Unassigned
+                  - generic [ref=e115]: in progress
+                  - generic [ref=e116]: high
+                  - generic [ref=e117]:
+                    - img [ref=e118]
+                    - generic [ref=e121]: Nov 29
+            - button [ref=e122] [cursor=pointer]:
+              - img
+          - generic [ref=e125]:
+            - generic [ref=e126]:
+              - checkbox [ref=e127] [cursor=pointer]
+              - generic [ref=e128]:
+                - generic [ref=e129]:
+                  - heading "Create integration with third-party tools" [level=3] [ref=e130]
+                  - generic [ref=e131]: TASK-2074
+                - paragraph [ref=e132]: Build integrations with popular productivity tools
+                - generic [ref=e133]:
+                  - generic [ref=e134]:
+                    - generic [ref=e136]: DP
+                    - generic [ref=e137]: Diana Prince
+                  - generic [ref=e138]: review
+                  - generic [ref=e139]: low
+                  - generic [ref=e140]:
+                    - img [ref=e141]
+                    - generic [ref=e144]: Dec 13
+            - button [ref=e145] [cursor=pointer]:
+              - img
+          - generic [ref=e148]:
+            - generic [ref=e149]:
+              - checkbox [checked] [ref=e150] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e151]:
+                - generic [ref=e152]:
+                  - heading "Implement advanced project templates" [level=3] [ref=e153]
+                  - generic [ref=e154]: TASK-2075
+                - paragraph [ref=e155]: Create customizable project templates for different use cases
+                - generic [ref=e156]:
+                  - generic [ref=e157]:
+                    - generic [ref=e159]: CB
+                    - generic [ref=e160]: Charlie Brown
+                  - generic [ref=e161]: done
+                  - generic [ref=e162]: low
+                  - generic [ref=e163]:
+                    - img [ref=e164]
+                    - generic [ref=e167]: Dec 03
+            - button [ref=e168] [cursor=pointer]:
+              - img
+          - generic [ref=e171]:
+            - generic [ref=e172]:
+              - checkbox [ref=e173] [cursor=pointer]
+              - generic [ref=e174]:
+                - generic [ref=e175]:
+                  - heading "Implement advanced permissions" [level=3] [ref=e176]
+                  - generic [ref=e177]: TASK-2072
+                - paragraph [ref=e178]: Create granular permission system for different user roles
+                - generic [ref=e179]:
+                  - generic [ref=e180]:
+                    - generic [ref=e182]: DP
+                    - generic [ref=e183]: Diana Prince
+                  - generic [ref=e184]: in progress
+                  - generic [ref=e185]: medium
+            - button [ref=e186] [cursor=pointer]:
+              - img
+          - generic [ref=e189]:
+            - generic [ref=e190]:
+              - checkbox [ref=e191] [cursor=pointer]
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - heading "Add time tracking features" [level=3] [ref=e194]
+                  - generic [ref=e195]: TASK-2073
+                - paragraph [ref=e196]: Allow users to track time spent on tasks
+                - generic [ref=e197]:
+                  - generic [ref=e198]:
+                    - generic [ref=e200]: GW
+                    - generic [ref=e201]: George Wilson
+                  - generic [ref=e202]: in progress
+                  - generic [ref=e203]: medium
+                  - generic [ref=e204]:
+                    - img [ref=e205]
+                    - generic [ref=e208]: Dec 11
+            - button [ref=e209] [cursor=pointer]:
+              - img
+          - generic [ref=e212]:
+            - generic [ref=e213]:
+              - checkbox [checked] [ref=e214] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e215]:
+                - generic [ref=e216]:
+                  - heading "Add multi-language support" [level=3] [ref=e217]
+                  - generic [ref=e218]: TASK-2071
+                - paragraph [ref=e219]: Internationalize the application for multiple languages
+                - generic [ref=e220]:
+                  - generic [ref=e221]:
+                    - generic [ref=e223]: "??"
+                    - generic [ref=e224]: Unassigned
+                  - generic [ref=e225]: done
+                  - generic [ref=e226]: low
+            - button [ref=e227] [cursor=pointer]:
+              - img
+          - generic [ref=e230]:
+            - generic [ref=e231]:
+              - checkbox [ref=e232] [cursor=pointer]
+              - generic [ref=e233]:
+                - generic [ref=e234]:
+                  - heading "Implement API rate limiting" [level=3] [ref=e235]
+                  - generic [ref=e236]: TASK-2069
+                - paragraph [ref=e237]: Add rate limiting to prevent API abuse
+                - generic [ref=e238]:
+                  - generic [ref=e239]:
+                    - generic [ref=e241]: AJ
+                    - generic [ref=e242]: Alice Johnson
+                  - generic [ref=e243]: review
+                  - generic [ref=e244]: medium
+            - button [ref=e245] [cursor=pointer]:
+              - img
+          - generic [ref=e248]:
+            - generic [ref=e249]:
+              - checkbox [ref=e250] [cursor=pointer]
+              - generic [ref=e251]:
+                - generic [ref=e252]:
+                  - heading "Create backup and restore system" [level=3] [ref=e253]
+                  - generic [ref=e254]: TASK-2070
+                - paragraph [ref=e255]: Implement automated backup and recovery procedures
+                - generic [ref=e256]:
+                  - generic [ref=e257]:
+                    - generic [ref=e259]: BS
+                    - generic [ref=e260]: Bob Smith
+                  - generic [ref=e261]: review
+                  - generic [ref=e262]: high
+                  - generic [ref=e263]:
+                    - img [ref=e264]
+                    - generic [ref=e267]: Dec 02
+            - button [ref=e268] [cursor=pointer]:
+              - img
+          - generic [ref=e271]:
+            - generic [ref=e272]:
+              - checkbox [ref=e273] [cursor=pointer]
+              - generic [ref=e274]:
+                - generic [ref=e275]:
+                  - heading "Implement advanced filtering" [level=3] [ref=e276]
+                  - generic [ref=e277]: TASK-2066
+                - paragraph [ref=e278]: Add complex filtering options for task management
+                - generic [ref=e279]:
+                  - generic [ref=e280]:
+                    - generic [ref=e282]: "??"
+                    - generic [ref=e283]: Unassigned
+                  - generic [ref=e284]: review
+                  - generic [ref=e285]: medium
+            - button [ref=e286] [cursor=pointer]:
+              - img
+          - generic [ref=e289]:
+            - generic [ref=e290]:
+              - checkbox [checked] [ref=e291] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e292]:
+                - generic [ref=e293]:
+                  - heading "Create mobile app" [level=3] [ref=e294]
+                  - generic [ref=e295]: TASK-2067
+                - paragraph [ref=e296]: Develop native mobile application for iOS and Android
+                - generic [ref=e297]:
+                  - generic [ref=e298]:
+                    - generic [ref=e300]: DP
+                    - generic [ref=e301]: Diana Prince
+                  - generic [ref=e302]: done
+                  - generic [ref=e303]: high
+                  - generic [ref=e304]:
+                    - img [ref=e305]
+                    - generic [ref=e308]: Dec 01
+            - button [ref=e309] [cursor=pointer]:
+              - img
+          - generic [ref=e312]:
+            - generic [ref=e313]:
+              - checkbox [ref=e314] [cursor=pointer]
+              - generic [ref=e315]:
+                - generic [ref=e316]:
+                  - heading "Add analytics dashboard" [level=3] [ref=e317]
+                  - generic [ref=e318]: TASK-2068
+                - paragraph [ref=e319]: Create comprehensive analytics and reporting features
+                - generic [ref=e320]:
+                  - generic [ref=e321]:
+                    - generic [ref=e323]: FG
+                    - generic [ref=e324]: Fiona Green
+                  - generic [ref=e325]: todo
+                  - generic [ref=e326]: medium
+            - button [ref=e327] [cursor=pointer]:
+              - img
+          - generic [ref=e330]:
+            - generic [ref=e331]:
+              - checkbox [ref=e332] [cursor=pointer]
+              - generic [ref=e333]:
+                - generic [ref=e334]:
+                  - heading "Create admin dashboard" [level=3] [ref=e335]
+                  - generic [ref=e336]: TASK-2064
+                - paragraph [ref=e337]: Build administrative interface for user and system management
+                - generic [ref=e338]:
+                  - generic [ref=e339]:
+                    - generic [ref=e341]: AJ
+                    - generic [ref=e342]: Alice Johnson
+                  - generic [ref=e343]: review
+                  - generic [ref=e344]: medium
+                  - generic [ref=e345]:
+                    - img [ref=e346]
+                    - generic [ref=e349]: Dec 09
+            - button [ref=e350] [cursor=pointer]:
+              - img
+          - generic [ref=e353]:
+            - generic [ref=e354]:
+              - checkbox [checked] [ref=e355] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e356]:
+                - generic [ref=e357]:
+                  - heading "Add calendar integration" [level=3] [ref=e358]
+                  - generic [ref=e359]: TASK-2065
+                - paragraph [ref=e360]: Sync tasks with popular calendar applications
+                - generic [ref=e361]:
+                  - generic [ref=e362]:
+                    - generic [ref=e364]: FG
+                    - generic [ref=e365]: Fiona Green
+                  - generic [ref=e366]: done
+                  - generic [ref=e367]: low
+                  - generic [ref=e368]:
+                    - img [ref=e369]
+                    - generic [ref=e372]: Dec 25
+            - button [ref=e373] [cursor=pointer]:
+              - img
+          - generic [ref=e376]:
+            - generic [ref=e377]:
+              - checkbox [ref=e378] [cursor=pointer]
+              - generic [ref=e379]:
+                - generic [ref=e380]:
+                  - heading "Set up monitoring and logging" [level=3] [ref=e381]
+                  - generic [ref=e382]: TASK-2063
+                - paragraph [ref=e383]: Implement comprehensive application monitoring
+                - generic [ref=e384]:
+                  - generic [ref=e385]:
+                    - generic [ref=e387]: AJ
+                    - generic [ref=e388]: Alice Johnson
+                  - generic [ref=e389]: in progress
+                  - generic [ref=e390]: high
+                  - generic [ref=e391]:
+                    - img [ref=e392]
+                    - generic [ref=e395]: Dec 19
+            - button [ref=e396] [cursor=pointer]:
+              - img
+          - generic [ref=e399]:
+            - generic [ref=e400]:
+              - checkbox [checked] [ref=e401] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e402]:
+                - generic [ref=e403]:
+                  - heading "Add file upload capability" [level=3] [ref=e404]
+                  - generic [ref=e405]: TASK-2061
+                - paragraph [ref=e406]: Enable users to attach files to tasks and comments
+                - generic [ref=e407]:
+                  - generic [ref=e408]:
+                    - generic [ref=e410]: DP
+                    - generic [ref=e411]: Diana Prince
+                  - generic [ref=e412]: done
+                  - generic [ref=e413]: medium
+                  - generic [ref=e414]:
+                    - img [ref=e415]
+                    - generic [ref=e418]: Dec 01
+            - button [ref=e419] [cursor=pointer]:
+              - img
+          - generic [ref=e422]:
+            - generic [ref=e423]:
+              - checkbox [ref=e424] [cursor=pointer]
+              - generic [ref=e425]:
+                - generic [ref=e426]:
+                  - heading "Implement team collaboration tools" [level=3] [ref=e427]
+                  - generic [ref=e428]: TASK-2062
+                - paragraph [ref=e429]: Add features for team communication and collaboration
+                - generic [ref=e430]:
+                  - generic [ref=e431]:
+                    - generic [ref=e433]: GW
+                    - generic [ref=e434]: George Wilson
+                  - generic [ref=e435]: review
+                  - generic [ref=e436]: high
+                  - generic [ref=e437]:
+                    - img [ref=e438]
+                    - generic [ref=e441]: Dec 04
+            - button [ref=e442] [cursor=pointer]:
+              - img
+          - generic [ref=e445]:
+            - generic [ref=e446]:
+              - checkbox [ref=e447] [cursor=pointer]
+              - generic [ref=e448]:
+                - generic [ref=e449]:
+                  - heading "Implement real-time notifications" [level=3] [ref=e450]
+                  - generic [ref=e451]: TASK-2059
+                - paragraph [ref=e452]: Add push notifications for task updates and mentions
+                - generic [ref=e453]:
+                  - generic [ref=e454]:
+                    - generic [ref=e456]: BS
+                    - generic [ref=e457]: Bob Smith
+                  - generic [ref=e458]: todo
+                  - generic [ref=e459]: medium
+                  - generic [ref=e460]:
+                    - img [ref=e461]
+                    - generic [ref=e464]: Dec 21
+            - button [ref=e465] [cursor=pointer]:
+              - img
+          - generic [ref=e468]:
+            - generic [ref=e469]:
+              - checkbox [checked] [ref=e470] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e471]:
+                - generic [ref=e472]:
+                  - heading "Create data export feature" [level=3] [ref=e473]
+                  - generic [ref=e474]: TASK-2060
+                - paragraph [ref=e475]: Allow users to export their data in various formats
+                - generic [ref=e476]:
+                  - generic [ref=e477]:
+                    - generic [ref=e479]: EH
+                    - generic [ref=e480]: Ethan Hunt
+                  - generic [ref=e481]: done
+                  - generic [ref=e482]: low
+                  - generic [ref=e483]:
+                    - img [ref=e484]
+                    - generic [ref=e487]: Dec 09
+            - button [ref=e488] [cursor=pointer]:
+              - img
+          - generic [ref=e491]:
+            - generic [ref=e492]:
+              - checkbox [ref=e493] [cursor=pointer]
+              - generic [ref=e494]:
+                - generic [ref=e495]:
+                  - heading "Refactor legacy code" [level=3] [ref=e496]
+                  - generic [ref=e497]: TASK-2058
+                - paragraph [ref=e498]: Clean up and modernize outdated code sections
+                - generic [ref=e499]:
+                  - generic [ref=e500]:
+                    - generic [ref=e502]: "??"
+                    - generic [ref=e503]: Unassigned
+                  - generic [ref=e504]: in progress
+                  - generic [ref=e505]: low
+            - button [ref=e506] [cursor=pointer]:
+              - img
+          - generic [ref=e509]:
+            - generic [ref=e510]:
+              - checkbox [checked] [ref=e511] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e512]:
+                - generic [ref=e513]:
+                  - heading "Create user onboarding flow" [level=3] [ref=e514]
+                  - generic [ref=e515]: TASK-2056
+                - paragraph [ref=e516]: Design and implement guided tour for new users
+                - generic [ref=e517]:
+                  - generic [ref=e518]:
+                    - generic [ref=e520]: EH
+                    - generic [ref=e521]: Ethan Hunt
+                  - generic [ref=e522]: done
+                  - generic [ref=e523]: medium
+                  - generic [ref=e524]:
+                    - img [ref=e525]
+                    - generic [ref=e528]: Dec 13
+            - button [ref=e529] [cursor=pointer]:
+              - img
+          - generic [ref=e532]:
+            - generic [ref=e533]:
+              - checkbox [checked] [ref=e534] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e535]:
+                - generic [ref=e536]:
+                  - heading "Add search functionality" [level=3] [ref=e537]
+                  - generic [ref=e538]: TASK-2057
+                - paragraph [ref=e539]: Implement global search across tasks and projects
+                - generic [ref=e540]:
+                  - generic [ref=e541]:
+                    - generic [ref=e543]: FG
+                    - generic [ref=e544]: Fiona Green
+                  - generic [ref=e545]: done
+                  - generic [ref=e546]: medium
+            - button [ref=e547] [cursor=pointer]:
+              - img
+          - generic [ref=e550]:
+            - generic [ref=e551]:
+              - checkbox [checked] [ref=e552] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e553]:
+                - generic [ref=e554]:
+                  - heading "Implement dark mode theme" [level=3] [ref=e555]
+                  - generic [ref=e556]: TASK-2054
+                - paragraph [ref=e557]: Add dark mode support throughout the application
+                - generic [ref=e558]:
+                  - generic [ref=e559]:
+                    - generic [ref=e561]: GW
+                    - generic [ref=e562]: George Wilson
+                  - generic [ref=e563]: done
+                  - generic [ref=e564]: medium
+                  - generic [ref=e565]:
+                    - img [ref=e566]
+                    - generic [ref=e569]: Dec 23
+            - button [ref=e570] [cursor=pointer]:
+              - img
+          - generic [ref=e573]:
+            - generic [ref=e574]:
+              - checkbox [ref=e575] [cursor=pointer]
+              - generic [ref=e576]:
+                - generic [ref=e577]:
+                  - heading "Set up CI/CD pipeline" [level=3] [ref=e578]
+                  - generic [ref=e579]: TASK-2055
+                - paragraph [ref=e580]: Configure automated testing and deployment pipeline
+                - generic [ref=e581]:
+                  - generic [ref=e582]:
+                    - generic [ref=e584]: CB
+                    - generic [ref=e585]: Charlie Brown
+                  - generic [ref=e586]: review
+                  - generic [ref=e587]: high
+            - button [ref=e588] [cursor=pointer]:
+              - img
+          - generic [ref=e591]:
+            - generic [ref=e592]:
+              - checkbox [checked] [ref=e593] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e594]:
+                - generic [ref=e595]:
+                  - heading "Fix mobile responsive issues" [level=3] [ref=e596]
+                  - generic [ref=e597]: TASK-2053
+                - paragraph [ref=e598]: Address layout problems on mobile devices
+                - generic [ref=e599]:
+                  - generic [ref=e600]:
+                    - generic [ref=e602]: AJ
+                    - generic [ref=e603]: Alice Johnson
+                  - generic [ref=e604]: done
+                  - generic [ref=e605]: high
+                  - generic [ref=e606]:
+                    - img [ref=e607]
+                    - generic [ref=e610]: Nov 28
+            - button [ref=e611] [cursor=pointer]:
+              - img
+          - generic [ref=e614]:
+            - generic [ref=e615]:
+              - checkbox [ref=e616] [cursor=pointer]
+              - generic [ref=e617]:
+                - generic [ref=e618]:
+                  - heading "Optimize database queries" [level=3] [ref=e619]
+                  - generic [ref=e620]: TASK-2051
+                - paragraph [ref=e621]: Review and optimize slow database queries for better performance
+                - generic [ref=e622]:
+                  - generic [ref=e623]:
+                    - generic [ref=e625]: BS
+                    - generic [ref=e626]: Bob Smith
+                  - generic [ref=e627]: todo
+                  - generic [ref=e628]: medium
+            - button [ref=e629] [cursor=pointer]:
+              - img
+          - generic [ref=e632]:
+            - generic [ref=e633]:
+              - checkbox [ref=e634] [cursor=pointer]
+              - generic [ref=e635]:
+                - generic [ref=e636]:
+                  - heading "Update documentation" [level=3] [ref=e637]
+                  - generic [ref=e638]: TASK-2052
+                - paragraph [ref=e639]: Update API documentation with latest changes and examples
+                - generic [ref=e640]:
+                  - generic [ref=e641]:
+                    - generic [ref=e643]: "??"
+                    - generic [ref=e644]: Unassigned
+                  - generic [ref=e645]: review
+                  - generic [ref=e646]: low
+                  - generic [ref=e647]:
+                    - img [ref=e648]
+                    - generic [ref=e651]: Dec 13
+            - button [ref=e652] [cursor=pointer]:
+              - img
+          - generic [ref=e655]:
+            - generic [ref=e656]:
+              - checkbox [checked] [ref=e657] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e658]:
+                - generic [ref=e659]:
+                  - heading "Write unit tests for API endpoints" [level=3] [ref=e660]
+                  - generic [ref=e661]: TASK-2050
+                - paragraph [ref=e662]: Ensure all API endpoints have comprehensive test coverage
+                - generic [ref=e663]:
+                  - generic [ref=e664]:
+                    - generic [ref=e666]: "??"
+                    - generic [ref=e667]: Unassigned
+                  - generic [ref=e668]: done
+                  - generic [ref=e669]: medium
+                  - generic [ref=e670]:
+                    - img [ref=e671]
+                    - generic [ref=e674]: Nov 28
+            - button [ref=e675] [cursor=pointer]:
+              - img
+          - generic [ref=e678]:
+            - generic [ref=e679]:
+              - checkbox [checked] [ref=e680] [cursor=pointer]:
+                - generic:
+                  - img
+              - generic [ref=e681]:
+                - generic [ref=e682]:
+                  - heading "Implement authentication system" [level=3] [ref=e683]
+                  - generic [ref=e684]: TASK-2049
+                - paragraph [ref=e685]: Build secure login and registration functionality
+                - generic [ref=e686]:
+                  - generic [ref=e687]:
+                    - generic [ref=e689]: CB
+                    - generic [ref=e690]: Charlie Brown
+                  - generic [ref=e691]: done
+                  - generic [ref=e692]: high
+            - button [ref=e693] [cursor=pointer]:
+              - img
+          - generic [ref=e696]:
+            - generic [ref=e697]:
+              - checkbox [ref=e698] [cursor=pointer]
+              - generic [ref=e699]:
+                - generic [ref=e700]:
+                  - heading "Design user interface mockups" [level=3] [ref=e701]
+                  - generic [ref=e702]: TASK-2048
+                - paragraph [ref=e703]: Create wireframes and mockups for the new dashboard interface
+                - generic [ref=e704]:
+                  - generic [ref=e705]:
+                    - generic [ref=e707]: GW
+                    - generic [ref=e708]: George Wilson
+                  - generic [ref=e709]: todo
+                  - generic [ref=e710]: high
+                  - generic [ref=e711]:
+                    - img [ref=e712]
+                    - generic [ref=e715]: Dec 19
+            - button [ref=e716] [cursor=pointer]:
+              - img
+  - button "Open Next.js Dev Tools" [ref=e722] [cursor=pointer]:
+    - img [ref=e723]
+  - alert [ref=e726]
+```
