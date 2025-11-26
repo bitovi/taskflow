@@ -47,7 +47,12 @@ const taskTemplates = [
     { name: 'Create automated workflow system', description: 'Build automation rules for task assignments and updates', priority: 'high' },
 ];
 
-const statuses = ['todo', 'in_progress', 'done', 'review'];
+const statuses = [
+    'todo', 'Todo', 'TODO',           // Should all be 'todo'
+    'in_progress', 'In Progress', 'IN PROGRESS',     // Should all be 'in_progress'  
+    'done', 'Done', 'DONE',                  // Should all be 'done'
+    'review', 'Review', 'REVIEW'      // Should all be 'review'
+];
 const priorities = ['low', 'medium', 'high'];
 
 function getRandomElement(arr) {
