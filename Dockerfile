@@ -4,18 +4,15 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Install SQLite
-RUN apk add --no-cache sqlite sqlite-dev && \
-    npm install better-sqlite3
-
 COPY . .
 
-# Setup the Database
-RUN npm run db:setup
+# Generate Prisma Client
+RUN npx prisma generate
 
 RUN npm run build
 
 ENV NODE_ENV=production
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+# Run migrations and start the app
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]

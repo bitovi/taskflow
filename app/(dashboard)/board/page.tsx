@@ -8,7 +8,7 @@ export default async function BoardPage() {
     const { tasks, error } = await getAllTasks()
 
     if (error) {
-        console.error("Error fetching tasks:", error)
+        console.error("[board/page.tsx - BoardPage] Error fetching tasks:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
     }
 
@@ -19,10 +19,20 @@ export default async function BoardPage() {
         done: { id: "done", title: "Done", tasks: [] },
     }
 
+    let matchedCount = 0;
+    let unmatchedCount = 0;
+    const unmatchedTasks: any[] = [];
+
     tasks?.forEach((task) => {
-        // Ensure task status is a valid key for initialColumns
-        if (task.status && task.status in initialColumns) {
-            initialColumns[task.status as keyof KanbanData].tasks.push(task)
+        // Normalize the status to lowercase and replace spaces with underscores
+        const normalizedStatus = task.status?.toLowerCase().replace(/\s+/g, '_');
+        // Ensure task status is a valid key for initialColumns after normalization
+        if (normalizedStatus && normalizedStatus in initialColumns) {
+            initialColumns[normalizedStatus as keyof KanbanData].tasks.push(task)
+            matchedCount++;
+        } else {
+            unmatchedCount++;
+            unmatchedTasks.push({ id: task.id, name: task.name, status: task.status, normalized: normalizedStatus });
         }
     })
 

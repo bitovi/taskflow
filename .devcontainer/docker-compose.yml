@@ -1,8 +1,21 @@
 version: '3.8'
 services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspaces/${localWorkspaceFolderBasename}:cached
+    command: sleep infinity
+    environment:
+      DATABASE_URL: postgresql://taskflow:taskflow@db:5432/taskflow
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: postgres:16-alpine
-    container_name: taskflow-db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: taskflow
       POSTGRES_PASSWORD: taskflow
@@ -16,19 +29,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://taskflow:taskflow@db:5432/taskflow
-    depends_on:
-      db:
-        condition: service_healthy
 
 volumes:
   postgres_data:

@@ -53,6 +53,7 @@ export async function getAllTasks() {
         });
         return { tasks, error: null };
     } catch (e) {
+        console.error("[actions.ts - getAllTasks] Error fetching tasks:", e);
         return { tasks: [], error: "Failed to fetch tasks." };
     }
 }
@@ -71,10 +72,10 @@ export async function deleteTask(taskId: number) {
 // Update a task's status by ID
 export async function updateTaskStatus(taskId: number, status: string) {
     try {
-        await prisma.task.update({ where: { id: taskId }, data: { status } });
-        const afterUpdate = Date.now();
+        const updateData: { status: string; priority?: string } = { status };
+
+        await prisma.task.update({ where: { id: taskId }, data: updateData });
         revalidatePath("/tasks");
-        const afterRevalidate = Date.now();
         return { error: null };
     } catch (e) {
         return { error: "Failed to update task status." };
