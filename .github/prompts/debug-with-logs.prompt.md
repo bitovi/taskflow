@@ -8,6 +8,7 @@ Follow these steps to debug the issue:
 3. **Run the tests**: Run the unit and E2E tests to see if the bug can be reproduced in the test environment. Note any failures or unexpected behaviors.
   - Unit tests can be run with `npm run test`
   - E2E tests can be run with `npm run test:e2e:debug` (use :debug here to see logs from both front end and back end).
+    - The E2E tests expect a local dev server to be running at `http://localhost:3000`, so make sure to kill any other instances running on port 3000 before running the e2e:debug command.
     - E2E tests can be filtered using the `-g` option to focus on tests related to the bug report. For example, if the bug report is about editing a task via a modal form, you can run:
       ```
       npm run test:e2e:debug -- -g "edit task via modal form"
