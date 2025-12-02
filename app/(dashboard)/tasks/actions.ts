@@ -104,7 +104,10 @@ export async function searchTasks(params: {
             const now = new Date();
             if (dueFilter === "overdue") {
                 where.dueDate = { lt: now };
-                where.status = { not: "done" };
+                // Only add status filter if no specific status is already set
+                if (!status || status === "all") {
+                    where.status = { not: "done" };
+                }
             } else if (dueFilter === "this_week") {
                 const startOfWeek = new Date(now);
                 startOfWeek.setDate(now.getDate() - now.getDay());
