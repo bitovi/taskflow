@@ -27,13 +27,57 @@ Reference materials:
 ## Tech overview
 
 - Next.js 14 App Router, React, TypeScript
-- Prisma ORM with SQLite for local development
+- Prisma ORM with PostgreSQL database
 - shadcn/ui + Radix + Tailwind for UI
 - Feature-based structure with server actions and typed components
+- Docker and Docker Compose for containerized development and deployment
+
+## Prerequisites
+
+- Node.js version 18 or greater
+- Docker and Docker Compose (for containerized development)
+- OR PostgreSQL 16+ (for local development without Docker)
 
 ## Installation
 
-Taskflow requires Node.JS version 18 or greater
+### Option 1: Using Dev Container (Recommended)
+
+The easiest way to get started is using VS Code's Dev Container feature:
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/bitovi/taskflow
+   cd taskflow
+   ```
+
+2. Open in VS Code and reopen in container
+   - VS Code will prompt you to "Reopen in Container"
+   - Or use Command Palette: `Dev Containers: Reopen in Container`
+   - The container will automatically:
+     - Start PostgreSQL with the `taskflow` database pre-created
+     - Run `npm run setup` to initialize the schema and seed data
+   
+3. The app will start automatically and be available at http://localhost:3000
+
+### Option 2: Using Docker Compose
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/bitovi/taskflow
+   cd taskflow
+   ```
+
+2. Start the services
+   ```bash
+   docker-compose up
+   ```
+   This will:
+   - Start PostgreSQL with the `taskflow` database pre-created
+   - Build and start the application
+   - Initialize the database schema and seed data
+   - Make the app available at http://localhost:3000
+
+### Option 3: Local Development (without Docker)
 
 1. Clone the repository
    ```bash
@@ -42,16 +86,35 @@ Taskflow requires Node.JS version 18 or greater
    npm install
    ```
 
-2. Set up the database
+2. Set up PostgreSQL
+   - Install PostgreSQL 16+ locally (e.g., [Postgres.app](https://postgresapp.com/) for Mac)
+   - Start the PostgreSQL service
+   - The setup will automatically create the `taskflow` database
+   - **Note:** You may need to create a PostgreSQL user or update `.env` to use your existing user:
+     - Use Postgres.app's default user (usually your Mac username)
+     - Or create a `taskflow` user via GUI/pgAdmin
+     - Update `DATABASE_URL` in `.env` accordingly
+
+3. Configure environment variables
    ```bash
-   # Create, migrate and populate the database
+   cp .env.example .env
+   ```
+   Edit `.env` to match your local PostgreSQL setup:
+   ```
+   DATABASE_URL="postgresql://taskflow:taskflow@localhost:5432/taskflow"
+   ```
+   Update the username, password, host, or port if your setup differs.
+
+4. Set up the database
+   ```bash
+   # Initializes schema and seeds data
    npm run db:setup
    ```
    This will create sample users and tasks for testing. Default login credentials:
    - Email: `alice@example.com`
    - Password: `password123`
 
-3. Start the development server
+5. Start the development server
    ```bash
    npm run dev
    ```
@@ -122,14 +185,18 @@ Available scripts:
 - `npm run db:seed` — Populate the database with sample data
 - `npm run db:clear` — Clear all data from the database
 - `npm run db:reset` — Clear and re-seed the database
+- `npm run db:setup` — Push schema and reset the database (initial setup)
 
 The seed script creates:
 - 7 sample users with different roles and profiles
 - 30+ sample tasks with various priorities, statuses, and assignments
 - Realistic task data including descriptions, due dates, and assignments
 
-Local development database:
-- Uses SQLite via Prisma (see `prisma/schema.prisma`)
+Database configuration:
+- Uses PostgreSQL via Prisma (see `prisma/schema.prisma`)
+- Connection configured via `DATABASE_URL` environment variable
+- Docker Compose sets up PostgreSQL automatically
+- For local development, configure PostgreSQL connection in `.env`
 - Seeded data is safe to reset at any time using the scripts above
 
 ## Contributing

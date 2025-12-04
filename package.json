@@ -12,7 +12,8 @@
     "test:e2e:headed": "playwright test --headed",
     "lint": "eslint 'app/**/*.{ts,tsx,js,jsx}' 'components/**/*.{ts,tsx,js,jsx}' 'tests/**/*.{ts,tsx,js,jsx}' --ignore-pattern 'app/generated/**' --ignore-pattern 'generated/**' --max-warnings=0",
     "setup": "npm i && npm run db:setup & npx playwright install chromium",
-    "db:setup": "npx prisma db push && npm run db:reset",
+    "db:create": "node prisma/create-db.js",
+    "db:setup": "npm run db:create && npx prisma db push && npm run db:reset",
     "db:clear": "node prisma/clear.js",
     "db:seed": "node prisma/seed.js",
     "db:reset": "npm run db:clear && npm run db:seed"
@@ -32,6 +33,7 @@
     "date-fns": "^4.1.0",
     "lucide-react": "^0.537.0",
     "next": "^15.5.7",
+    "pg": "^8.16.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "recharts": "^3.1.2"

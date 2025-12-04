@@ -1,19 +1,27 @@
 {
     "name": "Taskflow",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
+    "dockerComposeFile": "../docker-compose.dev.yaml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/taskflow",
     "postStartCommand": "npm run setup",
     "postAttachCommand": "npm run dev",
-    "forwardPorts": [3000],
+    "forwardPorts": [
+        3000,
+        5432
+    ],
     "portsAttributes": {
         "3000": {
             "label": "App",
             "onAutoForward": "openPreview"
+        },
+        "5432": {
+            "label": "PostgreSQL",
+            "onAutoForward": "ignore"
         }
     },
     "containerEnv": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "DATABASE_URL": "postgresql://taskflow:taskflow@postgres:5432/taskflow"
     },
     "customizations": {
         "vscode": {
