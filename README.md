@@ -1,212 +1,284 @@
-# TaskFlow — AI Feature Generation Demo
+# TaskFlow
 
-A modern task management app built with Next.js 14, React, TypeScript, and Prisma. TaskFlow provides a comprehensive solution for managing tasks, and projects with an intuitive drag-and-drop Kanban board interface.
+A modern task management application built with Next.js 15, React, TypeScript, and Prisma. TaskFlow is designed as an example project for testing AI enablement integrations and demonstrating modern web development best practices. The application features multi-user support, an intuitive drag-and-drop Kanban board interface, and comprehensive task management capabilities.
 
-👉 Bitovi can help you integrate this into your own SDLC workflow: [AI for Software Teams](https://www.bitovi.com/ai-for-software-teams)
+## Tech Stack
 
----
-
-This repository is intentionally structured as a demo and sandbox for Bitovi's AI workflows:
-- Understanding a codebase and generating copilot instructions
-- Automatically implementing features from a Jira ticket
-
-Reference materials:
-- [Instruction generation](https://github.com/bitovi/ai-enablement-prompts/tree/main/understanding-code/instruction-generation) workflow
-- [Feature generation](https://github.com/bitovi/ai-enablement-prompts/tree/main/writing-code/generate-feature) workflow 
-- Example [Jira ticket](https://bitovi.atlassian.net/browse/PLAY-23) used in this repo
-- [Figma designs](https://www.figma.com/design/TvHxpQ3z4Zq5JWOVUkgLlU/Tasks-Search-and-Filter?m=auto&t=ehht6F82l82y3XIW-6)
-
-## What you’ll do in this demo
-
-- Run the app locally with seeded sample data
-- Explore the baseline experience on the `main` branch
-- Review the AI-completed feature for USER-13 on the `user-13-search-and-filter` branch
-- Compare branches and see exactly what the AI changed
-- Optionally, follow the Bitovi workflows to reproduce the feature implementation with your own AI agent
-
-## Tech overview
-
-- Next.js 14 App Router, React, TypeScript
-- Prisma ORM with PostgreSQL database
-- shadcn/ui + Radix + Tailwind for UI
-- Feature-based structure with server actions and typed components
-- Docker and Docker Compose for containerized development and deployment
+- **Frontend:** Next.js 15 App Router, React 19, TypeScript
+- **Database:** Prisma ORM with PostgreSQL 16
+- **UI:** shadcn/ui, Radix UI, Tailwind CSS 4
+- **Testing:** Jest (unit tests), Playwright (E2E tests)
+- **Containerization:** Docker & Docker Compose
 
 ## Prerequisites
 
-- Node.js version 18 or greater
-- Docker and Docker Compose (for containerized development)
-- OR PostgreSQL 16+ (for local development without Docker)
+Choose one of the following setup methods:
 
-## Installation
+### For Docker/Dev Container (Recommended)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [VS Code](https://code.visualstudio.com/) with [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-### Option 1: Using Dev Container (Recommended)
+### For Local Development
+- Node.js 18 or higher
+- PostgreSQL 16 or higher
 
-The easiest way to get started is using VS Code's Dev Container feature:
+## Getting Started
 
-1. Clone the repository
+### Option 1: Dev Container (Recommended)
+
+This is the easiest way to get started with TaskFlow. The Dev Container provides a fully configured development environment with all dependencies pre-installed.
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/bitovi/taskflow
    cd taskflow
    ```
 
-2. Open in VS Code and reopen in container
-   - VS Code will prompt you to "Reopen in Container"
-   - Or use Command Palette: `Dev Containers: Reopen in Container`
-   - The container will automatically:
-     - Start PostgreSQL with the `taskflow` database pre-created
-     - Run `npm run setup` to initialize the schema and seed data
+2. **Open in VS Code and start the Dev Container**
+   - Open the folder in VS Code
+   - When prompted, click "Reopen in Container"
+   - Or use Command Palette (`Cmd/Ctrl + Shift + P`): **Dev Containers: Reopen in Container**
+
+3. **Wait for automatic setup**
    
-3. The app will start automatically and be available at http://localhost:3000
+   The Dev Container will automatically:
+   - Start a PostgreSQL 16 container with the `taskflow` database
+   - Install all Node.js dependencies
+   - Run the setup script which:
+     - Creates/verifies the database exists
+     - Runs Prisma migrations to set up the schema
+     - Clears any existing data
+     - Seeds the database with sample users and tasks
+     - Installs Playwright browser binaries for E2E testing
+   - Start the Next.js development server on port 3000
 
-### Option 2: Using Docker Compose
+4. **Access the application**
+   
+   Once the setup completes, VS Code will automatically open a preview of the application, or you can navigate to http://localhost:3000
 
-1. Clone the repository
+**What's included in the Dev Container:**
+- PostgreSQL 16 Alpine container (user: `taskflow`, password: `taskflow`, database: `taskflow`)
+- Node.js 24 Alpine with development tools (bash, git, curl, PostgreSQL client)
+- ESLint and Prettier extensions pre-configured
+- Automatic port forwarding for the app (3000) and PostgreSQL (5432)
+- Persistent PostgreSQL data volume
+
+### Option 2: Docker Compose (Production)
+
+Use this method to run the production build with Docker Compose.
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/bitovi/taskflow
    cd taskflow
    ```
 
-2. Start the services
+2. **Start the services**
    ```bash
    docker-compose up
    ```
+
    This will:
-   - Start PostgreSQL with the `taskflow` database pre-created
-   - Build and start the application
-   - Initialize the database schema and seed data
+   - Start a PostgreSQL 16 container
+   - Build the production Docker image (using the root `Dockerfile`)
+   - Run database setup (migrations and seeding) during the build
+   - Start the optimized Next.js production server
    - Make the app available at http://localhost:3000
 
-### Option 3: Local Development (without Docker)
+**Production Dockerfile details:**
+- Uses Node.js 24 Alpine for minimal image size
+- Runs `npm ci` for reproducible builds
+- Executes database setup: `npm run db:setup` (creates database, runs migrations, seeds data)
+- Builds the Next.js application with optimizations
+- Runs the production server with `npm run start`
 
-1. Clone the repository
+**To rebuild after changes:**
+```bash
+docker-compose down
+docker-compose up --build
+```
+
+### Option 3: Local Development (Without Docker)
+
+Run TaskFlow directly on your machine with a local PostgreSQL instance.
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/bitovi/taskflow
    cd taskflow
-   npm install
    ```
 
-2. Set up PostgreSQL
-   - Install PostgreSQL 16+ locally (e.g., [Postgres.app](https://postgresapp.com/) for Mac)
-   - Start the PostgreSQL service
-   - The setup will automatically create the `taskflow` database
-   - **Note:** You may need to create a PostgreSQL user or update `.env` to use your existing user:
-     - Use Postgres.app's default user (usually your Mac username)
-     - Or create a `taskflow` user via GUI/pgAdmin
-     - Update `DATABASE_URL` in `.env` accordingly
+2. **Install PostgreSQL**
+   
+   Install PostgreSQL 16+ on your system:
+   - **macOS:** [Postgres.app](https://postgresapp.com/) or `brew install postgresql@16`
+   - **Windows:** [PostgreSQL installer](https://www.postgresql.org/download/windows/)
+   - **Linux:** Use your package manager (e.g., `apt install postgresql-16`)
 
-3. Configure environment variables
+   Start the PostgreSQL service after installation.
+
+3. **Configure environment variables**
+   
+   Copy the example environment file and update it with your PostgreSQL connection details:
    ```bash
    cp .env.example .env
    ```
-   Edit `.env` to match your local PostgreSQL setup:
-   ```
-   DATABASE_URL="postgresql://taskflow:taskflow@localhost:5432/taskflow"
-   ```
-   Update the username, password, host, or port if your setup differs.
 
-4. Set up the database
+   Edit `.env` and set the `DATABASE_URL`. Examples:
+
+   **For Postgres.app (macOS, no password):**
+   ```env
+   DATABASE_URL="postgresql://localhost:5432/taskflow"
+   ```
+
+   **For PostgreSQL with username and password:**
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/taskflow"
+   ```
+
+   Replace `username` and `password` with your PostgreSQL credentials. The database name (`taskflow`) will be created automatically if it doesn't exist.
+
+4. **Run the setup script**
    ```bash
-   # Initializes schema and seeds data
-   npm run db:setup
+   npm run setup
    ```
-   This will create sample users and tasks for testing. Default login credentials:
-   - Email: `alice@example.com`
-   - Password: `password123`
 
-5. Start the development server
+   The setup script (`npm run setup`) performs the following operations:
+   - **Install dependencies:** Runs `npm install` to install all Node.js packages
+   - **Create database:** Runs `npm run db:create` which:
+     - Checks if the `taskflow` database exists
+     - Creates the database if it doesn't exist
+     - Attempts to create the PostgreSQL user if specified in `DATABASE_URL` and it doesn't exist
+     - Handles various PostgreSQL authentication methods (peer, password, default user)
+   - **Run migrations:** Executes `npx prisma db push` to create/update database tables
+   - **Reset data:** Runs `npm run db:reset` which:
+     - Clears all existing data (`npm run db:clear`)
+     - Seeds the database with sample data (`npm run db:seed`)
+   - **Install test browsers:** Runs `npx playwright install chromium` for E2E tests
+
+5. **Start the development server**
    ```bash
    npm run dev
    ```
-   Then open http://localhost:3000
 
-## Branches used in this demo
+   The application will be available at http://localhost:3000
 
-- main
-  - Baseline application used as the starting point for AI feature work
-  - Visit /tasks to see the tasks page before the feature is implemented
+## Environment Configuration
 
-- user-13-search-and-filter
-  - Contains the implementation of Jira ticket PLAY-23
-  - Adds a searchable task bar and filter controls to the /tasks page
-  - Follows the project’s patterns (server actions, Prisma, shadcn/ui, accessibility)
+TaskFlow uses environment variables for configuration. The repository includes an `.env.example` file with template values.
 
-Common Git operations for exploring the demo:
+**Copy the example file:**
 ```bash
-# Fetch all branches
-git fetch --all
-
-# Switch between the baseline and AI-implemented feature
-git switch main
-git switch user-13-search-and-filter
-
-# See what changed between branches
-git diff main...user-13-search-and-filter
+cp .env.example .env
 ```
 
-## The AI-implemented feature (USER-13)
+**Environment variables:**
 
-Ticket: https://bitovi-training.atlassian.net/browse/USER-13
+- `DATABASE_URL`: PostgreSQL connection string
+  - Docker/Dev Container: `postgresql://taskflow:taskflow@postgres:5432/taskflow`
+  - Local (Postgres.app): `postgresql://localhost:5432/taskflow`
+  - Local (with auth): `postgresql://username:password@localhost:5432/taskflow`
+- `NODE_ENV`: Environment mode (`development` or `production`)
 
-Feature summary:
-- Adds a searchable input and filters on the /tasks page
-- Lets users quickly find tasks by text, priority, and status
+**Important:** Never commit the `.env` file to version control. It's listed in `.gitignore` for security.
 
-How to try it:
-1. Start the app (see Installation above)
-2. Log in with the seeded account or create your own 
-   - (alice@example.com / password123)
-3. On `main`, navigate to /tasks and note the baseline behavior
-4. Switch to `user-13-search-and-filter` and refresh /tasks
-5. Try searching by task title/description and filtering by priority/status
+## Database Setup & Seeding
 
-## Tutorial: Running the AI workflows yourself
+TaskFlow includes automated database management scripts:
 
-If you want to recreate the experience with your own AI agent, follow the Bitovi guides:
+### Database Scripts
 
-1) Instruction generation
-- Goal: produce a codebase-specific instruction file the AI will follow when writing code
-- Guide: https://github.com/bitovi/ai-enablement-prompts/tree/main/understanding-code/instruction-generation
+- `npm run db:create` - Creates the `taskflow` database if it doesn't exist (local development only; Docker creates this automatically)
+- `npm run db:setup` - Complete database setup: create database, run migrations, and seed data
+- `npm run db:clear` - Removes all data from the database
+- `npm run db:seed` - Populates the database with sample data
+- `npm run db:reset` - Clears and re-seeds the database
 
-2) Feature generation
-- Goal: point your AI at a Jira ticket (e.g., USER-13) and have it implement the feature
-- Guide: https://github.com/bitovi/ai-enablement-prompts/tree/main/writing-code/generate-feature
+### Seeded Data
 
-Suggested flow:
-- Start on `main`
-- Provide your agent with the instruction generation prompt to build a coding conventions file
-- Provide your agent with the feature generation prompt and the USER-13 ticket
-- Let the agent create a feature branch and implement the change
-- Compare your branch to `user-13-search-and-filter` to see how close you match
+The seed script (`prisma/seed.js`) creates:
 
-## Database management
+**7 Sample Users:**
+- Alice Johnson (alice@example.com)
+- Bob Smith (bob@example.com)
+- Charlie Brown (charlie@example.com)
+- Diana Prince (diana@example.com)
+- Ethan Hunt (ethan@example.com)
+- Fiona Green (fiona@example.com)
+- George Wilson (george@example.com)
 
-Available scripts:
-- `npm run db:seed` — Populate the database with sample data
-- `npm run db:clear` — Clear all data from the database
-- `npm run db:reset` — Clear and re-seed the database
-- `npm run db:setup` — Push schema and reset the database (initial setup)
+**Password for all users:** `password123`
 
-The seed script creates:
-- 7 sample users with different roles and profiles
-- 30+ sample tasks with various priorities, statuses, and assignments
-- Realistic task data including descriptions, due dates, and assignments
+**30 Sample Tasks** with:
+- Random assignments to users
+- Various statuses: `todo`, `in_progress`, `done`, `review`
+- Different priorities: `low`, `medium`, `high`
+- Random due dates (70% of tasks have due dates within the next 30 days)
+- Realistic task names and descriptions
 
-Database configuration:
-- Uses PostgreSQL via Prisma (see `prisma/schema.prisma`)
-- Connection configured via `DATABASE_URL` environment variable
-- Docker Compose sets up PostgreSQL automatically
-- For local development, configure PostgreSQL connection in `.env`
-- Seeded data is safe to reset at any time using the scripts above
+**Example Login Credentials:**
+```
+Email: alice@example.com
+Password: password123
+```
 
-## Contributing
+You can log in with any of the seeded users using their email and the password `password123`.
 
-1. Fork the repository
-2. Create a feature branch
-3. Follow the established code patterns
-4. Test your changes thoroughly
-5. Submit a pull request
+## Testing
+
+TaskFlow includes both unit tests (Jest) and end-to-end tests (Playwright).
+
+### Unit Tests
+
+Run unit tests with Jest and React Testing Library:
+
+```bash
+npm test                # Run all unit tests
+npm run test:watch      # Run tests in watch mode
+```
+
+**Unit test files are located in:**
+- `tests/unit/` - Test files for components, utilities, and actions
+- Coverage includes: UI components, utility functions, server actions, date helpers
+
+### End-to-End Tests
+
+Run E2E tests with Playwright:
+
+```bash
+npm run test:e2e        # Run E2E tests headless
+npm run test:e2e:headed # Run E2E tests with browser UI
+```
+
+**Important:** The development server must be running before executing E2E tests.
+
+**Running E2E tests (step-by-step):**
+
+1. **Start the development server in one terminal:**
+   ```bash
+   npm run dev
+   ```
+
+2. **Run E2E tests in another terminal:**
+   ```bash
+   npm run test:e2e
+   ```
+
+**E2E test files are located in:**
+- `tests/e2e/` - Test files for authentication, tasks, and Kanban board functionality
+- Tests use global setup/teardown scripts to manage test data
+
+**Playwright configuration:**
+- Browser: Chromium (Desktop Chrome)
+- Base URL: http://localhost:3000
+- Viewport: 1280x720
+- Tests run sequentially (1 worker) to avoid database conflicts
+- Traces captured on first retry for debugging
 
 ## License
 
 This project is licensed under the MIT License.
+
+---
+
+**Note:** This project is primarily used as an example application for testing AI enablement integrations and demonstrating best practices in modern web development.

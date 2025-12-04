@@ -3,8 +3,7 @@
     "dockerComposeFile": "../docker-compose.dev.yaml",
     "service": "app",
     "workspaceFolder": "/workspaces/taskflow",
-    "postStartCommand": "npm run setup",
-    "postAttachCommand": "npm run dev",
+    "postCreateCommand": "npm run setup",
     "forwardPorts": [
         3000,
         5432
