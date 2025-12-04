@@ -28,6 +28,12 @@ RUN apt-get update && apt-get install -y \
     libx11-xcb1 \
     libxcb1 \
     libxext6 \
+    # GTK3 and related dependencies (required by Playwright)
+    libxcursor1 \
+    libgtk-3-0 \
+    libgdk-pixbuf-2.0-0 \
+    libpangocairo-1.0-0 \
+    libcairo-gobject2 \
     # Fonts and rendering
     fonts-liberation \
     fonts-noto-color-emoji \

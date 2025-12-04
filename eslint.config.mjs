@@ -11,6 +11,17 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // Allow CommonJS `require()` in test and Playwright files (Node-only)
+  {
+    files: [
+      "tests/**/*.{js,cjs,mjs,ts,tsx}",
+      "tests/e2e/**/*.{js,cjs,mjs,ts,tsx}",
+      "tests/unit/**/*.{js,cjs,mjs,ts,tsx}",
+    ],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
