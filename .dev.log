@@ -1,0 +1,16 @@
+
+> taskflow@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Warning: Found multiple lockfiles. Selecting /Users/mike/Documents/package-lock.json.
+   Consider removing the lockfiles at:
+   * /Users/mike/Documents/taskflow/package-lock.json
+
+   ▲ Next.js 15.4.6 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://10.0.0.158:3000
+   - Experiments (use with caution):
+     · serverActions
+
+ ✓ Starting...
+ ✓ Ready in 592ms

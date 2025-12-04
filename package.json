@@ -11,7 +11,7 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "lint": "next lint",
-    "setup": "npm i && npm run db:setup",
+    "setup": "npm i && npm run db:setup & npx playwright install",
     "db:setup": "npx prisma db push && npm run db:reset",
     "db:clear": "node prisma/clear.js",
     "db:seed": "node prisma/seed.js",

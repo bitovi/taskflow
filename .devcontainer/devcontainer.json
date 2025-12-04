@@ -3,8 +3,7 @@
     "build": {
         "dockerfile": "Dockerfile"
     },
-    "postCreateCommand": "npm ci",
-    "postStartCommand": "npm run db:setup",
+    "postStartCommand": "npm run setup",
     "postAttachCommand": "npm run dev",
     "forwardPorts": [3000],
     "portsAttributes": {
