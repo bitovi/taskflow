@@ -95,7 +95,7 @@ export async function updateTask(taskId: number, formData: FormData) {
     const assigneeId = assigneeIdRaw ? parseInt(assigneeIdRaw, 10) : null;
 
     const user = await getCurrentUser();
-    if (!user) return { error: "Not authenticated.", success: false };
+    if (!user) return { error: "User not logged in.", success: false };
 
     if (!name) return { error: "Title is required.", success: false };
 
@@ -170,7 +170,6 @@ export async function getTeamStats() {
         return {
             totalMembers,
             openTasks,
-            tasksCompleted,
             topPerformer: topPerformer
                 ? {
                     name: topPerformer.name,
@@ -183,7 +182,6 @@ export async function getTeamStats() {
         return {
             totalMembers: 0,
             openTasks: 0,
-            tasksCompleted: 0,
             topPerformer: null,
             error: "Failed to fetch team statistics.",
         };

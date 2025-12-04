@@ -8,7 +8,7 @@
  */
 export function parseDateString(dateString: string): Date {
     const [year, month, day] = dateString.split('-').map(Number)
-    return new Date(year, month - 1, day, 12, 0, 0) // month is 0-indexed, set to noon
+    return new Date(year, month - 1, day, 0, 0, 0)
 }
 
 /**
@@ -46,8 +46,8 @@ export function formatDateForDisplay(date: Date | string): string {
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ]
 
-    const month = months[dateObj.getMonth()]
-    const day = String(dateObj.getDate()).padStart(2, '0')
+    const month = months[dateObj.getUTCMonth()]
+    const day = String(dateObj.getUTCDate()).padStart(2, '0')
 
     return `${month} ${day}`
 }
