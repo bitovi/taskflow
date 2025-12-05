@@ -5,7 +5,8 @@ Follow the below steps to debug the issue. It's important that everything you do
 1. **Understand the Bug Report**: Carefully read the bug report to understand the issue, including the steps to reproduce, current behavior, expected behavior, and environment details.
 2. **Identify Relevant Code Areas**: Based on the bug report, identify which parts of the codebase are likely involved in the issue (e.g., task editing logic, database update functions, UI components).
 3. **Add logging**: Add logs to both the front end and back end code paths involved. In every log, include which file you're in as well as the function and any other relevant information. This will help trace the flow of data and identify where the update is failing.
-4. **Run the tests**: Run the unit and E2E tests to see if the bug can be reproduced in the test environment. Note any failures or unexpected behaviors.
+4. **Check the Database**: Use the PostgreSQL database MCP server to check if the bug may be related to malformed or unexpected data in the database. Look for inconsistencies or anomalies that could be causing the issue.
+5. **Run the tests**: Run the unit and E2E tests to see if the bug can be reproduced in the test environment. Note any failures or unexpected behaviors.
 
 - Unit tests can be run with `npm run test`
 - E2E tests can be run with `npm run test:e2e:debug` (use :debug here to see logs from both front end and back end).
@@ -15,10 +16,10 @@ Follow the below steps to debug the issue. It's important that everything you do
     npm run test:e2e:debug -- -g "edit task via modal form"
     ```
 
-4. **(OPTIONAL) Write a new test**: If no existing test covers the bug scenario, write a new unit or E2E test that reproduces the bug based on the steps provided in the bug report. This will help ensure that the bug is captured and can be verified as fixed later. Run the new test to confirm it fails as expected.
-5. **Fix the Bug**: Investigate the logs and code to identify the root cause of the issue. Implement a fix to ensure that the task assignee updates correctly and persists after a page refresh.
-6. **Verify the Fix**: Re-run the unit and E2E tests to confirm that the bug has been resolved and that no other functionality is broken.
-7. **Clean Up**: Remove any logging added during the debugging process to keep the codebase clean.
+6. **(OPTIONAL) Write a new test**: If no existing test covers the bug scenario, write a new unit or E2E test that reproduces the bug based on the steps provided in the bug report. This will help ensure that the bug is captured and can be verified as fixed later. Run the new test to confirm it fails as expected.
+7. **Fix the Bug**: Investigate the logs and code to identify the root cause of the issue. Implement a fix to ensure that the task assignee updates correctly and persists after a page refresh.
+8. **Verify the Fix**: Re-run the unit and E2E tests to confirm that the bug has been resolved and that no other functionality is broken.
+9. **Clean Up**: Remove any logging added during the debugging process to keep the codebase clean.
 
 ---
 
