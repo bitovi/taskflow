@@ -30,7 +30,14 @@ export async function login(formData: FormData) {
         },
     });
     const cookieStore = await cookies();
-    cookieStore.set("session", sessionToken, { httpOnly: true, path: "/" });
+    // Mark cookie as third-party friendly so VS Code Simple Browser keeps it.
+    cookieStore.set("session", sessionToken, {
+        httpOnly: true,
+        path: "/",
+        sameSite: "none",
+        secure: true,
+        partitioned: true,
+    });
     // Redirect to /home after successful login
     const { redirect } = await import("next/navigation");
     redirect("/");
@@ -41,7 +48,14 @@ export async function logout() {
     const sessionToken = cookieStore.get("session")?.value;
     if (sessionToken) {
         await prisma.session.deleteMany({ where: { token: sessionToken } });
-        cookieStore.set("session", "", { maxAge: 0, path: "/" });
+        // Mirror the same attributes when clearing to ensure removal across partitions.
+        cookieStore.set("session", "", {
+            maxAge: 0,
+            path: "/",
+            sameSite: "none",
+            secure: true,
+            partitioned: true,
+        });
     }
     const { redirect } = await import("next/navigation");
     redirect("/login");

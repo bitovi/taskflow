@@ -35,7 +35,14 @@ export async function signup(formData: FormData) {
         },
     });
     const cookieStore = await cookies();
-    cookieStore.set("session", sessionToken, { httpOnly: true, path: "/" });
+    // Use partitioned cookie attributes so Simple Browser keeps the session.
+    cookieStore.set("session", sessionToken, {
+        httpOnly: true,
+        path: "/",
+        sameSite: "none",
+        secure: true,
+        partitioned: true,
+    });
     // Redirect to /home after successful signup
     const { redirect } = await import("next/navigation");
     redirect("/");
