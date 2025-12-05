@@ -30,14 +30,27 @@ export async function login(formData: FormData) {
         },
     });
     const cookieStore = await cookies();
-    // Mark cookie as third-party friendly so VS Code Simple Browser keeps it.
-    cookieStore.set("session", sessionToken, {
-        httpOnly: true,
-        path: "/",
-        sameSite: "none",
-        secure: true,
-        partitioned: true,
-    });
+    // VS Code Simple Browser has 'Code/' and 'Electron/' in user agent
+    const headers = await import('next/headers').then(m => m.headers());
+    const userAgent = (await headers).get('user-agent') || '';
+    const isVSCode = userAgent.includes('Code/') && userAgent.includes('Electron/');
+
+    if (isVSCode) {
+        // VS Code Simple Browser or other embedded context
+        cookieStore.set("session", sessionToken, {
+            httpOnly: true,
+            path: "/",
+            sameSite: "none",
+            secure: true,
+            partitioned: true,
+        });
+    } else {
+        // Docker, normal browser, or Playwright
+        cookieStore.set("session", sessionToken, {
+            httpOnly: true,
+            path: "/",
+        });
+    }
     // Redirect to /home after successful login
     const { redirect } = await import("next/navigation");
     redirect("/");
@@ -48,14 +61,25 @@ export async function logout() {
     const sessionToken = cookieStore.get("session")?.value;
     if (sessionToken) {
         await prisma.session.deleteMany({ where: { token: sessionToken } });
-        // Mirror the same attributes when clearing to ensure removal across partitions.
-        cookieStore.set("session", "", {
-            maxAge: 0,
-            path: "/",
-            sameSite: "none",
-            secure: true,
-            partitioned: true,
-        });
+
+        const headers = await import('next/headers').then(m => m.headers());
+        const userAgent = (await headers).get('user-agent') || '';
+        const isVSCode = userAgent.includes('Code/') && userAgent.includes('Electron/');
+
+        if (isVSCode) {
+            cookieStore.set("session", "", {
+                maxAge: 0,
+                path: "/",
+                sameSite: "none",
+                secure: true,
+                partitioned: true,
+            });
+        } else {
+            cookieStore.set("session", "", {
+                maxAge: 0,
+                path: "/",
+            });
+        }
     }
     const { redirect } = await import("next/navigation");
     redirect("/login");

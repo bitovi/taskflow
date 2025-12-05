@@ -35,14 +35,27 @@ export async function signup(formData: FormData) {
         },
     });
     const cookieStore = await cookies();
-    // Use partitioned cookie attributes so Simple Browser keeps the session.
-    cookieStore.set("session", sessionToken, {
-        httpOnly: true,
-        path: "/",
-        sameSite: "none",
-        secure: true,
-        partitioned: true,
-    });
+    // VS Code Simple Browser has 'Code/' and 'Electron/' in user agent
+    const headers = await import('next/headers').then(m => m.headers());
+    const userAgent = (await headers).get('user-agent') || '';
+    const isVSCode = userAgent.includes('Code/') && userAgent.includes('Electron/');
+
+    if (isVSCode) {
+        // VS Code Simple Browser or other embedded context
+        cookieStore.set("session", sessionToken, {
+            httpOnly: true,
+            path: "/",
+            sameSite: "none",
+            secure: true,
+            partitioned: true,
+        });
+    } else {
+        // Docker, normal browser, or Playwright
+        cookieStore.set("session", sessionToken, {
+            httpOnly: true,
+            path: "/",
+        });
+    }
     // Redirect to /home after successful signup
     const { redirect } = await import("next/navigation");
     redirect("/");
