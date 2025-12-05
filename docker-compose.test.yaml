@@ -51,11 +51,6 @@ services:
       npm run db:reset &&
       npx playwright test
       "
-    volumes:
-      - ./tests:/app/tests:ro
-      - ./components:/app/components:ro
-      - ./lib:/app/lib:ro
-      - ./playwright.config.ts:/app/playwright.config.ts:ro
 
 volumes:
   postgres-test-data:
