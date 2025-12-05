@@ -3,6 +3,9 @@
     "dockerComposeFile": "../docker-compose.dev.yaml",
     "service": "app",
     "workspaceFolder": "/workspaces/taskflow",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    },
     "postCreateCommand": "npm run setup",
     "forwardPorts": [
         3000,
