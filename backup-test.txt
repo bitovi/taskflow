@@ -1,0 +1,61 @@
+test('toggle task completion preserves priority', async ({ page }) => {
+        await login(page);
+
+        // Create a task with High priority
+        const title = `E2E Toggle ${Date.now()}`;
+        await page.goto('/tasks/new');
+        await page.fill('input#title', title);
+        await page.fill('textarea#description', 'Testing priority preservation on toggle');
+
+        // Set priority to High - find the priority select trigger
+        const priorityTrigger = page.locator('button[role="combobox"]').nth(1); // 0=status, 1=priority
+        await priorityTrigger.click();
+        await page.locator('[role="option"]:has-text("High")').click();
+
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click('button:has-text("Create Task")'),
+        ]);
+        await expect(page).toHaveURL(/\/tasks/);
+
+        // Find the task card
+        const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
+        await expect(card).toBeVisible({ timeout: 5000 });
+
+        // Verify initial state: priority should be "high" - look for badge containing text "high"
+        const initialPriorityBadge = card.getByText('high', { exact: false });
+        await expect(initialPriorityBadge).toBeVisible({ timeout: 5000 });
+
+        // Find and click the checkbox to mark task as complete
+        const checkbox = card.locator('button[role="checkbox"]').first();
+        await checkbox.click();
+
+        // Wait a moment for the optimistic update and server response
+        await page.waitForTimeout(1000);
+
+        // Verify the task is marked as done (has line-through on title)
+        const taskTitle = card.locator('h3', { hasText: title }).first();
+        await expect(taskTitle).toHaveClass(/line-through/);
+
+        // CRITICAL: Verify priority is still "High" and NOT changed to "Low"
+        const priorityAfterToggle = card.getByText('high', { exact: false });
+        await expect(priorityAfterToggle).toBeVisible({ timeout: 5000 });
+
+        // Additional check: ensure "Low" badge is NOT present (this is the bug - it WILL fail initially)
+        const lowPriorityBadge = card.getByText('low', { exact: false });
+        await expect(lowPriorityBadge).toHaveCount(0);
+
+        // Refresh the page to verify persistence
+        await page.reload();
+        await page.waitForLoadState('networkidle');
+
+        // Verify the task is still marked as done and priority is still High
+        const cardAfterRefresh = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
+        await expect(cardAfterRefresh).toBeVisible();
+
+        const titleAfterRefresh = cardAfterRefresh.locator('h3', { hasText: title }).first();
+        await expect(titleAfterRefresh).toHaveClass(/line-through/);
+
+        const priorityAfterRefresh = cardAfterRefresh.getByText('high', { exact: false });
+        await expect(priorityAfterRefresh).toBeVisible({ timeout: 5000 });
+    });
