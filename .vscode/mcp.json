@@ -1,12 +1,27 @@
 {
     "servers": {
+        // "postgres": {
+        //     "command": "npx",
+        //     "args": [
+        //         "-y",
+        //         "@modelcontextprotocol/server-postgres",
+        //         "postgresql://taskflow:taskflow@localhost:5432/taskflow"
+        //     ]
+        // },
         "postgres": {
-            "command": "npx",
+            "command": "docker",
             "args": [
-                "-y",
-                "@modelcontextprotocol/server-postgres",
-                "postgresql://taskflow:taskflow@localhost:5432/taskflow"
-            ]
+                "run",
+                "-i",
+                "--rm",
+                "-e",
+                "DATABASE_URI",
+                "crystaldba/postgres-mcp",
+                "--access-mode=unrestricted"
+            ],
+            "env": {
+                "DATABASE_URI": "postgresql://taskflow:taskflow@localhost:5432/taskflow"
+            }
         }
     }
 }
