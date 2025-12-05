@@ -13,7 +13,7 @@ export default defineConfig({
         headless: true,
         viewport: { width: 1280, height: 720 },
         actionTimeout: 5000,
-        baseURL: 'http://localhost:3000',
+        baseURL: process.env.BASE_URL || 'http://localhost:3000',
         trace: 'on-first-retry',
     },
     projects: [
@@ -23,8 +23,8 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
                 launchOptions: {
                     args: ['--no-sandbox'],
-                }, 
-            } 
+                },
+            }
         },
     ],
 });

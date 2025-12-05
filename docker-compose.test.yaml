@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow
+      POSTGRES_DB: taskflow
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    ports:
+      - "3001:3000"  # Use 3001 to avoid conflicts with dev server
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://taskflow:taskflow@postgres:5432/taskflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Setup database and start the app in dev mode
+    command: sh -c "npx prisma db push && npm run dev"
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://taskflow:taskflow@postgres:5432/taskflow
+      - BASE_URL=http://app:3000
+    depends_on:
+      app:
+        condition: service_started
+    # Wait for app, then run all tests sequentially
+    command: >
+      sh -c "
+      sleep 5 &&
+      echo '=== Running Unit Tests ===' &&
+      npm run test &&
+      echo '=== Running E2E Tests ===' &&
+      npm run db:reset &&
+      npx playwright test
+      "
+    volumes:
+      - ./tests:/app/tests:ro
+      - ./components:/app/components:ro
+      - ./lib:/app/lib:ro
+      - ./playwright.config.ts:/app/playwright.config.ts:ro
+
+volumes:
+  postgres-test-data:
