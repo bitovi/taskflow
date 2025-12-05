@@ -49,7 +49,10 @@ export async function getAllTasks() {
                 assignee: { select: { id: true, name: true, email: true, password: true } },
                 creator: { select: { id: true, name: true, email: true, password: true } },
             },
-            orderBy: { createdAt: "desc" },
+            orderBy: [
+                { createdAt: "desc" },
+                { id: "desc" }
+            ],
         });
         return { tasks, error: null };
     } catch (e) {

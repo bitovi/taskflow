@@ -21,8 +21,9 @@ type TaskWithProfile = PrismaTask & {
 };
 
 export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+  const [tasks, setTasks] = useState(initialTasks)
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
-    initialTasks,
+    tasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
       if (action === "delete") {
         return state.filter((t) => t.id !== task.id)
@@ -36,6 +37,11 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
   const [isPending, startTransition] = useTransition()
   const [openDialogs, setOpenDialogs] = useState<Record<number, boolean>>({})
   const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({})
+
+  // Sync state with incoming props
+  useEffect(() => {
+    setTasks(initialTasks)
+  }, [initialTasks])
 
   const handleDelete = async (taskId: number) => {
     startTransition(async () => {
