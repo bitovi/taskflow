@@ -37,6 +37,7 @@ services:
       - NODE_ENV=test
       - DATABASE_URL=postgresql://taskflow:taskflow@postgres:5432/taskflow
       - BASE_URL=http://app:3000
+      - NODE_OPTIONS=--require ./tests/e2e/console-log-proxy.js
     depends_on:
       app:
         condition: service_started
