@@ -101,8 +101,8 @@ export async function getAllTasks(filters?: {
         const tasks = await prisma.task.findMany({
             where,
             include: {
-                assignee: { select: { id: true, name: true, email: true, password: true } },
-                creator: { select: { id: true, name: true, email: true, password: true } },
+                assignee: { select: { id: true, name: true, email: true } },
+                creator: { select: { id: true, name: true, email: true } },
             },
             orderBy: [
                 { createdAt: "desc" },

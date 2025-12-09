@@ -66,6 +66,9 @@ export function TasksSearch({ initialTasks, users }: TasksSearchProps) {
         filtered = filtered.filter((task) =>
           ["todo", "in_progress", "review"].includes(task.status)
         )
+      } else if (statusFilter === "blocked") {
+        // Blocked status handling - would need to be added to the schema if required
+        filtered = filtered.filter((task) => task.status === "blocked")
       } else {
         filtered = filtered.filter((task) => task.status === statusFilter)
       }
