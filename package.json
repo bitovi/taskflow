@@ -14,7 +14,7 @@
     "test:docker": "docker compose -f docker-compose.test.yaml -p taskflow-tests up --build --abort-on-container-exit && docker compose -f docker-compose.test.yaml -p taskflow-tests down -v",
     "test:docker:logs": "docker compose -f docker-compose.test.yaml -p taskflow-tests up --build",
     "lint": "eslint 'app/**/*.{ts,tsx,js,jsx}' 'components/**/*.{ts,tsx,js,jsx}' 'tests/**/*.{ts,tsx,js,jsx}' --ignore-pattern 'app/generated/**' --ignore-pattern 'generated/**' --max-warnings=0",
-    "setup": "npm i && npm run db:setup & npx playwright install chromium",
+    "setup": "npm i && npm run db:setup && npx playwright install chromium",
     "deploy:prod": "docker compose -f docker-compose.yaml up --build -d",
     "deploy:prod:down": "docker compose -f docker-compose.yaml down",
     "deploy:prod:logs": "docker compose -f docker-compose.yaml logs -f",
