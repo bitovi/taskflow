@@ -1,0 +1,137 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "npm run build",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "start",
+      "type": "shell",
+      "command": "npm start",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "npm test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "test:watch",
+      "type": "shell",
+      "command": "npm run test:watch",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "test:e2e",
+      "type": "shell",
+      "command": "npm run test:e2e",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:e2e:headed",
+      "type": "shell",
+      "command": "npm run test:e2e:headed",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:e2e:debug",
+      "type": "shell",
+      "command": "npm run test:e2e:debug",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:docker",
+      "type": "shell",
+      "command": "npm run test:docker",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "problemMatcher": [
+        "$eslint-stylish"
+      ]
+    },
+    {
+      "label": "setup",
+      "type": "shell",
+      "command": "npm run setup",
+      "problemMatcher": []
+    },
+    {
+      "label": "deploy:prod",
+      "type": "shell",
+      "command": "npm run deploy:prod",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "deploy:prod:down",
+      "type": "shell",
+      "command": "npm run deploy:prod:down",
+      "problemMatcher": []
+    },
+    {
+      "label": "deploy:prod:logs",
+      "type": "shell",
+      "command": "npm run deploy:prod:logs",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "db:setup",
+      "type": "shell",
+      "command": "npm run db:setup",
+      "problemMatcher": []
+    },
+    {
+      "label": "db:seed",
+      "type": "shell",
+      "command": "npm run db:seed",
+      "problemMatcher": []
+    },
+    {
+      "label": "db:reset",
+      "type": "shell",
+      "command": "npm run db:reset",
+      "problemMatcher": []
+    },
+    {
+      "label": "db:clear",
+      "type": "shell",
+      "command": "npm run db:clear",
+      "problemMatcher": []
+    }
+  ]
+}
