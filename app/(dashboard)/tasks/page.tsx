@@ -1,18 +1,19 @@
 import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Search } from "lucide-react"
+import { Plus } from "lucide-react"
 import Link from "next/link"
-import { TaskList } from "@/components/task-list"
+import { TasksSearch } from "@/components/tasks-search"
 import { poppins } from "@/lib/fonts"
 
-import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
+import { getAllTasks, getAllUsers } from "@/app/(dashboard)/tasks/actions"
 
 export const revalidate = 0
 
 
 export default async function TasksPage() {
     const { tasks, error } = await getAllTasks();
+    const { users } = await getAllUsers();
+    
     if (error) {
         console.error("Error fetching data:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
@@ -31,7 +32,7 @@ export default async function TasksPage() {
             </div>
 
             <Suspense fallback={<div>Loading tasks...</div>}>
-                <TaskList initialTasks={tasks || []} />
+                <TasksSearch initialTasks={tasks || []} users={users || []} />
             </Suspense>
         </div>
     )

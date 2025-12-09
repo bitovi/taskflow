@@ -42,9 +42,64 @@ export async function createTask(formData: FormData) {
 }
 
 // Get all tasks with assignee and creator info
-export async function getAllTasks() {
+export async function getAllTasks(filters?: {
+    search?: string;
+    status?: string;
+    assigneeId?: number;
+    dueFilter?: string;
+}) {
     try {
+        const where: any = {};
+
+        // Search filter - search in name, description, or ID
+        if (filters?.search) {
+            const searchTerm = filters.search.toLowerCase();
+            // Try to parse as a number for ID search
+            const searchAsNumber = parseInt(searchTerm, 10);
+            where.OR = [
+                { name: { contains: searchTerm, mode: 'insensitive' } },
+                { description: { contains: searchTerm, mode: 'insensitive' } },
+            ];
+            // If it's a valid number, also search by ID
+            if (!isNaN(searchAsNumber)) {
+                where.OR.push({ id: searchAsNumber });
+            }
+        }
+
+        // Status filter
+        if (filters?.status && filters.status !== 'all') {
+            if (filters.status === 'open') {
+                where.status = { in: ['todo', 'in_progress', 'review'] };
+            } else {
+                where.status = filters.status;
+            }
+        }
+
+        // Assignee filter
+        if (filters?.assigneeId) {
+            where.assigneeId = filters.assigneeId;
+        }
+
+        // Due date filter
+        if (filters?.dueFilter && filters.dueFilter !== 'any') {
+            const now = new Date();
+            if (filters.dueFilter === 'overdue') {
+                where.dueDate = {
+                    lt: now,
+                };
+                where.status = { not: 'done' };
+            } else if (filters.dueFilter === 'this_week') {
+                const endOfWeek = new Date(now);
+                endOfWeek.setDate(now.getDate() + 7);
+                where.dueDate = {
+                    gte: now,
+                    lte: endOfWeek,
+                };
+            }
+        }
+
         const tasks = await prisma.task.findMany({
+            where,
             include: {
                 assignee: { select: { id: true, name: true, email: true, password: true } },
                 creator: { select: { id: true, name: true, email: true, password: true } },
@@ -57,6 +112,25 @@ export async function getAllTasks() {
         return { tasks, error: null };
     } catch (e) {
         return { tasks: [], error: "Failed to fetch tasks." };
+    }
+}
+
+// Get all users for assignee dropdown
+export async function getAllUsers() {
+    try {
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+        return { users, error: null };
+    } catch (e) {
+        return { users: [], error: "Failed to fetch users." };
     }
 }
 
