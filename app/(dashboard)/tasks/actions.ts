@@ -60,6 +60,120 @@ export async function getAllTasks() {
     }
 }
 
+// Search and filter tasks
+export async function searchTasks({
+    searchQuery = "",
+    statusFilter = "all",
+    assigneeFilter = "all",
+    dueFilter = "any",
+    page = 1,
+    pageSize = 10,
+}: {
+    searchQuery?: string;
+    statusFilter?: string;
+    assigneeFilter?: string;
+    dueFilter?: string;
+    page?: number;
+    pageSize?: number;
+}) {
+    try {
+        const skip = (page - 1) * pageSize;
+        
+        // Build where clause
+        const where: Record<string, unknown> = {};
+        
+        // Search by title, ID, or description (simulating tag search)
+        if (searchQuery) {
+            where.OR = [
+                { name: { contains: searchQuery, mode: 'insensitive' } },
+                { description: { contains: searchQuery, mode: 'insensitive' } },
+                // Search by ID if the query is a number
+                ...(isNaN(Number(searchQuery)) ? [] : [{ id: Number(searchQuery) }]),
+            ];
+        }
+        
+        // Filter by status
+        if (statusFilter !== "all") {
+            where.status = statusFilter;
+        }
+        
+        // Filter by assignee
+        if (assigneeFilter !== "all") {
+            where.assigneeId = assigneeFilter === "unassigned" ? null : parseInt(assigneeFilter);
+        }
+        
+        // Filter by due date
+        if (dueFilter !== "any") {
+            const now = new Date();
+            if (dueFilter === "overdue") {
+                where.dueDate = { lt: now };
+                where.status = { not: "done" };
+            } else if (dueFilter === "this_week") {
+                const endOfWeek = new Date();
+                endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
+                endOfWeek.setHours(23, 59, 59, 999);
+                where.dueDate = { gte: now, lte: endOfWeek };
+            }
+        }
+        
+        // Get tasks with pagination
+        const [tasks, totalCount] = await Promise.all([
+            prisma.task.findMany({
+                where,
+                include: {
+                    assignee: { select: { id: true, name: true, email: true } },
+                    creator: { select: { id: true, name: true, email: true } },
+                },
+                orderBy: [
+                    { createdAt: "desc" },
+                    { id: "desc" }
+                ],
+                skip,
+                take: pageSize,
+            }),
+            prisma.task.count({ where }),
+        ]);
+        
+        const totalPages = Math.ceil(totalCount / pageSize);
+        
+        return {
+            tasks,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalCount,
+                pageSize,
+            },
+            error: null,
+        };
+    } catch (e) {
+        console.error("Failed to search tasks:", e);
+        return {
+            tasks: [],
+            pagination: {
+                currentPage: 1,
+                totalPages: 0,
+                totalCount: 0,
+                pageSize,
+            },
+            error: "Failed to search tasks.",
+        };
+    }
+}
+
+// Get all users for assignee filter
+export async function getAllUsers() {
+    try {
+        const users = await prisma.user.findMany({
+            select: { id: true, name: true, email: true },
+            orderBy: { name: "asc" },
+        });
+        return { users, error: null };
+    } catch (e) {
+        return { users: [], error: "Failed to fetch users." };
+    }
+}
+
 // Delete a task by ID
 export async function deleteTask(taskId: number) {
     try {
