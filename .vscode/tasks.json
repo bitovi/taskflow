@@ -21,7 +21,9 @@
         "reveal": "always",
         "panel": "new"
       },
-      "dependsOn": ["kill-port-3000"]
+      "dependsOn": [
+        "kill-port-3000"
+      ]
     },
     {
       "label": "build",
@@ -48,37 +50,9 @@
       "problemMatcher": []
     },
     {
-      "label": "test:watch",
-      "type": "shell",
-      "command": "npm run test:watch",
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
       "label": "test:e2e",
       "type": "shell",
       "command": "npm run test:e2e",
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "test:e2e:headed",
-      "type": "shell",
-      "command": "npm run test:e2e:headed",
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "test:e2e:debug",
-      "type": "shell",
-      "command": "npm run test:e2e:debug",
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "test:docker",
-      "type": "shell",
-      "command": "npm run test:docker",
       "group": "test",
       "problemMatcher": []
     },
