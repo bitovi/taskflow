@@ -46,8 +46,8 @@ export async function getAllTasks() {
     try {
         const tasks = await prisma.task.findMany({
             include: {
-                assignee: { select: { id: true, name: true, email: true, password: true } },
-                creator: { select: { id: true, name: true, email: true, password: true } },
+                assignee: { select: { id: true, name: true, email: true } },
+                creator: { select: { id: true, name: true, email: true } },
             },
             orderBy: [
                 { createdAt: "desc" },
@@ -91,13 +91,19 @@ export async function searchTasks(params: {
             dueDate?: { lt: Date } | { gte: Date; lte: Date };
         } = {};
 
-        // Search by title, tag (we'll use description as tags aren't in schema), or ID
+        // Search by title, description, or ID
         if (searchQuery) {
-            where.OR = [
+            const searchConditions = [
                 { name: { contains: searchQuery, mode: "insensitive" } },
                 { description: { contains: searchQuery, mode: "insensitive" } },
-                { id: isNaN(Number(searchQuery)) ? undefined : Number(searchQuery) },
-            ].filter(condition => condition.id !== undefined || condition.name || condition.description);
+            ];
+            
+            // If search query is a number, also search by ID
+            if (!isNaN(Number(searchQuery))) {
+                searchConditions.push({ id: Number(searchQuery) });
+            }
+            
+            where.OR = searchConditions;
         }
 
         // Filter by status
@@ -133,8 +139,8 @@ export async function searchTasks(params: {
         const tasks = await prisma.task.findMany({
             where,
             include: {
-                assignee: { select: { id: true, name: true, email: true, password: true } },
-                creator: { select: { id: true, name: true, email: true, password: true } },
+                assignee: { select: { id: true, name: true, email: true } },
+                creator: { select: { id: true, name: true, email: true } },
             },
             orderBy: [
                 { createdAt: "desc" },

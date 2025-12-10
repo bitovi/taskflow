@@ -42,8 +42,8 @@ export function TasksSearchTable({ tasks, totalPages, currentPage, onPageChange 
   }
 
   const handleRowClick = (taskId: number) => {
-    // Navigate to task detail page (placeholder for now)
-    console.log("Navigate to task:", taskId)
+    // TODO: Navigate to task detail page
+    // router.push(`/tasks/${taskId}`)
   }
 
   if (tasks.length === 0) {
@@ -79,7 +79,7 @@ export function TasksSearchTable({ tasks, totalPages, currentPage, onPageChange 
                   <div className="flex flex-col">
                     <div className="flex items-center space-x-2">
                       <span className={`font-semibold ${poppins.className}`}>{task.name}</span>
-                      <Badge variant="outline" className="text-xs text-foreground-muted">
+                      <Badge variant="outline" className="text-xs text-muted-foreground">
                         TASK-{task.id}
                       </Badge>
                     </div>

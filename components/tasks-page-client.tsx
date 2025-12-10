@@ -114,7 +114,7 @@ export function TasksPageClient() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search tasks by title, tag, or ID"
+          placeholder="Search tasks by title, description, or ID"
           value={searchQuery}
           onChange={handleSearchChange}
           className="pl-10"
