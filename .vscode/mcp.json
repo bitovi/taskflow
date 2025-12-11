@@ -16,6 +16,13 @@
 			},
 			"type": "stdio"
 		},
+		"Figma": {
+			"type": "http",
+			"url": "http://fp-bitovi-internal-p.ovi-coding-agent.com/mcp",
+			"headers": {
+				"Authorization": "5c37a040cf7c53bf9617f77166a4057d7338ed1d2aab6ad93aa00f0ac5d85e12"
+			}
+		}
 	},
 	"inputs": []
 }
