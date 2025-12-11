@@ -1,0 +1,181 @@
+{
+    "ui": {
+        "description": "React component architecture with shadcn/ui pattern",
+        "required_patterns": {
+            "radix-ui-components": "All UI primitives must use Radix UI (dialog, dropdown, checkbox, select, etc.)",
+            "class-variance-authority": "Use CVA for component variants (buttonVariants pattern)",
+            "cn-utility": "All className concatenation must use cn() from lib/utils",
+            "forwardRef-pattern": "UI components must use React.forwardRef for proper ref handling",
+            "lucide-icons": "Use Lucide React for all icons"
+        },
+        "architectural_constraints": {
+            "ui-component-location": "All reusable UI primitives go in components/ui/",
+            "feature-component-location": "Feature-specific components go in components/",
+            "client-components": "Mark interactive components with 'use client' directive",
+            "tailwind-styling": "Use Tailwind CSS utility classes exclusively (no CSS modules or styled-components)",
+            "displayName-required": "All forwardRef components must set displayName",
+            "design-system": "Follow shadcn/ui component structure and patterns"
+        }
+    },
+    "routing": {
+        "description": "Next.js 15 App Router with file-based routing",
+        "required_patterns": {
+            "app-directory": "All routes defined in app/ directory",
+            "route-groups": "Use route groups for layout organization (e.g., (dashboard))",
+            "page-tsx": "Route pages defined as page.tsx files",
+            "layout-tsx": "Shared layouts defined as layout.tsx files",
+            "server-components-default": "Components are server components by default",
+            "client-components-explicit": "Client interactivity requires 'use client' directive"
+        },
+        "architectural_constraints": {
+            "nested-layouts": "Layouts can nest within route groups",
+            "metadata-export": "Root layout must export metadata object",
+            "single-page-per-route": "Only one page.tsx per route segment",
+            "no-api-routes": "No /api directory - uses server actions instead",
+            "turbopack-dev": "Development uses Turbopack (next dev --turbopack)"
+        }
+    },
+    "data-layer": {
+        "description": "Prisma ORM with PostgreSQL and server actions",
+        "required_patterns": {
+            "prisma-client": "All database access through PrismaClient from @/app/generated/prisma",
+            "server-actions": "Data mutations via 'use server' functions in actions.ts files",
+            "revalidatePath": "Cache invalidation using revalidatePath() after mutations",
+            "error-handling": "Return objects with { error, success } patterns",
+            "getCurrentUser": "Authentication check using getCurrentUser() from login/actions"
+        },
+        "architectural_constraints": {
+            "actions-file-location": "Server actions must be in actions.ts files collocated with routes",
+            "prisma-schema-source-of-truth": "Database schema defined in prisma/schema.prisma",
+            "generated-client-path": "Prisma client generates to app/generated/prisma",
+            "postgresql-only": "Database is PostgreSQL (not database-agnostic)",
+            "no-graphql": "Direct Prisma usage, no GraphQL layer",
+            "session-based-auth": "Session management via Session model with tokens",
+            "server-only-db-access": "Database operations only in server actions, never in client components"
+        }
+    },
+    "state-management": {
+        "description": "Server-first state with React hooks for client state",
+        "required_patterns": {
+            "server-actions-for-mutations": "All data mutations through server actions",
+            "useState-for-client": "Client-side UI state with React useState",
+            "useEffect-for-fetching": "Client data fetching patterns with useEffect",
+            "no-global-state-library": "No Redux, Zustand, or other state management libraries"
+        },
+        "architectural_constraints": {
+            "server-components-fetch-data": "Server components fetch data directly (async/await)",
+            "client-components-props": "Pass data to client components via props",
+            "optimistic-ui-via-state": "Optimistic updates managed through local state",
+            "revalidation-for-sync": "Server-side revalidation for data consistency"
+        }
+    },
+    "authentication": {
+        "description": "Session-based authentication with bcrypt password hashing",
+        "required_patterns": {
+            "getCurrentUser-check": "All protected actions must call getCurrentUser()",
+            "session-token": "Sessions stored in database with unique tokens",
+            "bcrypt-hashing": "Passwords hashed with bcryptjs before storage",
+            "return-user-or-null": "getCurrentUser() returns User | null pattern"
+        },
+        "architectural_constraints": {
+            "login-actions-location": "Auth functions in app/login/actions.ts",
+            "session-cookie": "Session tokens stored in cookies",
+            "no-jwt": "Uses database sessions, not JWT",
+            "no-oauth": "Only email/password authentication (no OAuth providers)",
+            "user-model-required": "User model includes id, email, password, name"
+        }
+    },
+    "forms": {
+        "description": "Form handling with FormData and server actions",
+        "required_patterns": {
+            "formData-parameter": "Server actions receive FormData parameter",
+            "formData-get": "Extract fields using formData.get('fieldName')",
+            "action-attribute": "Forms use action={serverAction} attribute",
+            "controlled-inputs": "Client forms use controlled inputs (useState)",
+            "date-parsing": "Dates parsed with parseDateString from lib/date-utils"
+        },
+        "architectural_constraints": {
+            "no-react-hook-form": "Native HTML forms with server actions (no react-hook-form)",
+            "validation-server-side": "Validation logic in server actions",
+            "return-success-error": "Form submissions return { success, error, message }",
+            "field-name-mapping": "Form field names may differ from model fields (e.g., title -> name)"
+        }
+    },
+    "testing": {
+        "description": "Jest for unit tests, Playwright for E2E tests",
+        "required_patterns": {
+            "jest-for-units": "Unit tests with Jest + React Testing Library",
+            "playwright-for-e2e": "End-to-end tests with Playwright",
+            "test-file-location": "Unit tests in tests/unit/, E2E in tests/e2e/",
+            "test-file-naming": "*.test.tsx for components, *.spec.ts for E2E",
+            "testing-library-queries": "Use screen queries from @testing-library/react"
+        },
+        "architectural_constraints": {
+            "jest-environment-jsdom": "Unit tests use jsdom environment",
+            "playwright-chromium": "E2E tests use Chromium browser",
+            "test-setup-file": "Jest setup in jest.setup.ts",
+            "e2e-global-hooks": "E2E setup/teardown in global-setup.js and global-teardown.js",
+            "passWithNoTests": "Jest configured with --passWithNoTests flag"
+        }
+    },
+    "styling": {
+        "description": "Tailwind CSS 4 with custom theme tokens",
+        "required_patterns": {
+            "tailwind-utilities": "Use Tailwind utility classes exclusively",
+            "cn-function": "Combine classes with cn() utility",
+            "design-tokens": "Use CSS custom properties (--background, --foreground, etc.)",
+            "responsive-classes": "Mobile-first responsive design (md:, lg: prefixes)",
+            "dark-mode-support": "Design tokens support dark mode via CSS variables"
+        },
+        "architectural_constraints": {
+            "no-css-modules": "No .module.css files",
+            "no-styled-components": "No CSS-in-JS libraries",
+            "globals-css-only": "Global styles only in app/globals.css",
+            "tailwind-config": "Theme customization in tailwind.config",
+            "postcss-required": "PostCSS for Tailwind processing"
+        }
+    },
+    "typography": {
+        "description": "Next.js font optimization with Google Fonts",
+        "required_patterns": {
+            "next-font": "Import fonts from 'next/font/google'",
+            "font-variables": "Apply fonts via className (inter.className, poppins.className)",
+            "poppins-for-headings": "Poppins used for titles and headings",
+            "inter-for-body": "Inter used for body text"
+        },
+        "architectural_constraints": {
+            "fonts-file-location": "Font configurations in lib/fonts.ts",
+            "font-subsets": "Specify subsets: ['latin']",
+            "font-weights": "Define needed weights array",
+            "variable-fonts": "Use next/font variable fonts for optimization"
+        }
+    },
+    "data-visualization": {
+        "description": "Recharts for dashboard analytics",
+        "required_patterns": {
+            "recharts-components": "Use Recharts (BarChart, PieChart, etc.)",
+            "responsive-container": "Wrap charts in ResponsiveContainer",
+            "chart-data-format": "Charts expect array of objects with keys"
+        },
+        "architectural_constraints": {
+            "client-component-only": "Charts must be in client components ('use client')",
+            "chart-components-location": "Chart components in components/ directory",
+            "rechart-no-ssr": "Charts don't support SSR (client-side only)"
+        }
+    },
+    "drag-and-drop": {
+        "description": "Drag and drop with @hello-pangea/dnd",
+        "required_patterns": {
+            "dnd-context": "Use DragDropContext for drag-and-drop",
+            "droppable-areas": "Define Droppable areas for columns",
+            "draggable-items": "Wrap items in Draggable",
+            "onDragEnd-handler": "Handle drag events with onDragEnd callback"
+        },
+        "architectural_constraints": {
+            "client-component-required": "DnD components must be client components",
+            "kanban-board-location": "Kanban board in components/kanban-board.tsx",
+            "status-based-columns": "Columns organized by task status",
+            "optimistic-updates": "Update local state before server action"
+        }
+    }
+}

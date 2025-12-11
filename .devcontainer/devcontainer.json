@@ -7,6 +7,7 @@
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
     },
     "postCreateCommand": "npm run setup",
+    "postAttachCommand": "npm run dev",
     "forwardPorts": [
         3000,
         5432
