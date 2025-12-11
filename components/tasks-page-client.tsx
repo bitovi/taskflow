@@ -112,7 +112,12 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
             className="pl-9 pr-9"
             data-testid="search-input"
           />
-          {searchQuery && (
+          {isPending && !searchQuery && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" data-testid="search-spinner" />
+            </div>
+          )}
+          {searchQuery && !isPending && (
             <button
               onClick={handleClear}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
@@ -121,9 +126,16 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
               <X className="h-4 w-4" />
             </button>
           )}
-          {isPending && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+          {searchQuery && isPending && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" data-testid="search-spinner" />
+              <button
+                onClick={handleClear}
+                className="text-muted-foreground hover:text-foreground"
+                data-testid="clear-search"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
           )}
         </div>

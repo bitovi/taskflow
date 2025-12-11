@@ -46,8 +46,8 @@ export async function getAllTasks() {
     try {
         const tasks = await prisma.task.findMany({
             include: {
-                assignee: { select: { id: true, name: true, email: true, password: true } },
-                creator: { select: { id: true, name: true, email: true, password: true } },
+                assignee: { select: { id: true, name: true, email: true } },
+                creator: { select: { id: true, name: true, email: true } },
             },
             orderBy: [
                 { createdAt: "desc" },
@@ -75,8 +75,8 @@ export async function searchTasks(query: string) {
                 ],
             },
             include: {
-                assignee: { select: { id: true, name: true, email: true, password: true } },
-                creator: { select: { id: true, name: true, email: true, password: true } },
+                assignee: { select: { id: true, name: true, email: true } },
+                creator: { select: { id: true, name: true, email: true } },
             },
             orderBy: [
                 { createdAt: "desc" },

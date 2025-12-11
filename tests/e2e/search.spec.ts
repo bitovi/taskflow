@@ -1,7 +1,13 @@
 import { test, expect, Page } from '@playwright/test';
 
+// Test credentials for seeded user
+const TEST_USER = {
+  email: 'alice@example.com',
+  password: 'password123'
+};
+
 // Helper to log in as a seeded user
-async function login(page: Page, email = 'alice@example.com', password = 'password123') {
+async function login(page: Page, email = TEST_USER.email, password = TEST_USER.password) {
     await page.goto('/login');
     await page.fill('input#email', email);
     await page.fill('input#password', password);

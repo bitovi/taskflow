@@ -36,8 +36,8 @@ const mockTasks = [
     updatedAt: new Date(),
     creatorId: 1,
     assigneeId: 1,
-    assignee: { id: 1, name: "John Doe", email: "john@example.com", password: "hashed" },
-    creator: { id: 1, name: "John Doe", email: "john@example.com", password: "hashed" },
+    assignee: { id: 1, name: "John Doe", email: "john@example.com" },
+    creator: { id: 1, name: "John Doe", email: "john@example.com" },
   },
   {
     id: 2,
@@ -50,8 +50,8 @@ const mockTasks = [
     updatedAt: new Date(),
     creatorId: 1,
     assigneeId: 1,
-    assignee: { id: 1, name: "Jane Smith", email: "jane@example.com", password: "hashed" },
-    creator: { id: 1, name: "Jane Smith", email: "jane@example.com", password: "hashed" },
+    assignee: { id: 1, name: "Jane Smith", email: "jane@example.com" },
+    creator: { id: 1, name: "Jane Smith", email: "jane@example.com" },
   },
 ]
 
@@ -92,8 +92,8 @@ describe("searchTasks", () => {
         ],
       },
       include: {
-        assignee: { select: { id: true, name: true, email: true, password: true } },
-        creator: { select: { id: true, name: true, email: true, password: true } },
+        assignee: { select: { id: true, name: true, email: true } },
+        creator: { select: { id: true, name: true, email: true } },
       },
       orderBy: [
         { createdAt: "desc" },
