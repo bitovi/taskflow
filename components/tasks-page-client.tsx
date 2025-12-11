@@ -27,15 +27,21 @@ export function TasksPageClient({ initialTasks, initialQuery = "" }: TasksPageCl
   const [query, setQuery] = useState(initialQuery)
   const [tasks, setTasks] = useState(initialTasks)
   const [isPending, startTransition] = useTransition()
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  // Sync with URL on mount and when searchParams change
+  // Initialize from URL on mount only
   useEffect(() => {
-    const urlQuery = searchParams.get("q") || ""
-    setQuery(urlQuery)
-  }, [searchParams])
+    if (!isInitialized) {
+      const urlQuery = searchParams.get("q") || ""
+      setQuery(urlQuery)
+      setIsInitialized(true)
+    }
+  }, [searchParams, isInitialized])
 
-  // Perform search when query changes
+  // Perform search when query changes (but not on initial mount)
   useEffect(() => {
+    if (!isInitialized) return
+
     // Only search if query is 3+ characters or empty (to show all)
     if (query.length === 0 || query.length >= 3) {
       startTransition(async () => {
@@ -43,16 +49,18 @@ export function TasksPageClient({ initialTasks, initialQuery = "" }: TasksPageCl
         setTasks(searchResults || [])
       })
 
-      // Update URL with pushState
-      const url = new URL(window.location.href)
-      if (query) {
-        url.searchParams.set("q", query)
-      } else {
-        url.searchParams.delete("q")
+      // Update URL with pushState (only in browser environment)
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href)
+        if (query) {
+          url.searchParams.set("q", query)
+        } else {
+          url.searchParams.delete("q")
+        }
+        window.history.pushState({}, "", url.toString())
       }
-      window.history.pushState({}, "", url.toString())
     }
-  }, [query])
+  }, [query, isInitialized])
 
   const handleClearSearch = () => {
     setQuery("")
@@ -96,7 +104,7 @@ export function TasksPageClient({ initialTasks, initialQuery = "" }: TasksPageCl
             </Button>
           )}
           {isPending && (
-            <Loader2 className="absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+            <Loader2 className={`absolute top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground ${query ? "right-10" : "right-3"}`} />
           )}
         </div>
         <Button variant="outline" size="icon" aria-label="Filter tasks">
