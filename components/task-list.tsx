@@ -12,6 +12,7 @@ import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
 import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
+import { NoTasksFound } from "./no-tasks-found"
 import { poppins } from "@/lib/fonts"
 
 import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
@@ -20,7 +21,12 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+interface TaskListProps {
+  initialTasks: TaskWithProfile[];
+  searchQuery?: string;
+}
+
+export function TaskList({ initialTasks, searchQuery = "" }: TaskListProps) {
   const [tasks, setTasks] = useState(initialTasks)
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     tasks,
@@ -77,7 +83,10 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {optimisticTasks.length === 0 && searchQuery.length >= 3 ? (
+        <NoTasksFound />
+      ) : (
+        optimisticTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
@@ -164,7 +173,8 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
             <EditTaskForm task={task} onFinish={() => handleCloseDialog(task.id)} />
           </DialogContent>
         </Dialog>
-      ))}
+      ))
+      )}
     </div>
   )
 }
