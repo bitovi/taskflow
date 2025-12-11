@@ -20,7 +20,6 @@ type Task = Prisma.TaskGetPayload<{
         id: true;
         name: true;
         email: true;
-        password: true;
       };
     };
     creator: {
@@ -28,7 +27,6 @@ type Task = Prisma.TaskGetPayload<{
         id: true;
         name: true;
         email: true;
-        password: true;
       };
     };
   };
