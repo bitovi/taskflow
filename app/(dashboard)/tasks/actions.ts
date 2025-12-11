@@ -42,9 +42,19 @@ export async function createTask(formData: FormData) {
 }
 
 // Get all tasks with assignee and creator info
-export async function getAllTasks() {
+export async function getAllTasks(searchQuery?: string) {
     try {
+        const whereClause = searchQuery && searchQuery.length >= 3
+            ? {
+                OR: [
+                    { name: { contains: searchQuery, mode: "insensitive" as const } },
+                    { description: { contains: searchQuery, mode: "insensitive" as const } },
+                ],
+            }
+            : {};
+
         const tasks = await prisma.task.findMany({
+            where: whereClause,
             include: {
                 assignee: { select: { id: true, name: true, email: true, password: true } },
                 creator: { select: { id: true, name: true, email: true, password: true } },
