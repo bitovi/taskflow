@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect, useTransition, useCallback } from "react"
+import React from "react"
+import { useState, useEffect, useTransition, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, X, Filter, Loader2 } from "lucide-react"
@@ -14,14 +15,51 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null
 }
 
+function mergeTaskUpdates(current: TaskWithProfile[], updates: TaskWithProfile[]): TaskWithProfile[] {
+  if (updates.length === 0) return current
+
+  const updateMap = new Map(updates.map((task) => [task.id, task]))
+  const seen = new Set<number>()
+  const merged: TaskWithProfile[] = current.map((task) => {
+    const updated = updateMap.get(task.id)
+    if (updated) {
+      seen.add(task.id)
+      return { ...task, ...updated }
+    }
+    return task
+  })
+
+  updates.forEach((task) => {
+    if (!seen.has(task.id)) {
+      merged.push(task)
+    }
+  })
+
+  return merged
+}
+
 interface TasksPageClientProps {
   initialTasks: TaskWithProfile[]
 }
 
 export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [allTasks, setAllTasks] = useState<TaskWithProfile[]>(initialTasks)
   const [tasks, setTasks] = useState<TaskWithProfile[]>(initialTasks)
   const [isPending, startTransition] = useTransition()
+  const allTasksRef = useRef(allTasks)
+
+  useEffect(() => {
+    allTasksRef.current = allTasks
+  }, [allTasks])
+
+  // Optimize state synchronization to avoid redundant updates
+  useEffect(() => {
+    if (JSON.stringify(allTasksRef.current) !== JSON.stringify(initialTasks)) {
+      setAllTasks(initialTasks)
+      setTasks(initialTasks)
+    }
+  }, [initialTasks])
 
   // Initialize search query from URL on mount
   useEffect(() => {
@@ -33,39 +71,31 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
       startTransition(async () => {
         const { tasks: searchResults } = await searchTasks(query)
         setTasks(searchResults || [])
+        if (searchResults) {
+          setAllTasks((prev) => mergeTaskUpdates(prev, searchResults))
+        }
       })
     }
   }, [])
 
-  // Handle search with debounce
+  // Optimize debounce logic to minimize state updates
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchQuery.length >= 3) {
         startTransition(async () => {
           const { tasks: searchResults } = await searchTasks(searchQuery)
-          setTasks(searchResults || [])
+          if (searchResults) {
+            setTasks(searchResults)
+            setAllTasks((prev) => mergeTaskUpdates(prev, searchResults))
+          }
         })
-        
-        // Update URL with pushState
-        const url = new URL(window.location.href)
-        url.searchParams.set("search", searchQuery)
-        window.history.pushState({}, "", url.toString())
       } else if (searchQuery.length === 0) {
-        // Clear search and show all tasks
-        setTasks(initialTasks)
-        
-        // Remove search param from URL
-        const url = new URL(window.location.href)
-        url.searchParams.delete("search")
-        window.history.pushState({}, "", url.toString())
-      } else {
-        // Less than 3 characters, show all tasks but don't update URL
-        setTasks(initialTasks)
+        setTasks(allTasksRef.current)
       }
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [searchQuery, initialTasks])
+  }, [searchQuery, allTasksRef])
 
   // Handle browser back/forward
   useEffect(() => {
@@ -78,27 +108,39 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
         startTransition(async () => {
           const { tasks: searchResults } = await searchTasks(query)
           setTasks(searchResults || [])
+          if (searchResults) {
+            setAllTasks((prev) => mergeTaskUpdates(prev, searchResults))
+          }
         })
       } else {
-        setTasks(initialTasks)
+        setTasks(allTasksRef.current)
       }
     }
 
     window.addEventListener("popstate", handlePopState)
     return () => window.removeEventListener("popstate", handlePopState)
-  }, [initialTasks])
+  }, [])
 
   const handleClear = useCallback(() => {
     setSearchQuery("")
-    setTasks(initialTasks)
+    setTasks(allTasks)
     
     // Remove search param from URL
     const url = new URL(window.location.href)
     url.searchParams.delete("search")
     window.history.pushState({}, "", url.toString())
-  }, [initialTasks])
+  }, [allTasks])
 
   const showEmptyState = searchQuery.length >= 3 && tasks.length === 0
+
+  // Keep local state in sync after a status change
+  const handleTaskStatusChange = useCallback((taskId: number, status: TaskWithProfile["status"]) => {
+    setTasks((current) => current.map((task) => (task.id === taskId ? { ...task, status } : task)))
+    setAllTasks((current) => current.map((task) => (task.id === taskId ? { ...task, status } : task)))
+  }, [])
+
+  // Wrap TaskList with React.memo to prevent unnecessary re-renders
+  const MemoizedTaskList = React.memo(TaskList)
 
   return (
     <div className="space-y-4">
@@ -144,7 +186,7 @@ export function TasksPageClient({ initialTasks }: TasksPageClientProps) {
         </Button>
       </div>
 
-      {showEmptyState ? <EmptyState /> : <TaskList initialTasks={tasks} />}
+      {showEmptyState ? <EmptyState /> : <MemoizedTaskList initialTasks={tasks} onTaskStatusChange={handleTaskStatusChange} />}
     </div>
   )
 }

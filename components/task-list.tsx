@@ -4,7 +4,7 @@ import { useOptimistic, useTransition, useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -20,7 +20,7 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+export function TaskList({ initialTasks, onTaskStatusChange }: { initialTasks: TaskWithProfile[]; onTaskStatusChange?: (taskId: number, status: TaskWithProfile["status"]) => void }) {
   const [tasks, setTasks] = useState(initialTasks)
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     tasks,
@@ -53,7 +53,13 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
   const handleToggle = async (task: TaskWithProfile) => {
     startTransition(async () => {
       setOptimisticTasks({ action: "toggle", task })
-      await updateTaskStatus(task.id, task.status === "done" ? "todo" : "done")
+      const nextStatus = task.status === "done" ? "todo" : "done"
+      const result = await updateTaskStatus(task.id, nextStatus)
+      if (result?.error) {
+        setOptimisticTasks({ action: "toggle", task })
+        return
+      }
+      if (onTaskStatusChange) onTaskStatusChange(task.id, nextStatus)
     })
   }
 
