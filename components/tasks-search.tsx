@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { SearchInput } from "@/components/ui/search-input"
 import { TaskList } from "@/components/task-list"
@@ -23,12 +23,6 @@ export function TasksSearch({ initialTasks, initialSearchQuery }: TasksSearchPro
   const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery)
   const [isPending, startTransition] = useTransition()
-
-  // Update search query when URL changes
-  useEffect(() => {
-    const query = searchParams.get("search") || ""
-    setSearchQuery(query)
-  }, [searchParams])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
