@@ -1,0 +1,116 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - navigation [ref=e7]:
+            - button "previous" [disabled] [ref=e8]:
+              - img "previous" [ref=e9]
+            - generic [ref=e11]:
+              - generic [ref=e12]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e13]:
+              - img "next" [ref=e14]
+          - img
+        - generic [ref=e16]:
+          - link "Next.js 15.5.7 (outdated) Turbopack" [ref=e17] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/messages/version-staleness
+            - img [ref=e18]
+            - generic "An outdated version detected (latest is 16.0.8), upgrade is highly recommended!" [ref=e20]: Next.js 15.5.7 (outdated)
+            - generic [ref=e21]: Turbopack
+          - img
+      - dialog "Runtime PrismaClientInitializationError" [ref=e23]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - generic [ref=e29]:
+                - generic [ref=e30]: Runtime PrismaClientInitializationError
+                - generic [ref=e31]: Server
+              - generic [ref=e32]:
+                - button "Copy Error Info" [ref=e33] [cursor=pointer]:
+                  - img [ref=e34]
+                - button "No related documentation found" [disabled] [ref=e36]:
+                  - img [ref=e37]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e39] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e40]
+            - generic [ref=e48]:
+              - paragraph [ref=e49]: "Invalid `prisma.user.findUnique()` invocation: error: Environment variable not found: DATABASE_URL. --> schema.prisma:12 | 11 | provider = \"postgresql\" 12 | url = env(\"DATABASE_URL\") | Validation Error Count: 1"
+              - button "Show More" [ref=e51] [cursor=pointer]
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - paragraph [ref=e55]:
+                - img [ref=e57]
+                - generic [ref=e59]: app/generated/prisma/runtime/binary.js (259:7764) @ kl.handleRequestError
+                - button "Open in editor" [ref=e60] [cursor=pointer]:
+                  - img [ref=e62]
+              - generic [ref=e65]:
+                - generic [ref=e66]: 257 |
+                - generic [ref=e67]: "258 | More Information: https://pris.ly/d/execute-raw"
+                - generic [ref=e68]: "> 259 | `)}var jh=({clientMethod:t,activeProvider:e})=>r=>{let n=\"\",A;if(Ca(r))n=r.sql,A={values:di(r.values),__prismaRawParameters__:!0};else if(Array.isArray(r)){let[i,...s]=r;n=i,A={values:di(s||[]),__prismaRawParameters__:!0}}else switch(e){case\"sqlite\":case\"mysql\":{n=r.sql,A={values:di(r.values),__prismaRawParameters__:!0};break}case\"cockroachdb\":case\"postgresql\":case\"postgres\":{n=r.text,A={values:di(r.values),__prismaRawParameters__:!0};break}case\"sqlserver\":{n=qS(r),A={values:di(r.values),__prismaRawParameters__:!0};break}default:throw new Error(`The ${e} provider does not support ${t}`)}return A?.values?ZS(`prisma.${t}(${n}, ${A.values})`):ZS(`prisma.${t}(${n})`),{query:n,parameters:A}},XS={requestArgsToMiddlewareArgs(t){return[t.strings,...t.values]},middlewareArgsToRequestArgs(t){let[e,...r]=t;return new _e(e,r)}},$S={requestArgsToMiddlewareArgs(t){return[t]},middlewareArgsToRequestArgs(t){return t[0]}};function Zh(t){return function(r,n){let A,i=(s=t)=>{try{return s===void 0||s?.kind===\"itx\"?A??=KS(r(s)):KS(r(s))}catch(o){return Promise.reject(o)}};return{get spec(){return n},then(s,o){return i().then(s,o)},catch(s){return i().catch(s)},finally(s){return i().finally(s)},requestTransaction(s){let o=i(s);return o.requestTransaction?o.requestTransaction(s):o},[Symbol.toStringTag]:\"PrismaPromise\"}}}function KS(t){return typeof t.then==\"function\"?t:Promise.resolve(t)}var d_=gu.split(\".\")[0],h_={isEnabled(){return!1},getTraceParent(){return\"00-10-10-00\"},dispatchEngineSpans(){},getActiveContext(){},runInChildSpan(t,e){return e()}},Xh=class{isEnabled(){return this.getGlobalTracingHelper().isEnabled()}getTraceParent(e){return this.getGlobalTracingHelper().getTraceParent(e)}dispatchEngineSpans(e){return this.getGlobalTracingHelper().dispatchEngineSpans(e)}getActiveContext(){return this.getGlobalTracingHelper().getActiveContext()}runInChildSpan(e,r){return this.getGlobalTracingHelper().runInChildSpan(e,r)}getGlobalTracingHelper(){let e=globalThis[`V${d_}_PRISMA_INSTRUMENTATION`],r=globalThis.PRISMA_INSTRUMENTATION;return e?.helper??r?.helper??h_}};function zS(){return new Xh}function eb(t,e=()=>{}){let r,n=new Promise(A=>r=A);return{then(A){return--t===0&&r(e()),A?.(n)}}}function tb(t){return typeof t==\"string\"?t:t.reduce((e,r)=>{let n=typeof r==\"string\"?r:r.level;return n===\"query\"?e:e&&(r===\"info\"||e===\"info\")?\"info\":n},void 0)}var Fl=class{_middlewares=[];use(e){this._middlewares.push(e)}get(e){return this._middlewares[e]}has(e){return!!this._middlewares[e]}length(){return this._middlewares.length}};var nb=G(wu());function Tl(t){return typeof t.batchRequestIdx==\"number\"}function rb(t){if(t.action!==\"findUnique\"&&t.action!==\"findUniqueOrThrow\")return;let e=[];return t.modelName&&e.push(t.modelName),t.query.arguments&&e.push($h(t.query.arguments)),e.push($h(t.query.selection)),e.join(\"\")}function $h(t){return`(${Object.keys(t).sort().map(r=>{let n=t[r];return typeof n==\"object\"&&n!==null?`(${r} ${$h(n)})`:r}).join(\" \")})`}var f_={aggregate:!1,aggregateRaw:!1,createMany:!0,createManyAndReturn:!0,createOne:!0,deleteMany:!0,deleteOne:!0,executeRaw:!0,findFirst:!1,findFirstOrThrow:!1,findMany:!1,findRaw:!1,findUnique:!1,findUniqueOrThrow:!1,groupBy:!1,queryRaw:!1,runCommandRaw:!0,updateMany:!0,updateManyAndReturn:!0,updateOne:!0,upsertOne:!0};function Kh(t){return f_[t]}var xl=class{constructor(e){this.options=e;this.batches={}}batches;tickActive=!1;request(e){let r=this.options.batchBy(e);return r?(this.batches[r]||(this.batches[r]=[],this.tickActive||(this.tickActive=!0,process.nextTick(()=>{this.dispatchBatches(),this.tickActive=!1}))),new Promise((n,A)=>{this.batches[r].push({request:e,resolve:n,reject:A})})):this.options.singleLoader(e)}dispatchBatches(){for(let e in this.batches){let r=this.batches[e];delete this.batches[e],r.length===1?this.options.singleLoader(r[0].request).then(n=>{n instanceof Error?r[0].reject(n):r[0].resolve(n)}).catch(n=>{r[0].reject(n)}):(r.sort((n,A)=>this.options.batchOrder(n.request,A.request)),this.options.batchLoader(r.map(n=>n.request)).then(n=>{if(n instanceof Error)for(let A=0;A<r.length;A++)r[A].reject(n);else for(let A=0;A<r.length;A++){let i=n[A];i instanceof Error?r[A].reject(i):r[A].resolve(i)}}).catch(n=>{for(let A=0;A<r.length;A++)r[A].reject(n)}))}}get[Symbol.toStringTag](){return\"DataLoader\"}};function qn(t,e){if(e===null)return e;switch(t){case\"bigint\":return BigInt(e);case\"bytes\":{let{buffer:r,byteOffset:n,byteLength:A}=Buffer.from(e,\"base64\");return new Uint8Array(r,n,A)}case\"decimal\":return new Lt(e);case\"datetime\":case\"date\":return new Date(e);case\"time\":return new Date(`1970-01-01T${e}Z`);case\"bigint-array\":return e.map(r=>qn(\"bigint\",r));case\"bytes-array\":return e.map(r=>qn(\"bytes\",r));case\"decimal-array\":return e.map(r=>qn(\"decimal\",r));case\"datetime-array\":return e.map(r=>qn(\"datetime\",r));case\"date-array\":return e.map(r=>qn(\"date\",r));case\"time-array\":return e.map(r=>qn(\"time\",r));default:return e}}function Ul(t){let e=[],r=Q_(t);for(let n=0;n<t.rows.length;n++){let A=t.rows[n],i={...r};for(let s=0;s<A.length;s++)i[t.columns[s]]=qn(t.types[s],A[s]);e.push(i)}return e}function Q_(t){let e={};for(let r=0;r<t.columns.length;r++)e[t.columns[r]]=null;return e}var C_=ce(\"prisma:client:request_handler\"),kl=class{client;dataloader;logEmitter;constructor(e,r){this.logEmitter=r,this.client=e,this.dataloader=new xl({batchLoader:iB(async({requests:n,customDataProxyFetch:A})=>{let{transaction:i,otelParentCtx:s}=n[0],o=n.map(u=>u.protocolQuery),a=this.client._tracingHelper.getTraceParent(s),c=n.some(u=>Kh(u.protocolQuery.action));return(await this.client._engine.requestBatch(o,{traceparent:a,transaction:I_(i),containsWrite:c,customDataProxyFetch:A})).map((u,g)=>{if(u instanceof Error)return u;try{return this.mapQueryEngineResult(n[g],u)}catch(E){return E}})}),singleLoader:async n=>{let A=n.transaction?.kind===\"itx\"?Ab(n.transaction):void 0,i=await this.client._engine.request(n.protocolQuery,{traceparent:this.client._tracingHelper.getTraceParent(),interactiveTransaction:A,isWrite:Kh(n.protocolQuery.action),customDataProxyFetch:n.customDataProxyFetch});return this.mapQueryEngineResult(n,i)},batchBy:n=>n.transaction?.id?`transaction-${n.transaction.id}`:rb(n.protocolQuery),batchOrder(n,A){return n.transaction?.kind===\"batch\"&&A.transaction?.kind===\"batch\"?n.transaction.index-A.transaction.index:0}})}async request(e){try{return await this.dataloader.request(e)}catch(r){let{clientMethod:n,callsite:A,transaction:i,args:s,modelName:o}=e;this.handleAndLogRequestError({error:r,clientMethod:n,callsite:A,transaction:i,args:s,modelName:o,globalOmit:e.globalOmit})}}mapQueryEngineResult({dataPath:e,unpacker:r},n){let A=n?.data,i=this.unpack(A,e,r);return process.env.PRISMA_CLIENT_GET_TIME?{data:i}:i}handleAndLogRequestError(e){try{this.handleRequestError(e)}catch(r){throw this.logEmitter&&this.logEmitter.emit(\"error\",{message:r.message,target:e.clientMethod,timestamp:new Date}),r}}handleRequestError({error:e,clientMethod:r,callsite:n,transaction:A,args:i,modelName:s,globalOmit:o}){if(C_(e),B_(e,A))throw e;if(e instanceof Ne&&p_(e)){let c=ib(e.meta);ga({args:i,errors:[c],callsite:n,errorFormat:this.client._errorFormat,originalMethod:r,clientVersion:this.client._clientVersion,globalOmit:o})}let a=e.message;if(n&&(a=ra({callsite:n,originalMethod:r,isPanic:e.isPanic,showColors:this.client._errorFormat===\"pretty\",message:a})),a=this.sanitizeMessage(a),e.code){let c=s?{modelName:s,...e.meta}:e.meta;throw new Ne(a,{code:e.code,clientVersion:this.client._clientVersion,meta:c,batchRequestIdx:e.batchRequestIdx})}else{if(e.isPanic)throw new ut(a,this.client._clientVersion);if(e instanceof pe)throw new pe(a,{clientVersion:this.client._clientVersion,batchRequestIdx:e.batchRequestIdx});if(e instanceof Z)throw new Z(a,this.client._clientVersion);if(e instanceof ut)throw new ut(a,this.client._clientVersion)}throw e.clientVersion=this.client._clientVersion,e}sanitizeMessage(e){return this.client._errorFormat&&this.client._errorFormat!==\"pretty\"?(0,nb.default)(e):e}unpack(e,r,n){if(!e||(e.data&&(e=e.data),!e))return e;let A=Object.keys(e)[0],i=Object.values(e)[0],s=r.filter(c=>c!==\"select\"&&c!==\"include\"),o=$u(i,s),a=A===\"queryRaw\"?Ul(o):sA(o);return n?n(a):a}get[Symbol.toStringTag](){return\"RequestHandler\"}};function I_(t){if(t){if(t.kind===\"batch\")return{kind:\"batch\",options:{isolationLevel:t.isolationLevel}};if(t.kind===\"itx\")return{kind:\"itx\",options:Ab(t)};sr(t,\"Unknown transaction kind\")}}function Ab(t){return{id:t.id,payload:t.payload}}function B_(t,e){return Tl(t)&&e?.kind===\"batch\"&&t.batchRequestIdx!==e.index}function p_(t){return t.code===\"P2009\"||t.code===\"P2012\"}function ib(t){if(t.kind===\"Union\")return{kind:\"Union\",errors:t.errors.map(ib)};if(Array.isArray(t.selectionPath)){let[,...e]=t.selectionPath;return{...t,selectionPath:e}}return t}var sb=TS;var ub=G(Pu());var z=class extends Error{constructor(e){super(e+`"
+                - generic [ref=e69]: "| ^"
+                - generic [ref=e70]: "260 | Read more at https://pris.ly/d/client-constructor`),this.name=\"PrismaClientConstructorValidationError\"}get[Symbol.toStringTag](){return\"PrismaClientConstructorValidationError\"}};M(z,\"PrismaClientConstructorValidationError\");var ob=[\"datasources\",\"datasourceUrl\",\"errorFormat\",\"adapter\",\"log\",\"transactionOptions\",\"omit\",\"__internal\"],ab=[\"pretty\",\"colorless\",\"minimal\"],cb=[\"info\",\"query\",\"warn\",\"error\"],m_={datasources:(t,{datasourceNames:e})=>{if(t){if(typeof t!=\"object\"||Array.isArray(t))throw new z(`Invalid value ${JSON.stringify(t)} for \"datasources\" provided to PrismaClient constructor`);for(let[r,n]of Object.entries(t)){if(!e.includes(r)){let A=hi(r,e)||` Available datasources: ${e.join(\", \")}`;throw new z(`Unknown datasource ${r} provided to PrismaClient constructor.${A}`)}if(typeof n!=\"object\"||Array.isArray(n))throw new z(`Invalid value ${JSON.stringify(t)} for datasource \"${r}\" provided to PrismaClient constructor."
+                - generic [ref=e71]: "261 | It should have this form: { url: \"CONNECTION_STRING\" }`);if(n&&typeof n==\"object\")for(let[A,i]of Object.entries(n)){if(A!==\"url\")throw new z(`Invalid value ${JSON.stringify(t)} for datasource \"${r}\" provided to PrismaClient constructor."
+                - generic [ref=e72]: "262 | It should have this form: { url: \"CONNECTION_STRING\" }`);if(typeof i!=\"string\")throw new z(`Invalid value ${JSON.stringify(i)} for datasource \"${r}\" provided to PrismaClient constructor."
+            - generic [ref=e73]:
+              - generic [ref=e74]:
+                - paragraph [ref=e75]:
+                  - text: Call Stack
+                  - generic [ref=e76]: "12"
+                - button "Show 6 ignore-listed frame(s)" [ref=e77] [cursor=pointer]:
+                  - text: Show 6 ignore-listed frame(s)
+                  - img [ref=e78]
+              - generic [ref=e80]:
+                - generic [ref=e81]: <unknown>
+                - text: "--> schema.prisma (12)"
+              - generic [ref=e82]:
+                - generic [ref=e83]:
+                  - text: kl.handleRequestError
+                  - button "Open kl.handleRequestError in editor" [ref=e84] [cursor=pointer]:
+                    - img [ref=e85]
+                - text: app/generated/prisma/runtime/binary.js (259:7764)
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - text: kl.handleAndLogRequestError
+                  - button "Open kl.handleAndLogRequestError in editor" [ref=e89] [cursor=pointer]:
+                    - img [ref=e90]
+                - text: app/generated/prisma/runtime/binary.js (259:6785)
+              - generic [ref=e92]:
+                - generic [ref=e93]:
+                  - text: kl.request
+                  - button "Open kl.request in editor" [ref=e94] [cursor=pointer]:
+                    - img [ref=e95]
+                - text: app/generated/prisma/runtime/binary.js (259:6492)
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - text: a
+                  - button "Open a in editor" [ref=e99] [cursor=pointer]:
+                    - img [ref=e100]
+                - text: app/generated/prisma/runtime/binary.js (268:9821)
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - text: login
+                  - button "Open login in editor" [ref=e104] [cursor=pointer]:
+                    - img [ref=e105]
+                - text: app/login/actions.ts (16:18)
+        - generic [ref=e107]:
+          - generic [ref=e108]: "1"
+          - generic [ref=e109]: "2"
+    - generic [ref=e114] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e115]:
+        - img [ref=e116]
+      - generic [ref=e119]:
+        - button "Open issues overlay" [ref=e120]:
+          - generic [ref=e121]:
+            - generic [ref=e122]: "0"
+            - generic [ref=e123]: "1"
+          - generic [ref=e124]: Issue
+        - button "Collapse issues badge" [ref=e125]:
+          - img [ref=e126]
+  - generic [ref=e129]:
+    - 'heading "Application error: a server-side exception has occurred while loading localhost (see the server logs for more information)." [level=2] [ref=e130]'
+    - paragraph [ref=e131]: "Digest: 3407203747"
+```
