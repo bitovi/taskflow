@@ -60,6 +60,35 @@ export async function getAllTasks() {
     }
 }
 
+// Search tasks by title or description (case-insensitive)
+export async function searchTasks(query: string) {
+    try {
+        if (!query || query.length < 3) {
+            return await getAllTasks();
+        }
+
+        const tasks = await prisma.task.findMany({
+            where: {
+                OR: [
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { description: { contains: query, mode: 'insensitive' } },
+                ],
+            },
+            include: {
+                assignee: { select: { id: true, name: true, email: true, password: true } },
+                creator: { select: { id: true, name: true, email: true, password: true } },
+            },
+            orderBy: [
+                { createdAt: "desc" },
+                { id: "desc" }
+            ],
+        });
+        return { tasks, error: null };
+    } catch (e) {
+        return { tasks: [], error: "Failed to search tasks." };
+    }
+}
+
 // Delete a task by ID
 export async function deleteTask(taskId: number) {
     try {
