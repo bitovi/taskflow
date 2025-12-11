@@ -75,12 +75,12 @@ export function TaskSearchInput({ onSearchChange }: TaskSearchInputProps) {
           </Button>
         )}
         {isPending && (
-          <div className="absolute right-10 top-1/2 -translate-y-1/2">
+          <div className="absolute right-10 top-1/2 -translate-y-1/2" role="status" aria-label="Searching...">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
         )}
       </div>
-      <Button variant="outline" size="icon">
+      <Button variant="outline" size="icon" aria-label="Filter tasks" disabled>
         <Filter className="h-5 w-5" />
       </Button>
     </div>
