@@ -71,26 +71,6 @@
       "problemMatcher": []
     },
     {
-      "label": "deploy:prod",
-      "type": "shell",
-      "command": "npm run deploy:prod",
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "deploy:prod:down",
-      "type": "shell",
-      "command": "npm run deploy:prod:down",
-      "problemMatcher": []
-    },
-    {
-      "label": "deploy:prod:logs",
-      "type": "shell",
-      "command": "npm run deploy:prod:logs",
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
       "label": "db:setup",
       "type": "shell",
       "command": "npm run db:setup",
