@@ -81,3 +81,119 @@ test.describe('Task CRUD flows', () => {
         await expect(page.locator('h3', { hasText: title })).toHaveCount(0, { timeout: 5000 });
     });
 });
+
+test.describe('Bulk Task Actions', () => {
+    test('select and deselect all tasks', async ({ page }) => {
+        await login(page);
+        await page.goto('/tasks');
+
+        // Create two test tasks
+        const title1 = await createTaskViaUI(page, 'Bulk Test 1');
+        const title2 = await createTaskViaUI(page, 'Bulk Test 2');
+
+        // Click "Select All"
+        const selectAllCheckbox = page.locator('[data-testid="select-all-checkbox"]');
+        await expect(selectAllCheckbox).toBeVisible();
+        await selectAllCheckbox.click();
+
+        // Verify bulk actions bar appears
+        await expect(page.locator('text=/\\d+ task\\(s\\) selected/')).toBeVisible({ timeout: 5000 });
+
+        // Click "Deselect All"
+        await page.click('button:has-text("Deselect All")');
+
+        // Verify bulk actions bar disappears
+        await expect(page.locator('text=/\\d+ task\\(s\\) selected/')).toHaveCount(0);
+    });
+
+    test('bulk mark tasks as done', async ({ page }) => {
+        await login(page);
+        await page.goto('/tasks');
+
+        // Create two test tasks
+        const title1 = await createTaskViaUI(page, 'Bulk Done 1');
+        const title2 = await createTaskViaUI(page, 'Bulk Done 2');
+
+        // Select both tasks individually
+        const card1 = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title1 }) }).first();
+        const card2 = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title2 }) }).first();
+
+        await card1.locator('[data-testid^="task-select-"]').click();
+        await card2.locator('[data-testid^="task-select-"]').click();
+
+        // Verify bulk actions menu appears
+        await expect(page.locator('[data-testid="bulk-actions-menu"]')).toBeVisible();
+
+        // Click bulk actions menu and select "Mark as Done"
+        await page.click('[data-testid="bulk-actions-menu"]');
+        await page.click('[data-testid="bulk-mark-done"]');
+
+        // Wait for the action to complete
+        await page.waitForTimeout(1000);
+
+        // Verify both tasks are marked as done (have line-through styling)
+        const task1Title = page.locator('h3', { hasText: title1 }).first();
+        const task2Title = page.locator('h3', { hasText: title2 }).first();
+        await expect(task1Title).toHaveClass(/line-through/);
+        await expect(task2Title).toHaveClass(/line-through/);
+    });
+
+    test('bulk delete tasks with confirmation', async ({ page }) => {
+        await login(page);
+        await page.goto('/tasks');
+
+        // Create two test tasks
+        const title1 = await createTaskViaUI(page, 'Bulk Delete 1');
+        const title2 = await createTaskViaUI(page, 'Bulk Delete 2');
+
+        // Select both tasks
+        const card1 = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title1 }) }).first();
+        const card2 = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title2 }) }).first();
+
+        await card1.locator('[data-testid^="task-select-"]').click();
+        await card2.locator('[data-testid^="task-select-"]').click();
+
+        // Click bulk actions menu and select "Delete"
+        await page.click('[data-testid="bulk-actions-menu"]');
+        await page.click('[data-testid="bulk-delete"]');
+
+        // Verify confirmation dialog appears
+        await expect(page.locator('text=Confirm Bulk Delete')).toBeVisible();
+        await expect(page.locator('text=/delete \\d+ task\\(s\\)/')).toBeVisible();
+
+        // Click confirm
+        await page.click('[data-testid="bulk-delete-confirm"]');
+
+        // Wait for the action to complete
+        await page.waitForTimeout(1000);
+
+        // Verify both tasks are deleted
+        await expect(page.locator('h3', { hasText: title1 })).toHaveCount(0);
+        await expect(page.locator('h3', { hasText: title2 })).toHaveCount(0);
+    });
+
+    test('cancel bulk delete', async ({ page }) => {
+        await login(page);
+        await page.goto('/tasks');
+
+        // Create a test task
+        const title = await createTaskViaUI(page, 'Bulk Cancel Delete');
+
+        // Select the task
+        const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
+        await card.locator('[data-testid^="task-select-"]').click();
+
+        // Click bulk actions menu and select "Delete"
+        await page.click('[data-testid="bulk-actions-menu"]');
+        await page.click('[data-testid="bulk-delete"]');
+
+        // Verify confirmation dialog appears
+        await expect(page.locator('text=Confirm Bulk Delete')).toBeVisible();
+
+        // Click cancel
+        await page.click('[data-testid="bulk-delete-cancel"]');
+
+        // Verify task is still visible
+        await expect(page.locator('h3', { hasText: title })).toBeVisible();
+    });
+});
