@@ -90,6 +90,10 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   const handleBulkMarkAsDone = async () => {
     startTransition(async () => {
+      // Optimistic update: mark selected tasks as done
+      const updatedTasks = optimisticTasks.map(t => 
+        selectedTaskIds.includes(t.id) ? { ...t, status: "done" } : t
+      )
       await bulkUpdateTaskStatus(selectedTaskIds, "done")
       setSelectedTaskIds([])
     })
@@ -175,11 +179,12 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       {optimisticTasks.length > 0 && (
         <div className="flex items-center space-x-2 px-2">
           <Checkbox
+            id="select-all-checkbox"
             checked={selectedTaskIds.length === optimisticTasks.length && optimisticTasks.length > 0}
             onCheckedChange={handleSelectAll}
             data-testid="select-all-checkbox"
           />
-          <label className="text-sm font-medium cursor-pointer" onClick={() => handleSelectAll(selectedTaskIds.length !== optimisticTasks.length)}>
+          <label htmlFor="select-all-checkbox" className="text-sm font-medium cursor-pointer">
             Select All
           </label>
         </div>

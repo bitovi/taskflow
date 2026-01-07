@@ -191,7 +191,7 @@ export async function getTeamStats() {
 }
 
 // Bulk update task status
-export async function bulkUpdateTaskStatus(taskIds: number[], status: string) {
+export async function bulkUpdateTaskStatus(taskIds: number[], status: "todo" | "in_progress" | "review" | "done") {
     const user = await getCurrentUser();
     if (!user) return { error: "Not authenticated.", success: false };
 
