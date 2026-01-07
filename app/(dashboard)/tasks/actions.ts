@@ -189,3 +189,48 @@ export async function getTeamStats() {
         };
     }
 }
+
+// Bulk update task status
+export async function bulkUpdateTaskStatus(taskIds: number[], status: string) {
+    const user = await getCurrentUser();
+    if (!user) return { error: "Not authenticated.", success: false };
+
+    if (!taskIds || taskIds.length === 0) {
+        return { error: "No tasks selected.", success: false };
+    }
+
+    try {
+        await prisma.task.updateMany({
+            where: {
+                id: { in: taskIds },
+            },
+            data: { status },
+        });
+        revalidatePath("/tasks");
+        return { error: null, success: true, message: `Updated ${taskIds.length} task(s) successfully!` };
+    } catch (e) {
+        return { error: "Failed to update tasks.", success: false };
+    }
+}
+
+// Bulk delete tasks
+export async function bulkDeleteTasks(taskIds: number[]) {
+    const user = await getCurrentUser();
+    if (!user) return { error: "Not authenticated.", success: false };
+
+    if (!taskIds || taskIds.length === 0) {
+        return { error: "No tasks selected.", success: false };
+    }
+
+    try {
+        await prisma.task.deleteMany({
+            where: {
+                id: { in: taskIds },
+            },
+        });
+        revalidatePath("/tasks");
+        return { error: null, success: true, message: `Deleted ${taskIds.length} task(s) successfully!` };
+    } catch (e) {
+        return { error: "Failed to delete tasks.", success: false };
+    }
+}

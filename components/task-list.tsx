@@ -6,10 +6,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
-import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog"
+import { MoreHorizontal, Clock, Edit, Trash2, CheckSquare } from "lucide-react"
+import { deleteTask, updateTaskStatus, bulkUpdateTaskStatus, bulkDeleteTasks } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
 import { poppins } from "@/lib/fonts"
@@ -24,12 +24,15 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
   const [tasks, setTasks] = useState(initialTasks)
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     tasks,
-    (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
-      if (action === "delete") {
+    (state, { action, task }: { action: "delete" | "toggle" | "bulkDelete"; task?: TaskWithProfile | { id: number }; taskIds?: number[] }) => {
+      if (action === "delete" && task) {
         return state.filter((t) => t.id !== task.id)
       }
-      if (action === "toggle") {
+      if (action === "toggle" && task) {
         return state.map((t) => (t.id === task.id ? { ...t, status: t.status === "done" ? "todo" : "done" } : t))
+      }
+      if (action === "bulkDelete" && taskIds) {
+        return state.filter((t) => !taskIds.includes(t.id))
       }
       return state
     },
@@ -37,10 +40,13 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
   const [isPending, startTransition] = useTransition()
   const [openDialogs, setOpenDialogs] = useState<Record<number, boolean>>({})
   const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({})
+  const [selectedTaskIds, setSelectedTaskIds] = useState<number[]>([])
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
 
   // Sync state with incoming props
   useEffect(() => {
     setTasks(initialTasks)
+    setSelectedTaskIds([]) // Clear selection when tasks change
   }, [initialTasks])
 
   const handleDelete = async (taskId: number) => {
@@ -66,6 +72,42 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
     setOpenDialogs(prev => ({ ...prev, [taskId]: true }))
   }
 
+  const handleTaskSelection = (taskId: number, checked: boolean) => {
+    if (checked) {
+      setSelectedTaskIds(prev => [...prev, taskId])
+    } else {
+      setSelectedTaskIds(prev => prev.filter(id => id !== taskId))
+    }
+  }
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedTaskIds(optimisticTasks.map(t => t.id))
+    } else {
+      setSelectedTaskIds([])
+    }
+  }
+
+  const handleBulkMarkAsDone = async () => {
+    startTransition(async () => {
+      await bulkUpdateTaskStatus(selectedTaskIds, "done")
+      setSelectedTaskIds([])
+    })
+  }
+
+  const handleBulkDelete = async () => {
+    startTransition(async () => {
+      setOptimisticTasks({ action: "bulkDelete", taskIds: selectedTaskIds })
+      await bulkDeleteTasks(selectedTaskIds)
+      setSelectedTaskIds([])
+      setShowBulkDeleteDialog(false)
+    })
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedTaskIds([])
+  }
+
   const getInitials = (name: string | null) => {
     if (!name) return "??"
     return name
@@ -77,6 +119,73 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   return (
     <div className="space-y-4">
+      {/* Bulk Actions Bar */}
+      {selectedTaskIds.length > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium">
+                  {selectedTaskIds.length} task(s) selected
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDeselectAll}
+                  data-testid="deselect-all-button"
+                >
+                  Deselect All
+                </Button>
+              </div>
+              <div className="flex items-center space-x-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="default" size="sm" data-testid="bulk-actions-menu">
+                      <CheckSquare className="mr-2 h-4 w-4" />
+                      Bulk Actions
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={handleBulkMarkAsDone}
+                      className="cursor-pointer"
+                      data-testid="bulk-mark-done"
+                    >
+                      <CheckSquare className="mr-2 h-4 w-4" />
+                      Mark as Done
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => setShowBulkDeleteDialog(true)}
+                      className="cursor-pointer text-primary"
+                      data-testid="bulk-delete"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Select All Checkbox */}
+      {optimisticTasks.length > 0 && (
+        <div className="flex items-center space-x-2 px-2">
+          <Checkbox
+            checked={selectedTaskIds.length === optimisticTasks.length && optimisticTasks.length > 0}
+            onCheckedChange={handleSelectAll}
+            data-testid="select-all-checkbox"
+          />
+          <label className="text-sm font-medium cursor-pointer" onClick={() => handleSelectAll(selectedTaskIds.length !== optimisticTasks.length)}>
+            Select All
+          </label>
+        </div>
+      )}
+
+      {/* Task List */}
       {optimisticTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
@@ -85,10 +194,19 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4">
+                  {/* Task Selection Checkbox */}
+                  <Checkbox
+                    checked={selectedTaskIds.includes(task.id)}
+                    onCheckedChange={(checked) => handleTaskSelection(task.id, checked as boolean)}
+                    className="mt-1 cursor-pointer"
+                    data-testid={`task-select-${task.id}`}
+                  />
+                  {/* Status Toggle Checkbox */}
                   <Checkbox
                     checked={task.status === "done"}
                     onCheckedChange={() => handleToggle(task)}
                     className="mt-1 cursor-pointer"
+                    data-testid={`task-status-${task.id}`}
                   />
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
@@ -165,6 +283,34 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
           </DialogContent>
         </Dialog>
       ))}
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Bulk Delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete {selectedTaskIds.length} task(s)? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowBulkDeleteDialog(false)}
+              data-testid="bulk-delete-cancel"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleBulkDelete}
+              data-testid="bulk-delete-confirm"
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
