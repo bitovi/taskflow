@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 
 const initialState = { error: null };
 
-async function signupAction(state: any, formData: FormData) {
+async function signupAction(state: { error: string | null }, formData: FormData) {
     const result = await signup(formData);
     return { error: result?.error ?? null };
 }

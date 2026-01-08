@@ -1,6 +1,6 @@
 import { KanbanBoard } from "@/components/kanban-board"
 import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
-import type { KanbanData, KanbanColumn } from "@/lib/types"
+import type { KanbanData } from "@/lib/types"
 import { poppins } from "@/lib/fonts"
 
 

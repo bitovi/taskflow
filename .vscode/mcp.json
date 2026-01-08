@@ -16,6 +16,14 @@
 			},
 			"type": "stdio"
 		},
+			"figma-desktop": {
+			"type": "http",
+			"url": "http://host.docker.internal:3845/mcp"
+     	},
+		"atlassian/atlassian-mcp-server": {
+			"type": "http",
+			"url": "https://mcp.atlassian.com/v1/sse",
+		}
 	},
 	"inputs": []
 }

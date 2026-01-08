@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 
 // Mock server actions
 jest.mock('@/app/(dashboard)/tasks/actions', () => ({
-    createTask: jest.fn(async (formData: FormData) => ({ success: true, message: 'ok', error: null }))
+    createTask: jest.fn(async () => ({ success: true, message: 'ok', error: null }))
 }))
 jest.mock('@/app/login/actions', () => ({
     getAllUsers: jest.fn(async () => [{ id: 1, name: 'Alice' }])

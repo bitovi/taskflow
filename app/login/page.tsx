@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 const initialState = { error: null };
 
-async function loginAction(state: any, formData: FormData) {
+async function loginAction(state: { error: string | null }, formData: FormData) {
     const result = await login(formData);
     return { error: result?.error ?? null };
 }

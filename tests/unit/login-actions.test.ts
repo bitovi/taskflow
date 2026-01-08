@@ -1,4 +1,4 @@
-import { login, getCurrentUser, logout } from '@/app/login/actions'
+import { login } from '@/app/login/actions'
 
 jest.mock('@/app/generated/prisma', () => ({
     PrismaClient: jest.fn(() => ({

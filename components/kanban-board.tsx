@@ -4,29 +4,16 @@ import { useState, useTransition } from "react"
 import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage, AvatarName } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Plus, Clock } from "lucide-react"
+import { Avatar, AvatarName } from "@/components/ui/avatar"
+import { Clock } from "lucide-react"
 import { updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { cn } from "@/lib/utils"
-import type { KanbanColumn, KanbanData, } from "@/lib/types"
+import type { KanbanData } from "@/lib/types"
 import { poppins } from "@/lib/fonts"
-
-
-
-// Helper to get initials from a name
-const getInitials = (name: string | null | undefined) => {
-  if (!name) return "??"
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-}
 
 export function KanbanBoard({ initialData }: { initialData: KanbanData }) {
   const [columns, setColumns] = useState(initialData)
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result

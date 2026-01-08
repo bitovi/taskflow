@@ -16,7 +16,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // createDummyTasks()
   return (
     <html lang="en">
       <body

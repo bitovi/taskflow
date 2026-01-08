@@ -4,7 +4,7 @@ import { useOptimistic, useTransition, useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -34,7 +34,7 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       return state
     },
   )
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
   const [openDialogs, setOpenDialogs] = useState<Record<number, boolean>>({})
   const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({})
 

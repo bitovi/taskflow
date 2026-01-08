@@ -8,7 +8,11 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     const user = await getCurrentUser();
-    if (!user) redirect("/login");
+    
+    // Auto-login as Alice if no user is logged in (for development convenience)
+    if (!user) {
+        redirect("/api/auto-login");
+    }
 
     return (
         <div className="flex h-screen overflow-hidden">

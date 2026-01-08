@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, CheckSquare, Kanban, Users, Settings, BarChart3 } from "lucide-react"
+import { LayoutDashboard, CheckSquare, Kanban, Users } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { AuthDropdown } from "./auth-dropdown"

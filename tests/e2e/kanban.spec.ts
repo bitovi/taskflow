@@ -1,4 +1,4 @@
-import { test, expect, type Page, type Locator } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 
 // Use an existing seeded user
 const EMAIL = 'alice@example.com'
@@ -13,14 +13,7 @@ async function login(page: Page) {
         page.waitForNavigation(),
         page.click('button:has-text("Log\u00A0In")'),
     ])
-    await expect(page).toHaveURL(/\//)
-}
-
-// Get center point of element
-async function centerOf(locator: Locator) {
-    const box = await locator.boundingBox()
-    if (!box) throw new Error('Element not visible')
-    return { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+    await expect(page).toHaveURL(/\//);
 }
 
 test.describe('Kanban drag/drop', () => {
