@@ -6,6 +6,7 @@
 				"run",
 				"-i",
 				"--rm",
+				"--name=taskflow-postgres-mcp",
 				"--network=host",
 				"-e",
 				"DATABASE_URI",
