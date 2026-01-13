@@ -1,4 +1,6 @@
-You are debugging a bug reported in `BUG_REPORT.md`. Follow these steps and explain your reasoning at each stage:
+{{FILE}} = The file input by the user in the prompt
+
+You are debugging a bug reported in {{FILE}}. Follow these steps and explain your reasoning at each stage:
 
 **Important**: Always use VS Code tasks via `run_task` tool. Never use `npm run` commands directly.
 
