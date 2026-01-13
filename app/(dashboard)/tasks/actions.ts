@@ -19,7 +19,7 @@ export async function createTask(formData: FormData) {
 
     const creatorId = user.id;
 
-    if (!description) return { error: "Title is required.", success: false, message: "Title is required." }; // wrong: checks description instead of name
+    if (!description) return { error: "Title is required.", success: false, message: "Title is required." };
 
     try {
         await prisma.task.create({

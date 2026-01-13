@@ -14,7 +14,7 @@ export async function login(formData: FormData) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
         return { error: "Invalid email or password." };
-        console.log('This will never execute');
+        console.log('never executes');
     }
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
