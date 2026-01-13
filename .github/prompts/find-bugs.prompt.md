@@ -1,120 +1,52 @@
-# GitHub Copilot Codebase Exploration Prompt
+# AI Code Review - Find Bugs
 
-Use this prompt inside Copilot Chat.
+You are performing static analysis to identify bugs, security vulnerabilities, performance issues, and architectural problems in this codebase.
 
-------------------------------------------------------------------------
+**Important**: This is exploration only. Do not modify code - just report findings.
 
-## Prompt
+## Steps
 
-**Role & Goal**\
-You are an AI code reviewer performing a static analysis of this
-repository.\
-Your objective is to identify:\
-- Bugs\
-- Security vulnerabilities\
-- Performance issues\
-- Maintainability or architectural problems
+1. **Understand the codebase** - Identify languages, frameworks, structure, and entry points.
 
-This is an **exploration only**:\
-- Do **not** modify code\
-- You *may* describe high‑level fixes in natural language\
-- Focus on subtle issues humans might miss
+2. **Check high-risk areas**:
 
-------------------------------------------------------------------------
+   - Authentication & authorization
+   - Input validation & request handling
+   - Database queries & ORM usage
+   - Error handling
+   - Async/concurrency patterns
+   - External integrations
 
-## How to Think (Show Reasoning)
+3. **Look for subtle issues**:
+   - Null handling gaps
+   - Race conditions & shared state
+   - Missing validation & injection risks
+   - N+1 queries & inefficient loops
+   - Off-by-one errors
 
-For each step, briefly show your thought process:\
-- What you're checking and why\
-- What files/functions you inspected\
-- Why something appears risky or incorrect
+## Report Format
 
-Keep explanations clear and concise.
+Create **AI_CODE_REVIEW.md** with:
 
-------------------------------------------------------------------------
+### Overview
 
-## Review Workflow
-
-### 1. Reconnaissance
-
--   Identify languages, frameworks, project structure\
--   Determine main entry points & configuration files
-
-### 2. High‑Risk Hotspots
-
-Check areas like:\
-- Authentication & authorization\
-- Input parsing / request handling\
-- Database access & ORM usage\
-- Error handling & logging\
-- Async/concurrency behavior\
-- External integrations
-
-### 3. Issue Reporting Format
-
-For every issue, include:\
-- **ID** (ISSUE‑###)\
-- **Severity** (Critical / High / Medium / Low / Info)\
-- **Category**\
-- **Location**\
-- **Summary**\
-- **Reasoning** (why it's a problem, edge cases, assumptions)\
-- **Suggested improvement (no code)**
-
-### 4. Subtle Problems to Look For
-
--   Off‑by‑one errors, null-handling gaps\
--   Race conditions, shared mutable state\
--   Missing validation, injection risks\
--   N+1 queries, inefficient loops\
--   Inconsistent or confusing APIs
-
-------------------------------------------------------------------------
-
-## Output Format
-
-Generate a Markdown report named **AI_CODE_REVIEW.md** with:
-
-``` markdown
-# AI Code Review Report
-
-## Overview
-- What the project appears to be
-- Languages/frameworks
+- Project description
+- Tech stack
 - Overall code health
 
-## Summary of Findings
-- Total issues
-- Count by severity
+### Summary
 
-## Detailed Findings
-### ISSUE-001 – [Short Title]
-- Severity:
-- Category:
-- Location:
+- Total issues found
+- Count by severity (Critical / High / Medium / Low / Info)
 
-**What I See**  
-Explanation of the relevant code pattern.
+### Detailed Findings
 
-**Why This Is a Problem**  
-Reasoning, edge cases, risks.
+For each issue:
 
-**Suggested Improvement (No Code)**  
-High-level direction for fixing.
+**ISSUE-001 - [Short Title]**
 
----
-
-## Potential Improvements (Non‑Blocking)
-Short list of maintainability/refactoring opportunities.
-
-## Assumptions & Limitations
-What you were unsure about or could not conclude statically.
-```
-
-------------------------------------------------------------------------
-
-## Reminders
-
--   Do **not** change code\
--   Do **not** auto‑fix anything\
--   This is strictly a discovery/reporting task
+- **Severity**: Critical/High/Medium/Low/Info
+- **Category**: Security/Performance/Bug/Maintainability
+- **Location**: `file.ts:123`
+- **Problem**: What's wrong and why it matters
+- **Fix**: High-level suggestion (no code)

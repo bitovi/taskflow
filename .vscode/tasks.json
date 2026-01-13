@@ -1,12 +1,26 @@
 {
   "version": "2.0.0",
   "tasks": [
+    // ------------------------
+    // BUILD AND DEVELOPMENT TASKS
+    // ------------------------
+    // build project
     {
-      "label": "kill-port-3000",
+      "label": "build",
       "type": "shell",
-      "command": "fuser -k 3000/tcp || true",
+      "command": "npm run build",
+      "group": "build",
       "problemMatcher": []
     },
+    // start preview server
+    {
+      "label": "start",
+      "type": "shell",
+      "command": "npm start",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    // run dev server
     {
       "label": "dev",
       "type": "shell",
@@ -25,6 +39,98 @@
         "kill-port-3000"
       ]
     },
+    // clear port 3000
+    {
+      "label": "kill-port-3000",
+      "type": "shell",
+      "command": "fuser -k 3000/tcp || true",
+      "problemMatcher": []
+    },
+    // ------------------------
+    // TESTING TASKS
+    // ------------------------
+    // run unit tests
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "npm test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    // run e2e tests
+    {
+      "label": "test:e2e",
+      "type": "shell",
+      "command": "npm run test:e2e",
+      "group": "test",
+      "problemMatcher": []
+    },
+    // run e2e tests in debug mode (browser logs visible in terminal)
+    {
+      "label": "test:e2e:debug",
+      "type": "shell",
+      "command": "npm run test:e2e:debug",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+    },
+    // run linter
+    {
+      "label": "lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "problemMatcher": [
+        "$eslint-stylish"
+      ]
+    },
+    // ------------------------
+    // SETUP AND DATABASE TASKS
+    // ------------------------
+    // full project setup
+    {
+      "label": "setup",
+      "type": "shell",
+      "command": "npm run setup",
+      "problemMatcher": []
+    },
+    // setup database
+    {
+      "label": "db:setup",
+      "type": "shell",
+      "command": "npm run db:setup",
+      "problemMatcher": []
+    },
+    // seed database
+    {
+      "label": "db:seed",
+      "type": "shell",
+      "command": "npm run db:seed",
+      "problemMatcher": []
+    },
+    // reset database
+    {
+      "label": "db:reset",
+      "type": "shell",
+      "command": "npm run db:reset",
+      "problemMatcher": []
+    },
+    // clear database
+    {
+      "label": "db:clear",
+      "type": "shell",
+      "command": "npm run db:clear",
+      "problemMatcher": []
+    },
+    // ------------------------
+    // DEBUGGING TASKS
+    // ------------------------
+    // open chrome with remote debugging
     {
       "label": "Debug Chrome Browser",
       "type": "shell",
@@ -36,6 +142,7 @@
       "isBackground": false,
       "problemMatcher": []
     },
+    // check browser output via cdp-cli
     {
       "label": "Check Browser Output",
       "type": "shell",
@@ -52,81 +159,5 @@
       "isBackground": false,
       "problemMatcher": []
     },
-    {
-      "label": "build",
-      "type": "shell",
-      "command": "npm run build",
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "start",
-      "type": "shell",
-      "command": "npm start",
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "test",
-      "type": "shell",
-      "command": "npm test",
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "test:e2e",
-      "type": "shell",
-      "command": "npm run test:e2e",
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "test:e2e:debug",
-      "type": "shell",
-      "command": "npm run test:e2e:debug",
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "lint",
-      "type": "shell",
-      "command": "npm run lint",
-      "problemMatcher": [
-        "$eslint-stylish"
-      ]
-    },
-    {
-      "label": "setup",
-      "type": "shell",
-      "command": "npm run setup",
-      "problemMatcher": []
-    },
-    {
-      "label": "db:setup",
-      "type": "shell",
-      "command": "npm run db:setup",
-      "problemMatcher": []
-    },
-    {
-      "label": "db:seed",
-      "type": "shell",
-      "command": "npm run db:seed",
-      "problemMatcher": []
-    },
-    {
-      "label": "db:reset",
-      "type": "shell",
-      "command": "npm run db:reset",
-      "problemMatcher": []
-    },
-    {
-      "label": "db:clear",
-      "type": "shell",
-      "command": "npm run db:clear",
-      "problemMatcher": []
-    }
   ]
 }

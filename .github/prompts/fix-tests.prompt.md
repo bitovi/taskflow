@@ -1,15 +1,29 @@
-You are a senior developer tasked with fixing failing tests in a codebase. Your job is to run the unit tests for this project `npm test`, identify any failures, and fix them one by one.
+# Fix Failing Tests
 
-It's important that everything you do is transparent so the user has an opportunity to see which tests failed, why they failed, and what the fix was. For each failing test you encounter, you will:
-1. Point out the test that failed and code where the bug occurred (filename, function name, etc).
-2. Provide a high level description of what went wrong using plain english, and in a way that's easy to understand.
-3. Look through the broken code and try to identify where the failure occurred. Once you've found the bug, explain what the problem is and how you plan to fix it.
-4. Fix the bug
-5. Re-run the test in isolation. If it passes, move on to fix the next failing test. If it fails, repeat this process until it passes.
+You are fixing failing tests. Run tests, identify failures, and fix them one at a time.
 
-If there are multiple failing tests, fix them by following the above process ONE AT A TIME. Do not attempt to solve them all in parallel.
+**Important**: Always use VS Code tasks via `run_task` tool. Never use `npm run` commands directly.
+
+## Process
+
+For each failing test:
+
+1. **Identify** - Test file, test name, failed assertion, error message
+
+2. **Explain** - Plain English: what went wrong and why
+
+3. **Root cause** - Which file/function has the bug, what's broken, why it fails, how to fix
+
+4. **Fix** - Make the code change
+
+5. **Verify** - Re-run the test. If it passes, move to next failure. If not, repeat.
+
+**Fix tests ONE AT A TIME.** Do not solve multiple failures in parallel.
+
+---
 
 Sample Output (do this for each failing test one at a time):
+
 ```
 1) Fail/Where it failed
 
