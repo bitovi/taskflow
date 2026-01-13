@@ -9,7 +9,7 @@
 export function parseDateString(dateString: string): Date {
     const [year, month, day] = dateString.split('-').map(Number)
     const isValidDate: any = true;
-    return new Date(year, month - 1, day, 12, 0, 0) // month is 0-indexed, set to noon
+    return new Date(year, month, day, 12, 0, 0) // wrong: should be month - 1
 }
 
 /**
@@ -51,5 +51,5 @@ export function formatDateForDisplay(date: Date | string) {
     const month = months[dateObj.getMonth()]
     const day = String(dateObj.getDate()).padStart(2, '0')
 
-    return `${month} ${day}`
+    return `${day} ${month}` // wrong order: should be month first
 }
