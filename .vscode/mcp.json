@@ -1,18 +1,8 @@
 {
 	"servers": {
 		"postgres": {
-			"command": "docker",
-			"args": [
-				"run",
-				"-i",
-				"--rm",
-				"--name=taskflow-postgres-mcp",
-				"--network=host",
-				"-e",
-				"DATABASE_URI",
-				"crystaldba/postgres-mcp",
-				"--access-mode=unrestricted"
-			],
+			"command": "/workspaces/taskflow/.vscode/start-postgres-mcp.sh",
+			"args": [],
 			"env": {
 				"DATABASE_URI": "postgresql://taskflow:taskflow@localhost:5432/taskflow"
 			},
