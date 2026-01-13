@@ -6,6 +6,7 @@
 				"run",
 				"-i",
 				"--rm",
+				"--network=host",
 				"-e",
 				"DATABASE_URI",
 				"crystaldba/postgres-mcp",
@@ -16,10 +17,10 @@
 			},
 			"type": "stdio"
 		},
-			"figma-desktop": {
+		"figma-desktop": {
 			"type": "http",
 			"url": "http://host.docker.internal:3845/mcp"
-     	},
+		},
 		"atlassian/atlassian-mcp-server": {
 			"type": "http",
 			"url": "https://mcp.atlassian.com/v1/sse",
