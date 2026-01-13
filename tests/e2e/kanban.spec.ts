@@ -1,25 +1,7 @@
-import { test, expect, type Page } from '@playwright/test'
-
-// Use an existing seeded user
-const EMAIL = 'alice@example.com'
-const PASSWORD = 'password123'
-
-// Helper login
-async function login(page: Page) {
-    await page.goto('/login')
-    await page.fill('input#email', EMAIL)
-    await page.fill('input#password', PASSWORD)
-    await Promise.all([
-        page.waitForNavigation(),
-        page.click('button:has-text("Log\u00A0In")'),
-    ])
-    await expect(page).toHaveURL(/\//);
-}
+import { test, expect } from '@playwright/test'
 
 test.describe('Kanban drag/drop', () => {
     test('drags a card fully into another column', async ({ page }) => {
-        await login(page)
-
         await page.goto('/board')
         // wait for columns to render
         await expect(page.locator('text=To Do')).toBeVisible()

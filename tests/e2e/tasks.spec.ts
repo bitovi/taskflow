@@ -1,17 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
 
-// Helper to log in as a seeded user
-async function login(page: Page, email = 'alice@example.com', password = 'password123') {
-    await page.goto('/login');
-    await page.fill('input#email', email);
-    await page.fill('input#password', password);
-    await Promise.all([
-        page.waitForNavigation(),
-        page.click('button:has-text("Log\u00A0In")'),
-    ]);
-    await expect(page).toHaveURL(/\//);
-}
-
 // Helper to create a new task via the UI and return the title used
 async function createTaskViaUI(page: Page, titlePrefix = 'E2E Task') {
     const title = `${titlePrefix} ${Date.now()}`;
@@ -31,14 +19,12 @@ async function createTaskViaUI(page: Page, titlePrefix = 'E2E Task') {
 
 test.describe('Task CRUD flows', () => {
     test('create task', async ({ page }) => {
-        await login(page);
         const title = await createTaskViaUI(page, 'E2E Create');
         // Verify task card contains the title
         await expect(page.locator('h3', { hasText: title })).toBeVisible();
     });
 
     test('edit task via modal form', async ({ page }) => {
-        await login(page);
         const title = await createTaskViaUI(page, 'E2E Edit');
 
         const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
@@ -66,7 +52,6 @@ test.describe('Task CRUD flows', () => {
     });
 
     test('delete task', async ({ page }) => {
-        await login(page);
         const title = await createTaskViaUI(page, 'E2E Delete');
 
         const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();

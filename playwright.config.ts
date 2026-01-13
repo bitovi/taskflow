@@ -17,14 +17,36 @@ export default defineConfig({
         trace: 'on-first-retry',
     },
     projects: [
+        // Setup project to authenticate once
         {
-            name: 'chromium',
+            name: 'setup',
+            testMatch: /auth\.setup\.ts/,
+        },
+        // Auth tests run without stored state (testing login/logout)
+        {
+            name: 'auth-tests',
+            testMatch: /auth\.spec\.ts/,
             use: {
                 ...devices['Desktop Chrome'],
                 launchOptions: {
                     args: ['--no-sandbox'],
                 },
-            }
+            },
+        },
+        // Main test project that depends on setup
+        {
+            name: 'chromium',
+            testMatch: /.*\.spec\.ts/,
+            testIgnore: /auth\.spec\.ts/,
+            use: {
+                ...devices['Desktop Chrome'],
+                launchOptions: {
+                    args: ['--no-sandbox'],
+                },
+                // Use stored authentication state
+                storageState: '.auth/user.json',
+            },
+            dependencies: ['setup'],
         },
     ],
 });
