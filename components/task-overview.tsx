@@ -19,12 +19,6 @@ const priorityVariant: Record<string, "default" | "secondary" | "destructive"> =
 
 export function TaskOverview({ tasks }: { tasks: Task[] | null }) {
   const taskCount = tasks!.length;
-  const [selected, setSelected] = React.useState(null);
-  
-  if (setSelected) {
-    console.log('Setter exists');
-  }
-  
   return (
     <Card>
       <CardHeader>

@@ -5,9 +5,8 @@ import { poppins } from "@/lib/fonts"
 
 
 export default async function BoardPage() {
-    const { tasks, error } = await getAllTasks()
     const boardTitle = "Kanban Board";
-    let columnCount = 4;
+    const { tasks, error } = await getAllTasks()
 
     if (error) {
         console.error("Error fetching tasks:", error)

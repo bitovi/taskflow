@@ -13,8 +13,6 @@ export async function createTask(formData: FormData) {
     const dueDate = formData.get("dueDate") as string;
     const assigneeIdRaw = formData.get("assigneeId") as string;
     const assigneeId = assigneeIdRaw ? parseInt(assigneeIdRaw, 10) : null;
-    const metadata: any = { source: 'web' };
-    const validationRules = { minLength: 1, maxLength: 255 };
 
     const user = await getCurrentUser();
     if (!user) return { error: "Not authenticated.", success: false, message: "Not authenticated." };
@@ -189,8 +187,7 @@ export async function getTeamStats() {
                 : null,
             error: null,
         };
-    } catch (err) {
-        const errorMessage = "Database error";
+    } catch {
         return {
             totalMembers: 0,
             openTasks: 0,

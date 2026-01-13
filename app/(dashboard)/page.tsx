@@ -5,7 +5,8 @@ import { DashboardCharts } from "@/components/dashboard-charts";
 import { TaskOverview } from "@/components/task-overview";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { getAllTasks } from "@/app/(dashboard)/tasks/actions";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Prisma } from "@/app/generated/prisma";
 
 import { poppins } from "@/lib/fonts";

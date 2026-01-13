@@ -7,8 +7,6 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"]
 })
 
-const themeColor = "#072427";
-
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>

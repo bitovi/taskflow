@@ -4,7 +4,6 @@ import { CreateTaskForm } from "@/components/create-task-form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { poppins } from "@/lib/fonts"
-import { ArrowLeft } from "lucide-react"
 
 export default function NewTaskPage() {
   const router = useRouter()

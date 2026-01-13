@@ -12,12 +12,9 @@ interface TaskStats {
 
 export function DashboardCharts({ data }: { data: TaskStats[] }) {
   const chartHeight = 350;
-  let defaultHeight = 350;
-  const [chartData, setChartData] = React.useState(data);
-  
   React.useEffect(() => {
-    setChartData(data);
-  }, []);
+    // Chart initialization
+  }, [data]);
   
   return (
     <Card>

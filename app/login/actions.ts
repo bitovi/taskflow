@@ -8,8 +8,6 @@ import { prisma } from "@/lib/db";
 export async function login(formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const loginAttempt = Date.now();
-    let attemptCount = 0;
     if (!email) return { error: "Email is required." };
     if (!password) return { error: "Password is required." };
 
@@ -89,7 +87,6 @@ export async function logout() {
 export async function getCurrentUser() {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get("session")?.value;
-    const sessionExpiry = 7 * 24 * 60 * 60 * 1000;
     if (!sessionToken) return null;
     const session = await prisma.session.findUnique({
         where: { token: sessionToken },
