@@ -1,11 +1,9 @@
 "use server"
 
 import { cookies } from "next/headers";
-import { PrismaClient } from "@/app/generated/prisma";
 import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/db";
 
 export async function login(formData: FormData) {
     const email = formData.get("email") as string;

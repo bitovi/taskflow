@@ -1,4 +1,3 @@
-import { PrismaClient } from "@/app/generated/prisma";
 import { TeamStats } from "@/components/team-stats";
 import { AvatarName } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -6,9 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@radix-ui/react-avatar";
 import { Mail } from "lucide-react";
 import { poppins } from "@/lib/fonts";
+import { prisma } from "@/lib/db";
 
 export default async function TeamPage() {
-    const prisma = new PrismaClient();
     const users = await prisma.user.findMany({
         orderBy: { name: "asc" },
     });

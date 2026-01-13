@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { PrismaClient } from '@/app/generated/prisma'
 import { randomBytes } from 'crypto'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/db'
 
 export async function GET() {
   const cookieStore = await cookies()

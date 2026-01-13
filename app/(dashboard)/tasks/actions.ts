@@ -1,10 +1,9 @@
 "use server";
 
 import { getCurrentUser } from "@/app/login/actions";
-import { PrismaClient } from "@/app/generated/prisma";
 import { revalidatePath } from "next/cache";
 import { parseDateString } from "@/lib/date-utils";
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/db";
 
 export async function createTask(formData: FormData) {
     const name = formData.get("title") as string; // your form uses 'title' for the field, but your model uses 'name'

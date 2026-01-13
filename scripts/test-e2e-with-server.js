@@ -10,7 +10,7 @@
  * All logs (server and browser) are piped to the terminal with prefixes for clarity.
  */
 
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const http = require('http');
 
 const SERVER_URL = 'http://localhost:3000';
@@ -18,6 +18,7 @@ const MAX_RETRIES = 30;
 const RETRY_INTERVAL = 1000;
 
 let devServer = null;
+let playwrightProcess = null;
 
 // Get additional args to pass to playwright (e.g., test file, --headed)
 const playwrightArgs = process.argv.slice(2);
@@ -54,21 +55,46 @@ async function waitForServer(retries = MAX_RETRIES) {
     return false;
 }
 
-function cleanup() {
-    if (devServer) {
-        log('Shutting down dev server...');
-        devServer.kill('SIGTERM');
+function killPort3000() {
+    log('Killing any process running on port 3000...');
+    try {
+        execSync('fuser -k 3000/tcp || true', { stdio: 'ignore' });
+        log('Port 3000 cleared');
+    } catch (error) {
+        // Ignore errors - port might not be in use
+    }
+}
 
-        // Force kill after 5 seconds if still running
-        setTimeout(() => {
+function cleanup() {
+    log('Shutting down...');
+    
+    if (playwrightProcess && !playwrightProcess.killed) {
+        playwrightProcess.kill('SIGTERM');
+    }
+    
+    if (devServer && !devServer.killed) {
+        log('Stopping dev server...');
+        devServer.kill('SIGTERM');
+        
+        // Give it a moment to shut down gracefully
+        const forceKillTimeout = setTimeout(() => {
             if (devServer && !devServer.killed) {
+                log('Force killing dev server...');
                 devServer.kill('SIGKILL');
             }
-        }, 5000);
+        }, 3000);
+        
+        // Clear timeout if we're done
+        devServer.on('exit', () => {
+            clearTimeout(forceKillTimeout);
+        });
     }
 }
 
 async function main() {
+    // Kill any existing process on port 3000
+    killPort3000();
+    
     log('Starting dev server...');
     separator();
 
@@ -122,7 +148,7 @@ async function main() {
     log('Running Playwright tests in debug mode...');
     separator();
 
-    const playwrightProcess = spawn(
+    playwrightProcess = spawn(
         'npx',
         ['playwright', 'test', ...playwrightArgs],
         {
@@ -140,20 +166,28 @@ async function main() {
         log(`Tests completed with exit code: ${code}`);
         separator();
         cleanup();
-        process.exit(code);
+        
+        // Wait a bit for cleanup to complete before exiting
+        setTimeout(() => {
+            process.exit(code);
+        }, 2000);
     });
 
     // Handle script termination
     process.on('SIGINT', () => {
-        log('Received SIGINT, cleaning up...');
+        log('Received SIGINT (Ctrl+C), cleaning up...');
         cleanup();
-        process.exit(130);
+        setTimeout(() => process.exit(130), 2000);
     });
 
     process.on('SIGTERM', () => {
         log('Received SIGTERM, cleaning up...');
         cleanup();
-        process.exit(143);
+        setTimeout(() => process.exit(143), 2000);
+    });
+    
+    process.on('exit', () => {
+        cleanup();
     });
 }
 

@@ -8,7 +8,7 @@ You are debugging a bug reported in {{FILE}}. Follow these steps and explain you
 
 2. **Find the code** - Identify which files and functions are involved in the buggy behavior.
 
-3. **Add logging** - Add console logs to trace data flow. Include the filename and function name in each log message.
+3. **Add logging** - Add console logs to trace data flow. Include the filename and function name in each log message. Each log should start with the emoji "🪲" for easy identification.
 
 4. **Run tests** - Use the `test:e2e:debug` task to run both the dev server and E2E tests together. This pipes all logs (including browser console) to the terminal for debugging multi-environment scenarios.
 

@@ -24,7 +24,8 @@ Module.prototype.require = function (id) {
                 page.on('console', msg => {
                     const type = msg.type().toUpperCase();
                     const text = msg.text();
-                    console.log(`[Browser ${type}] ${text}`);
+                    if(type === "LOG" && text.includes("🪲"))
+                        console.log(`[Browser ${type}] ${text}`);
                 });
 
                 // Attach page error listener
