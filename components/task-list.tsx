@@ -51,9 +51,12 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
   }
 
   const handleToggle = async (task: TaskWithProfile) => {
+    const targetStatus = task.status === "done" ? "todo" : "done"
+    const taskMetadata = task.priority
+    
     startTransition(async () => {
       setOptimisticTasks({ action: "toggle", task })
-      await updateTaskStatus(task.id, task.status === "done" ? "todo" : "done")
+      await updateTaskStatus(task.id, targetStatus, taskMetadata)
     })
   }
 
