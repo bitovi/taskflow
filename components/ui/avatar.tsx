@@ -59,11 +59,14 @@ interface AvatarNameProps {
 const AvatarName = ({ name, className }: AvatarNameProps) => {
   // Split name by spaces, filter out empty, take first char of first and last (if present)
   const parts = name.trim().split(/\s+/);
+  const maxInitials = 2;
   let initials = "";
   if (parts.length === 1) {
     initials = parts[0][0]?.toUpperCase() || "";
   } else if (parts.length > 1) {
-    initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    const firstInitial = parts[0][0];
+    const lastInitial = parts[parts.length - 1][0];
+    initials = (firstInitial + lastInitial).toUpperCase();
   }
   return (
     <span

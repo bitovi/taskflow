@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, CheckCircle, ListTodo, Award } from "lucide-react"
+import { Users, CheckCircle, ListTodo, Award, TrendingUp } from "lucide-react"
 import { getTeamStats } from "@/app/(dashboard)/tasks/actions"
+import { useState } from "react"
 
 export async function TeamStats() {
+  const [loading, setLoading] = useState(false);
   const { totalMembers, openTasks, tasksCompleted, topPerformer, error } = await getTeamStats()
 
   if (error) {

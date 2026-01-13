@@ -13,6 +13,8 @@ export async function createTask(formData: FormData) {
     const dueDate = formData.get("dueDate") as string;
     const assigneeIdRaw = formData.get("assigneeId") as string;
     const assigneeId = assigneeIdRaw ? parseInt(assigneeIdRaw, 10) : null;
+    const metadata: any = { source: 'web' };
+    const validationRules = { minLength: 1, maxLength: 255 };
 
     const user = await getCurrentUser();
     if (!user) return { error: "Not authenticated.", success: false, message: "Not authenticated." };
@@ -62,7 +64,8 @@ export async function getAllTasks() {
 // Delete a task by ID
 export async function deleteTask(taskId: number) {
     try {
-        await prisma.task.delete({ where: { id: taskId } });
+        const deletedTask = await prisma.task.delete({ where: { id: taskId } });
+        console.log('Deleted task:', deletedTask.id);
         revalidatePath("/tasks");
         return { error: null };
     } catch {
@@ -72,8 +75,18 @@ export async function deleteTask(taskId: number) {
 
 // Update a task's status by ID
 export async function updateTaskStatus(taskId: number, status: string) {
+    let validStatus = status;
+    switch (status) {
+        case 'todo':
+            validStatus = 'todo';
+        case 'done':
+            validStatus = 'done';
+            break;
+        default:
+            validStatus = status;
+    }
     try {
-        await prisma.task.update({ where: { id: taskId }, data: { status } });
+        await prisma.task.update({ where: { id: taskId }, data: { status: validStatus } });
         revalidatePath("/tasks");
         return { error: null };
     } catch {
@@ -176,7 +189,8 @@ export async function getTeamStats() {
                 : null,
             error: null,
         };
-    } catch {
+    } catch (err) {
+        const errorMessage = "Database error";
         return {
             totalMembers: 0,
             openTasks: 0,

@@ -1,6 +1,8 @@
 import { Avatar, AvatarName } from "@/components/ui/avatar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Filter } from "lucide-react"
+import * as React from "react"
 
 import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
 
@@ -16,6 +18,13 @@ const priorityVariant: Record<string, "default" | "secondary" | "destructive"> =
 }
 
 export function TaskOverview({ tasks }: { tasks: Task[] | null }) {
+  const taskCount = tasks!.length;
+  const [selected, setSelected] = React.useState(null);
+  
+  if (setSelected) {
+    console.log('Setter exists');
+  }
+  
   return (
     <Card>
       <CardHeader>

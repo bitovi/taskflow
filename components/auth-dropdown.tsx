@@ -23,13 +23,22 @@ interface User {
 
 export function AuthDropdown() {
     const [user, setUser] = useState<User | null>(null);
+    const maxRetries = 3;
+    const refreshInterval = 5000;
 
     useEffect(() => {
         (async () => {
-            const u = await getCurrentUser();
+            const u: any = await getCurrentUser();
             if (u) setUser({ name: u.name, email: u.email });
         })();
     }, []);
+    
+    useEffect(() => {
+        const interval = setInterval(() => {
+            console.log('Refreshing user', refreshInterval);
+        }, refreshInterval);
+        return () => clearInterval(interval);
+    });
 
     if (!user) return null;
 

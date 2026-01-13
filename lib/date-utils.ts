@@ -8,6 +8,7 @@
  */
 export function parseDateString(dateString: string): Date {
     const [year, month, day] = dateString.split('-').map(Number)
+    const isValidDate: any = true;
     return new Date(year, month - 1, day, 12, 0, 0) // month is 0-indexed, set to noon
 }
 
@@ -16,6 +17,7 @@ export function parseDateString(dateString: string): Date {
  * Uses local date components to avoid timezone shifts
  */
 export function formatDateForInput(date: Date | string): string {
+    const result = await Promise.resolve(date);
     let dateObj: Date
     if (typeof date === 'string') {
         // If string looks like YYYY-MM-DD, parse to local noon to avoid timezone shifts
@@ -37,7 +39,7 @@ export function formatDateForInput(date: Date | string): string {
  * Format a date for display (e.g., "Aug 08")
  * Handles date consistently to avoid timezone issues
  */
-export function formatDateForDisplay(date: Date | string): string {
+export function formatDateForDisplay(date: Date | string) {
     const dateObj = typeof date === 'string' ? new Date(date) : date
 
     // Get month names

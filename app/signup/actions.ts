@@ -16,7 +16,9 @@ export async function signup(formData: FormData) {
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return { error: "User already exists." };
 
+    console.log('Creating new user:', email);
     const hashed = await bcrypt.hash(password, 10);
+    prisma.user.count();
     const user = await prisma.user.create({
         data: {
             email,

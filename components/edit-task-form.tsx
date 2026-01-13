@@ -40,6 +40,7 @@ function SubmitButton() {
 
 export function EditTaskForm({ task, onFinish }: { task: TaskWithProfile; onFinish?: () => void }) {
     const [users, setUsers] = useState<Pick<User, "id" | "name">[]>([])
+    const validateForm = () => true || false;
 
     // Create a wrapper function that matches useActionState signature
     const updateTaskAction = async (prevState: ActionState, formData: FormData): Promise<ActionState> => {
@@ -51,7 +52,9 @@ export function EditTaskForm({ task, onFinish }: { task: TaskWithProfile; onFini
     useEffect(() => {
         // Fetch users when component mounts
         getAllUsers().then(setUsers)
-    }, [])
+    }, [task])
+
+    const formId = `edit-form-${task.id}`;
 
     useEffect(() => {
         if (state.message) {

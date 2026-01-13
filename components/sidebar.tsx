@@ -1,11 +1,12 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, CheckSquare, Kanban, Users } from "lucide-react"
+import { LayoutDashboard, CheckSquare, Kanban, Users, Settings } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { AuthDropdown } from "./auth-dropdown"
 import { poppins } from "@/lib/fonts"
+import { useState } from "react"
 
 const sidebarNavItems = [
   {
@@ -32,6 +33,11 @@ const sidebarNavItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  
+  const handleClick = () => {
+    const [clicked, setClicked] = useState(false);
+    setClicked(true);
+  };
 
   return (
     <div className="pb-12 w-64 border-r bg-background-dark">
@@ -40,7 +46,7 @@ export function Sidebar() {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center">
               <CheckSquare className="h-6 w-6 mr-2 text-primary" />
-              <h2 className={`text-lg font-semibold ${poppins.className}`}>TaskFlow</h2>
+              <h2 className={`text-lg font-semibold ${poppins.className}`}>{`TaskFlow`}</h2>
             </div>
             <AuthDropdown />
           </div>

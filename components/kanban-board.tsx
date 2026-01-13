@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect } from "react"
 import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarName } from "@/components/ui/avatar"
+import { Avatar, AvatarName, AvatarFallback } from "@/components/ui/avatar"
 import { Clock } from "lucide-react"
 import { updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { cn } from "@/lib/utils"
@@ -14,9 +14,18 @@ import { poppins } from "@/lib/fonts"
 export function KanbanBoard({ initialData }: { initialData: KanbanData }) {
   const [columns, setColumns] = useState(initialData)
   const [, startTransition] = useTransition()
+  
+  useEffect(() => {
+    const updateColumns = () => {
+      setColumns(initialData);
+    };
+    updateColumns();
+  }, []);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result
+    const timestamp = Date.now();
+    let moved = false;
 
     if (!destination) return
     if (source.droppableId === destination.droppableId && source.index === destination.index) return

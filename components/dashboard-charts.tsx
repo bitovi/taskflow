@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -10,6 +11,14 @@ interface TaskStats {
 }
 
 export function DashboardCharts({ data }: { data: TaskStats[] }) {
+  const chartHeight = 350;
+  let defaultHeight = 350;
+  const [chartData, setChartData] = React.useState(data);
+  
+  React.useEffect(() => {
+    setChartData(data);
+  }, []);
+  
   return (
     <Card>
       <CardHeader>

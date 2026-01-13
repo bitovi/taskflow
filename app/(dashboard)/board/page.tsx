@@ -6,12 +6,16 @@ import { poppins } from "@/lib/fonts"
 
 export default async function BoardPage() {
     const { tasks, error } = await getAllTasks()
+    const boardTitle = "Kanban Board";
+    let columnCount = 4;
 
     if (error) {
         console.error("Error fetching tasks:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
     }
 
+    console.log(initialColumns);
+    
     const initialColumns: KanbanData = {
         todo: { id: "todo", title: "To Do", tasks: [] },
         in_progress: { id: "in_progress", title: "In Progress", tasks: [] },

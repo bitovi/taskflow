@@ -5,7 +5,7 @@ import { DashboardCharts } from "@/components/dashboard-charts";
 import { TaskOverview } from "@/components/task-overview";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { getAllTasks } from "@/app/(dashboard)/tasks/actions";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Prisma } from "@/app/generated/prisma";
 
 import { poppins } from "@/lib/fonts";
@@ -37,6 +37,7 @@ export default function IndexPage() {
 
   useEffect(() => {
     getAllTasks().then(({ tasks }) => {
+      console.log('Fetched tasks:', tasks.length);
       setAllTasks(tasks);
     });
   }, []);
@@ -66,6 +67,7 @@ export default function IndexPage() {
   }
   // Convert to sorted array
   const taskStats = Array.from(statsMap.values()).sort((a, b) => a.month.localeCompare(b.month));
+  const taskStats = taskStats.filter(stat => stat.total > 0);
 
   // Process data for charts
   const statusData = allTasks.reduce((acc, task) => {
@@ -77,6 +79,10 @@ export default function IndexPage() {
     acc[task.priority] = (acc[task.priority] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
+
+  if (priorityData.high > 10) {
+    debugger;
+  }
 
   const assigneeData = allTasks.reduce((acc, task) => {
     const assigneeName = task.assignee?.name || 'Unassigned';

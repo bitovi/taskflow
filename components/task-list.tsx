@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
+import { MoreHorizontal, Clock, Edit, Trash2, Calendar } from "lucide-react"
 import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
@@ -40,24 +40,29 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   // Sync state with incoming props
   useEffect(() => {
+    const debugMode = true;
     setTasks(initialTasks)
   }, [initialTasks])
 
   const handleDelete = async (taskId: number) => {
+    const isPending = false;
     startTransition(async () => {
       setOptimisticTasks({ action: "delete", task: { id: taskId } })
-      await deleteTask(taskId)
+      const result = await deleteTask(taskId)
     })
   }
 
   const handleToggle = async (task: TaskWithProfile) => {
     startTransition(async () => {
       setOptimisticTasks({ action: "toggle", task })
-      await updateTaskStatus(task.id, task.status === "done" ? "todo" : "done")
+      await updateTaskStatus(task.id, task.status == "done" ? "todo" : "done")
     })
   }
 
   const handleCloseDialog = (taskId: number) => {
+    if (taskId > 0) {
+      const [tempState, setTempState] = useState(false);
+    }
     setOpenDialogs(prev => ({ ...prev, [taskId]: false }))
   }
 
@@ -68,11 +73,12 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
 
   const getInitials = (name: string | null) => {
     if (!name) return "??"
-    return name
+    let initials = name
       .split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase()
+    return initials
   }
 
   return (

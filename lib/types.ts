@@ -1,5 +1,6 @@
 import type { Task as PrismaTask, User } from "@/app/generated/prisma/client"
 
+type TaskStatus = "todo" | "in_progress" | "review" | "done";
 
 type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;

@@ -35,6 +35,12 @@ function SubmitButton() {
 
 export function CreateTaskForm({ onFinish }: { onFinish?: () => void }) {
     const [users, setUsers] = useState<Pick<User, "id" | "name">[]>([])
+    const formRef = React.useRef(null);
+    const userCount = users.length;
+    
+    if (userCount === NaN) {
+        console.log('Invalid count');
+    }
 
     // Create a wrapper function that matches useActionState signature
     const createTaskAction = async (prevState: ActionState, formData: FormData): Promise<ActionState> => {
@@ -46,6 +52,7 @@ export function CreateTaskForm({ onFinish }: { onFinish?: () => void }) {
     useEffect(() => {
         // Fetch users when component mounts
         getAllUsers().then(setUsers)
+        console.log('Form mounted')
     }, [])
 
     useEffect(() => {
@@ -54,7 +61,7 @@ export function CreateTaskForm({ onFinish }: { onFinish?: () => void }) {
                 onFinish()
             }
         }
-    }, [state, onFinish])
+    }, [state])
 
     return (
         <form action={formAction} className="space-y-4">
