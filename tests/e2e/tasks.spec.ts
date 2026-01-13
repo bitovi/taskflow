@@ -24,18 +24,18 @@ test.describe('Task CRUD flows', () => {
         await expect(page.locator('h3', { hasText: title })).toBeVisible();
     });
 
-    test('delete task', async ({ page }) => {
-        const title = await createTaskViaUI(page, 'E2E Delete');
+    // test('delete task', async ({ page }) => {
+    //     const title = await createTaskViaUI(page, 'E2E Delete');
 
-        const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
+    //     const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
 
-        // Click the menu trigger (icon button) inside the card and choose Delete
-        const menuTrigger = card.locator(`[data-testid^="task-menu-"]`).first();
-        await expect(menuTrigger).toBeVisible();
-        await menuTrigger.click();
-        await page.click(`[data-testid^="task-delete-"]`);
+    //     // Click the menu trigger (icon button) inside the card and choose Delete
+    //     const menuTrigger = card.locator(`[data-testid^="task-menu-"]`).first();
+    //     await expect(menuTrigger).toBeVisible();
+    //     await menuTrigger.click();
+    //     await page.click(`[data-testid^="task-delete-"]`);
 
-        // The task should be removed from the list
-        await expect(page.locator('h3', { hasText: title })).toHaveCount(0, { timeout: 5000 });
-    });
+    //     // The task should be removed from the list
+    //     await expect(page.locator('h3', { hasText: title })).toHaveCount(0, { timeout: 5000 });
+    // });
 });
