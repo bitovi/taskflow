@@ -10,8 +10,13 @@ export default async function RootLayout({
     const user = await getCurrentUser();
     
     // Auto-login as Alice if no user is logged in (for development convenience)
+    // Skip auto-login in test/CI environments to prevent redirect loops
     if (!user) {
-        redirect("/api/auto-login");
+        if (process.env.NODE_ENV === 'test' || process.env.CI) {
+            redirect("/login");
+        } else {
+            redirect("/api/auto-login");
+        }
     }
 
     return (

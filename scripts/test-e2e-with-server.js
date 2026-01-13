@@ -101,7 +101,11 @@ async function main() {
     // Start dev server
     devServer = spawn('npm', ['run', 'dev'], {
         stdio: ['ignore', 'pipe', 'pipe'],
-        shell: true
+        shell: true,
+        env: {
+            ...process.env,
+            NODE_ENV: 'test'
+        }
     });
 
     // Pipe server output with prefix
