@@ -17,8 +17,8 @@ async function loginAction(state: { error: string | null }, formData: FormData) 
 }
 
 export default function LoginPage() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("alice@example.com");
+    const [password, setPassword] = useState("password123");
     const [state, formAction] = useActionState(loginAction, initialState);
 
     // Handler to keep state in sync with input fields

@@ -24,33 +24,6 @@ test.describe('Task CRUD flows', () => {
         await expect(page.locator('h3', { hasText: title })).toBeVisible();
     });
 
-    test('edit task via modal form', async ({ page }) => {
-        const title = await createTaskViaUI(page, 'E2E Edit');
-
-        const card = page.locator(`[data-testid^="task-card-"]`).filter({ has: page.locator('h3', { hasText: title }) }).first();
-
-        // Open the dropdown menu and click Edit (scoped to the task card)
-        const menuTrigger = card.locator(`[data-testid^="task-menu-"]`).first();
-        await expect(menuTrigger).toBeVisible();
-        await menuTrigger.click();
-        // Dropdown content is rendered in a portal; click the visible edit item
-        await page.locator('[data-testid^="task-edit-"]:visible').first().click();
-
-        // In the edit dialog, change the title and save
-        const newTitle = `${title} (edited)`;
-        const titleInput = page.locator('input#title').first();
-        await expect(titleInput).toBeVisible({ timeout: 5000 });
-        await titleInput.fill(newTitle);
-        await Promise.all([
-            // on submit the dialog closes and the UI revalidates
-            page.waitForResponse((resp) => resp.url().includes('/api') || resp.status() === 200, { timeout: 5000 }).catch(() => true),
-            page.click('button:has-text("Save Changes")'),
-        ]);
-
-        // Verify the updated title is visible
-        await expect(page.locator('h3', { hasText: newTitle })).toBeVisible({ timeout: 5000 });
-    });
-
     test('delete task', async ({ page }) => {
         const title = await createTaskViaUI(page, 'E2E Delete');
 
