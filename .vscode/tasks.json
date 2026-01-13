@@ -135,6 +135,9 @@
       "label": "Debug Chrome Browser",
       "type": "shell",
       "command": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      // windows "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+      // 32bit windows: "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+      // linux "google-chrome"
       "args": [
         "--remote-debugging-port=9222",
         "--user-data-dir=remote-debug-profile"
@@ -142,19 +145,19 @@
       "isBackground": false,
       "problemMatcher": []
     },
-    // check browser output via cdp-cli
+    // check browser output via cdp-cli (filters for errors only)
     {
       "label": "Check Browser Output",
       "type": "shell",
-      "command": "npm",
+      "command": "npx",
       "args": [
-        "exec",
-        "cdp-cli",
-        "--",
+        "@myerscarpenter/cdp-cli",
+        "console",
+        "TaskFlow",
         "--cdp-url",
         "http://localhost:9222",
-        "console",
-        "TaskFlow"
+        "--duration",
+        "5",
       ],
       "isBackground": false,
       "problemMatcher": []
