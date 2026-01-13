@@ -18,7 +18,7 @@ You are debugging a bug reported in {{FILE}}. Follow these steps and explain you
 
 5. **Write a test (optional)** - If no test covers this scenario, write one to reproduce the bug. Confirm it fails.
 
-If you write a new test, you can run it specifically using the `npx playwright test tests/e2e/<filename>.spec.ts --grep "test name"`, to avoid having to run the full suite.
+If you write a new test, you can run it specifically using the `npm run test:e2e:debug -- --grep "spec name"`, to avoid having to run the full suite.
 
 6. **Fix the bug** - Based on logs and investigation, implement the fix, then re-run the new or existing test to confirm it passes.
 
