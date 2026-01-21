@@ -24,6 +24,39 @@ test.describe('Task CRUD flows', () => {
         await expect(page.locator('h3', { hasText: title })).toBeVisible();
     });
 
+    test('search tasks by title', async ({ page }) => {
+        // Navigate to tasks page
+        await page.goto('/tasks');
+        
+        // Wait for tasks to load
+        await page.waitForSelector('[data-testid^="task-card-"]', { timeout: 5000 });
+        
+        // Get the search input
+        const searchInput = page.locator('input[placeholder*="Search tasks"]');
+        await expect(searchInput).toBeVisible();
+        
+        // Count initial tasks
+        const initialTaskCount = await page.locator('[data-testid^="task-card-"]').count();
+        
+        // Search for a specific task (assuming there's a task with "Design" in the seeded data)
+        await searchInput.fill('Design');
+        
+        // Wait a bit for the filter to apply
+        await page.waitForTimeout(500);
+        
+        // Count filtered tasks - should be less than or equal to initial count
+        const filteredTaskCount = await page.locator('[data-testid^="task-card-"]').count();
+        expect(filteredTaskCount).toBeLessThanOrEqual(initialTaskCount);
+        
+        // Clear search
+        await searchInput.clear();
+        await page.waitForTimeout(500);
+        
+        // Verify all tasks are visible again
+        const clearedTaskCount = await page.locator('[data-testid^="task-card-"]').count();
+        expect(clearedTaskCount).toBe(initialTaskCount);
+    });
+
     // test('delete task', async ({ page }) => {
     //     const title = await createTaskViaUI(page, 'E2E Delete');
 

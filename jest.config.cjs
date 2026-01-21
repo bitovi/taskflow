@@ -10,7 +10,8 @@ module.exports = {
     transformIgnorePatterns: ['/node_modules/(?!(.*?))'],
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/$1',
-        '\\.(css|less|sass|scss)$': 'identity-obj-proxy'
+        '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
+        '^next/font/google$': '<rootDir>/tests/__mocks__/nextFontMock.js'
     }
     ,
     setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],

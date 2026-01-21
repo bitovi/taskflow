@@ -8,7 +8,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { MoreHorizontal, Clock, Edit, Trash2, Search } from "lucide-react"
 import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
@@ -22,6 +23,7 @@ type TaskWithProfile = PrismaTask & {
 
 export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
   const [tasks, setTasks] = useState(initialTasks)
+  const [searchTerm, setSearchTerm] = useState("")
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     tasks,
     (state, { action, task }: { action: "delete" | "toggle"; task: TaskWithProfile | { id: number } }) => {
@@ -75,9 +77,32 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .toUpperCase()
   }
 
+  // Filter tasks based on search term
+  const filteredTasks = optimisticTasks.filter((task) => {
+    if (!searchTerm) return true
+    const lowerSearchTerm = searchTerm.toLowerCase()
+    return (
+      task.name.toLowerCase().includes(lowerSearchTerm) ||
+      (task.description && task.description.toLowerCase().includes(lowerSearchTerm))
+    )
+  })
+
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {/* Search Input */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Search tasks by title or description..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* Task List */}
+      {filteredTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
