@@ -20,7 +20,7 @@ type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+export function TaskList({ initialTasks, searchQuery = "" }: { initialTasks: TaskWithProfile[]; searchQuery?: string }) {
   const [tasks, setTasks] = useState(initialTasks)
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     tasks,
@@ -75,9 +75,24 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
       .toUpperCase()
   }
 
+  // Filter tasks based on search query
+  const filteredTasks = optimisticTasks.filter((task) => {
+    if (!searchQuery) return true
+    const query = searchQuery.toLowerCase()
+    return (
+      task.name.toLowerCase().includes(query) ||
+      (task.description && task.description.toLowerCase().includes(query))
+    )
+  })
+
   return (
     <div className="space-y-4">
-      {optimisticTasks.map((task) => (
+      {filteredTasks.length === 0 ? (
+        <div className="text-center py-8 text-muted-foreground">
+          {searchQuery ? "No tasks found matching your search." : "No tasks yet."}
+        </div>
+      ) : null}
+      {filteredTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
         }>
