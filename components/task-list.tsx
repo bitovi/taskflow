@@ -87,11 +87,11 @@ export function TaskList({ initialTasks, searchQuery = "" }: { initialTasks: Tas
 
   return (
     <div className="space-y-4">
-      {filteredTasks.length === 0 ? (
+      {filteredTasks.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
           {searchQuery ? "No tasks found matching your search." : "No tasks yet."}
         </div>
-      ) : null}
+      )}
       {filteredTasks.map((task) => (
         <Dialog key={task.id} open={openDialogs[task.id]} onOpenChange={(open) =>
           setOpenDialogs(prev => ({ ...prev, [task.id]: open }))
