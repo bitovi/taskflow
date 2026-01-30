@@ -20,6 +20,7 @@ model User {
   sessions      Session[]
   createdTasks  Task[] @relation("CreatedTasks")
   assignedTasks Task[] @relation("AssignedTasks")
+  reactions     TaskReaction[]
 }
 
 model Session {
@@ -43,4 +44,17 @@ model Task {
   creator     User     @relation("CreatedTasks", fields: [creatorId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  reactions   TaskReaction[]
+}
+
+model TaskReaction {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // "like" or "dislike"
+  createdAt DateTime @default(now())
+
+  @@unique([taskId, userId])
 }

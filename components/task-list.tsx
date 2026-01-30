@@ -12,15 +12,17 @@ import { MoreHorizontal, Clock, Edit, Trash2 } from "lucide-react"
 import { deleteTask, updateTaskStatus } from "@/app/(dashboard)/tasks/actions"
 import { formatDateForDisplay } from "@/lib/date-utils"
 import { EditTaskForm } from "./edit-task-form"
+import { TaskReactions } from "./task-reactions"
 import { poppins } from "@/lib/fonts"
 
-import type { Task as PrismaTask, User } from "@/app/generated/prisma/client";
+import type { Task as PrismaTask, User, TaskReaction } from "@/app/generated/prisma/client";
 
 type TaskWithProfile = PrismaTask & {
   assignee?: Pick<User, "name"> | null;
+  reactions?: TaskReaction[];
 };
 
-export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; }) {
+export function TaskList({ initialTasks, currentUserId }: { initialTasks: TaskWithProfile[]; currentUserId?: number; }) {
   const [tasks, setTasks] = useState(initialTasks)
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     tasks,
@@ -102,7 +104,7 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
-                    <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm">
+                    <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm mb-3">
                       <div className="flex items-center space-x-2">
                         <Avatar className="h-7 w-7 border-2 border-border">
                           <AvatarFallback className="text-xs font-medium">{getInitials(task.assignee?.name || null)}</AvatarFallback>
@@ -128,6 +130,11 @@ export function TaskList({ initialTasks }: { initialTasks: TaskWithProfile[]; })
                         </div>
                       )}
                     </div>
+                    <TaskReactions 
+                      taskId={task.id} 
+                      reactions={task.reactions || []} 
+                      currentUserId={currentUserId}
+                    />
                   </div>
                 </div>
                 <DropdownMenu open={openDropdowns[task.id]} onOpenChange={(open) =>

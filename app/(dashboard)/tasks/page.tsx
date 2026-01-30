@@ -6,12 +6,15 @@ import { TaskList } from "@/components/task-list"
 import { poppins } from "@/lib/fonts"
 
 import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
+import { getCurrentUser } from "@/app/login/actions"
 
 export const revalidate = 0
 
 
 export default async function TasksPage() {
     const { tasks, error } = await getAllTasks();
+    const user = await getCurrentUser();
+    
     if (error) {
         console.error("Error fetching data:", error)
         return <p className="p-8">Could not load data. Please try again later.</p>
@@ -30,7 +33,7 @@ export default async function TasksPage() {
             </div>
 
             <Suspense fallback={<div>Loading tasks...</div>}>
-                <TaskList initialTasks={tasks || []} />
+                <TaskList initialTasks={tasks || []} currentUserId={user?.id} />
             </Suspense>
         </div>
     )

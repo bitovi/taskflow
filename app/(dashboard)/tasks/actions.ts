@@ -47,6 +47,7 @@ export async function getAllTasks() {
             include: {
                 assignee: { select: { id: true, name: true, email: true } },
                 creator: { select: { id: true, name: true, email: true } },
+                reactions: true,
             },
             orderBy: [
                 { createdAt: "desc" },
@@ -184,5 +185,74 @@ export async function getTeamStats() {
             topPerformer: null,
             error: "Failed to fetch team statistics.",
         };
+    }
+}
+
+// Toggle a reaction (like or dislike) on a task
+export async function toggleReaction(taskId: number, type: "like" | "dislike") {
+    const user = await getCurrentUser();
+    if (!user) return { error: "Not authenticated.", success: false };
+
+    try {
+        // Check if user already has a reaction on this task
+        const existingReaction = await prisma.taskReaction.findUnique({
+            where: {
+                taskId_userId: {
+                    taskId,
+                    userId: user.id,
+                },
+            },
+        });
+
+        if (existingReaction) {
+            if (existingReaction.type === type) {
+                // Same reaction - remove it
+                await prisma.taskReaction.delete({
+                    where: {
+                        id: existingReaction.id,
+                    },
+                });
+            } else {
+                // Different reaction - update it
+                await prisma.taskReaction.update({
+                    where: {
+                        id: existingReaction.id,
+                    },
+                    data: {
+                        type,
+                    },
+                });
+            }
+        } else {
+            // No existing reaction - create new one
+            await prisma.taskReaction.create({
+                data: {
+                    taskId,
+                    userId: user.id,
+                    type,
+                },
+            });
+        }
+
+        revalidatePath("/tasks");
+        return { error: null, success: true };
+    } catch {
+        return { error: "Failed to update reaction.", success: false };
+    }
+}
+
+// Get reaction counts for a task
+export async function getTaskReactions(taskId: number) {
+    try {
+        const reactions = await prisma.taskReaction.findMany({
+            where: { taskId },
+        });
+
+        const likes = reactions.filter(r => r.type === "like").length;
+        const dislikes = reactions.filter(r => r.type === "dislike").length;
+
+        return { likes, dislikes, error: null };
+    } catch {
+        return { likes: 0, dislikes: 0, error: "Failed to fetch reactions." };
     }
 }
