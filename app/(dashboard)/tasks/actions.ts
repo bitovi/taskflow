@@ -67,7 +67,12 @@ export async function getFilteredTasks(filters: {
     assigneeId?: number;
 }) {
     try {
-        const where: any = {};
+        const where: {
+            OR?: Array<{ name: { contains: string; mode: "insensitive" } } | { description: { contains: string; mode: "insensitive" } }>;
+            status?: { in: string[] };
+            priority?: { in: string[] };
+            assigneeId?: number;
+        } = {};
 
         // Add search filter (case-insensitive search on name and description)
         if (filters.search) {

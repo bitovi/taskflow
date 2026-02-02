@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback } from "react"
 import { TaskList } from "@/components/task-list"
 import { TaskFilters } from "@/components/task-filters"
 import { getFilteredTasks } from "@/app/(dashboard)/tasks/actions"
