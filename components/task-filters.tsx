@@ -41,18 +41,25 @@ export function TaskFilters({ onFilterChange }: TaskFiltersProps) {
 
   useEffect(() => {
     // Fetch users for assignee filter
-    getAllUsers().then(setUsers)
+    getAllUsers()
+      .then(setUsers)
+      .catch((error) => {
+        console.error("Failed to load users:", error)
+        setUsers([])
+      })
   }, [])
 
   useEffect(() => {
     // Notify parent component when filters change
+    // Note: onFilterChange should be wrapped in useCallback in parent component
     onFilterChange({
       search,
       status: selectedStatuses,
       priority: selectedPriorities,
       assigneeId: selectedAssignee,
     })
-  }, [search, selectedStatuses, selectedPriorities, selectedAssignee, onFilterChange])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, selectedStatuses, selectedPriorities, selectedAssignee])
 
   const toggleStatus = (status: string) => {
     setSelectedStatuses(prev =>

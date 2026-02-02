@@ -1,7 +1,3 @@
-import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-
 // Mock server actions
 jest.mock('@/app/login/actions', () => ({
     getAllUsers: jest.fn(async () => [
@@ -9,6 +5,10 @@ jest.mock('@/app/login/actions', () => ({
         { id: 2, name: 'Bob' }
     ])
 }))
+
+import React from 'react'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import { TaskFilters } from '@/components/task-filters'
 
