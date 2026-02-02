@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"
-import { TaskList } from "@/components/task-list"
+import { TasksPageClient } from "@/components/tasks-page-with-filters"
 import { poppins } from "@/lib/fonts"
 
 import { getAllTasks } from "@/app/(dashboard)/tasks/actions"
@@ -30,7 +30,7 @@ export default async function TasksPage() {
             </div>
 
             <Suspense fallback={<div>Loading tasks...</div>}>
-                <TaskList initialTasks={tasks || []} />
+                <TasksPageClient initialTasks={tasks || []} />
             </Suspense>
         </div>
     )
